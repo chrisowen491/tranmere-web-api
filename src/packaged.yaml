@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Tranmere-Web-Api
+
+  Sam scripts for tranmere-web
+
+  '
+Parameters:
+  Email:
+    Type: String
+    Description: The email address to send contact to
+Globals:
+  Function:
+    Timeout: 3
+  Api:
+    Cors:
+      AllowHeaders: '''Content-Type'''
+      AllowOrigin: '''*'''
+Resources:
+  TranmereWebApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: TranmereWebApi Gateway
+      StageName: Prod
+      Cors:
+        AllowMethods: '''POST, GET'''
+        AllowHeaders: '''Content-Type'''
+        AllowOrigin: '''https://www.tranmere-web.com'''
+        MaxAge: '''600'''
+        AllowCredentials: true
+  PageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://tranmere-web-api/9b1217b15921f76897d88d86c492ac8e
+      Handler: app.handler
+      Runtime: nodejs10.x
+      Events:
+        PageRequest:
+          Type: Api
+          Properties:
+            Path: /page/{pageName}
+            RestApiId:
+              Ref: TranmereWebApiGateway
+            Method: get
+  ContactUsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://tranmere-web-api/c84739515c954d0ce2618d41e0ade8e9
+      Handler: app.handler
+      Runtime: nodejs10.x
+      Policies:
+      - AWSXrayWriteOnlyAccess
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+          Resource: '*'
+      Environment:
+        Variables:
+          EMAIL_ADDRESS:
+            Ref: Email
+      Events:
+        ContactRequest:
+          Type: Api
+          Properties:
+            Path: /contact-us
+            RestApiId:
+              Ref: TranmereWebApiGateway
+            Method: post
+  PlayerCRUDFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://tranmere-web-api/521fcfd55a8663c332c795afa49d79fb
+      Handler: app.playerHandler
+      Runtime: nodejs10.x
+      Events:
+        PlayerPostAPI:
+          Type: Api
+          Properties:
+            Path: /player
+            Method: POST
+            RestApiId:
+              Ref: TranmereWebApiGateway
+        PlayerGetAPI:
+          Type: Api
+          Properties:
+            Path: /player/{playerId}
+            Method: ANY
+            RestApiId:
+              Ref: TranmereWebApiGateway
+      Policies:
+      - Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - dynamodb:DeleteItem
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          Resource:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:dynamodb:'
+              - Ref: AWS::Region
+              - ':'
+              - Ref: AWS::AccountId
+              - :table/PlayerTable
+  PlayerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: PlayerTable
+      AttributeDefinitions:
+      - AttributeName: playerId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: playerId
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+Outputs:
+  ContactUsFunction:
+    Description: Contact Us Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - ContactUsFunction
+      - Arn
+  ContactUsFunctionIamRole:
+    Description: Implicit IAM Role created for Contact Us function
+    Value:
+      Fn::GetAtt:
+      - ContactUsFunctionRole
+      - Arn

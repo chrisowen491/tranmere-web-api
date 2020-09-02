@@ -1,0 +1,31 @@
+{{>head}}
+<body id="top">
+{{>homenav}}
+    <!-- hero -->
+    <section>
+      <div class="image image-overlay" style="background-image:url(/assets/images/20170408_165126.jpg)"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col text-white">
+            <h1 class="mb-3">{{title}}</h1>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- / hero -->
+
+    <!-- listing inside -->
+    <section class="overlay">
+      <div class="container">
+          <h5 class="h2 font-weight-light">Overall: {{wins}} wins, {{draws}} draws, {{losses}} losses</h5>
+          <h5 class="mb-3">In charge from {{dateFrom}} to {{dateTo}}</h5>
+          {{>resultstable}}
+
+
+      </div>
+    </section>
+    <!-- / listing inside -->
+{{>footer}}
+</body>
+</html>

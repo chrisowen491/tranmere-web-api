@@ -1,0 +1,14 @@
+{
+  "name": "search",
+  "version": "1.0.0",
+  "description": "Searches elastic search",
+  "main": "app.js",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "@elastic/elasticsearch": "^7.8.0"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/"
+  }
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/assets/css/vendor.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+
+    <title>{{title}}</title>
+    <meta name="title" content="{{title}} - Tranmere-Web" />
+    <meta name="google" content="notranslate">
+    <meta name="description" content="{{{description}}}">
+    <link rel="canonical" href="https://www.tranmere-web.com{{{url}}}" />
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script>
+      window.OneSignal = window.OneSignal || [];
+      OneSignal.push(function() {
+        OneSignal.init({
+          appId: "0267b80b-3d7f-4c7c-a521-0e0b81a9c753",
+        });
+      });
+    </script>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "{{pageType}}",
+            "name": "{{title}} | Tranmere-Web",
+            "url": "https://www.tranmere-web.com{{{url}}}",
+            "description": "{{{description}}}",
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://www.tranmere-web.com/assets/logos/logo_v1.png",
+                "width": 450,
+                "height": 260
+            }
+        }
+    </script>
+</head>

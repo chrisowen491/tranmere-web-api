@@ -1,0 +1,23 @@
+{
+  "home" : {
+    "title": "Home",
+    "pageType":"WebPage",
+    "description": "Tranmere-Web.com is a website full of data, statistics and information about Tranmere Rovers FC",
+    "template": "./templates/home.tpl.html",
+    "url": ""
+  },
+  "links": {
+    "title": "Links",
+    "pageType":"WebPage",
+    "description": "Some popular Tranmere Rovers links from the web",
+    "template": "./templates/links.tpl.html",
+    "url": "/links.html"
+  },
+  "about": {
+    "title": "About the site",
+    "pageType":"AboutPage",
+    "description": "All about Tranmere-Web",
+    "template": "./templates/about.tpl.html",
+    "url": "/about.html"
+  }
+}

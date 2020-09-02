@@ -1,0 +1,61 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/src/contact-us
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/src/crud
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/src/page
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/sam/search
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/sam/scraper
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: tranmere-web-api/sam/player-builder
+      - uses: falnyr/aws-sam-deploy-action@v1.0.0
+        env:
+          TEMPLATE: 'template.yaml'
+          AWS_STACK_NAME: Tranmere-Web-Api
+          AWS_REGION: 'eu-west-1'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
+          PARAMETER_OVERRIDES: Email=${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
+
+  deploy-cloudflare:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: cloudflare worker
+        uses: cloudflare/serverless-action@master
+        env:
+          CLOUDFLARE_ACCOUNT_ID : ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ZONE_ID : ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_AUTH_EMAIL : ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
+          CLOUDFLARE_SCRIPT_NAME : "tranmere-web-api"
+          CLOUDFLARE_AUTH_KEY: ${{ secrets.CLOUDFLARE_AUTH_KEY }}

@@ -1,0 +1,14 @@
+{
+  "name": "page",
+  "version": "1.0.0",
+  "description": "Contact us lambda",
+  "main": "app.js",
+  "author": "SAM CLI",
+  "license": "MIT",
+  "dependencies": {
+    "mustache": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha tests/unit/"
+  }
+}

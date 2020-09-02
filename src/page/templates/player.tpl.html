@@ -1,0 +1,113 @@
+{{>head}}
+<body id="top">
+{{>homenav}}
+    <!-- hero -->
+    <section itemscope itemtype ="http://schema.org/athlete">
+      <div class="image image-overlay" style="background-image:url(/assets/images/20170408_165126.jpg)"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col text-white">
+            <h1 class="mb-3" itemprop="name">{{title}}</h1>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- / hero -->
+
+    <!-- listing inside -->
+    <section class="overlay">
+      <div class="container">
+          <ul class="nav nav-tabs lavalamp mb-2" id="myTab" role="tablist">
+              <li class="nav-item">
+                  <a class="nav-link active" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Stats</a>
+              </li>
+              <!--
+              <li class="nav-item">
+                  <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Transfers (Coming Soon)</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Media (Coming Soon)</a>
+              </li>
+              -->
+              <li class="nav-item">
+                  <a class="nav-link" id="links-tab" data-toggle="tab" href="#links" role="tab" aria-controls="links" aria-selected="false">Links</a>
+              </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+
+              <div class="tab-pane fade  show active" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+
+                  <table class="table table-striped boxed">
+                      <thead>
+                      <tr>
+                          <th scope="col">Season</th>
+                          <th scope="col"  class="text-center"><img class="rounded mx-auto d-block" alt="Start" title="Start" width="40px" height="40px" src="/assets/icons/043-player.svg" /></th>
+                          <th scope="col"  class="text-center"><img class="rounded mx-auto d-block" alt="goals" title="goals" width="40px" height="40px" src="/assets/icons/004-soccer ball.svg"/></th>
+                          <th scope="col"  class="text-center d-none d-md-table-cell"><img class="rounded mx-auto d-block" alt="assists" title="assists" width="40px" height="40px" src="/assets/icons/001-strategy.png"/></th>
+                          <th scope="col"  class="text-center d-none d-lg-table-cell"><img class="rounded mx-auto d-block" alt="headers" title="headers" width="40px" height="40px" src="/assets/icons/028-header.svg"/></th>
+                          <th scope="col"  class="text-center d-none d-lg-table-cell"><img class="rounded mx-auto d-block" alt="free kicks" title="free kicks" width="40px" height="40px" src="/assets/icons/022-free kick.png"/></th>
+                          <th scope="col"  class="text-center d-none d-lg-table-cell"><img class="rounded mx-auto d-block" alt="penalties" title="penalties" width="40px" height="40px" src="/assets/icons/041-penalty kick.png"/></th>
+                          <th scope="col"  class="text-center d-none d-md-table-cell"><img class="rounded mx-auto d-block" alt="yellow card" title="yellow card" width="40px" height="40px" src="/assets/icons/064-yellow card.png"/></th>
+                          <th scope="col"  class="text-center d-none d-md-table-cell"><img class="rounded mx-auto d-block" alt="red card" title="red card" width="40px" height="40px" src="/assets/icons/047-red card.png"/></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {{#stats.seasons}}
+                          <td><a href="/seasons/{{Season}}.html">{{Season}}</a>
+                              <br/>
+                              <small>
+                              <a href="/player-season/{{title}}-{{Season}}.html">Player Season Record</a></small></td>
+                          <td  class="text-center">{{starts}} ({{subs}})</td>
+                          <td  class="text-center">{{goals}}</td>
+                          <td  class="text-center d-none d-md-table-cell">{{assists}}</td>
+                          <td  class="text-center d-none d-lg-table-cell">{{headers}}</td>
+                          <td  class="text-center d-none d-lg-table-cell">{{fk}}</td>
+                          <td  class="text-center d-none d-lg-table-cell">{{penalties}}</td>
+                          <td  class="text-center d-none d-md-table-cell">{{yellow}}</td>
+                          <td  class="text-center d-none d-md-table-cell">{{red}}</td>
+                      </tr>
+                      {{/stats.seasons}}
+                      <tr>
+                          <th>Total</th>
+                          <th  class="text-center">{{stats.total.starts}} ({{stats.total.subs}})</th>
+                          <th  class="text-center">{{stats.total.goals}}</th>
+                          <th  class="text-center d-none d-md-table-cell">{{stats.total.assists}}</th>
+                          <th  class="text-center d-none d-lg-table-cell">{{stats.total.headers}}</th>
+                          <th  class="text-center d-none d-lg-table-cell">{{stats.total.fk}}</th>
+                          <th  class="text-center d-none d-lg-table-cell">{{stats.total.penalties}}</th>
+                          <th  class="text-center d-none d-md-table-cell">{{stats.total.yellow}}</th>
+                          <th  class="text-center d-none d-md-table-cell">{{stats.total.red}}</th>
+                      </tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+              </div>
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+              </div>
+              <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
+                  <table class="table table-striped boxed">
+                      <thead>
+                      <tr>
+                          <th scope="col">Link</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      {{#links}}
+                      <tr>
+                          <td><a href="{{_source.Links}}">{{_source.Type}}</a></td>
+                      </tr>
+                      {{/links}}
+                  </table>
+              </div>
+          </div>
+      </div>
+    </section>
+    <!-- / listing inside -->
+{{>footer}}
+</body>
+</html>

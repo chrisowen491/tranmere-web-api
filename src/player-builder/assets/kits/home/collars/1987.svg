@@ -1,0 +1,19 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <title>background</title>
+        <rect x="-1" y="-1" width="514" height="514" id="canvas_background" fill="none"/>
+    </g>
+
+    <g>
+
+            <title>Simple Collar</title>
+            <g>
+                <path stroke-dasharray="5,5" fill="#ffffff" d="m256,356l-30,30l-31.996,-70.056l17.996,-11.944l44,52z"/>
+            </g>
+            <g>
+                <path stroke-dasharray="5,5" fill="#ffffff" d="m256,356l30,30l31.996,-70.056l-17.996,-11.944l-44,52z"/>
+            </g>
+            <line stroke="#0000ff" stroke-dasharray="5,5" id="svg_42" y2="364.45312" x2="252" y1="312.45313" x1="204" stroke-width="1.5" fill="none"/>
+            <line stroke="#0000ff" id="svg_43" y2="310.45312" x2="306" y1="365.45313" x1="258" fill-opacity="null" stroke-dasharray="5,5" stroke-width="1.5" fill="none"/>
+    </g>
+</svg>

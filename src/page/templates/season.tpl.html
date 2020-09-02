@@ -1,0 +1,48 @@
+{{>head}}
+<body id="top">
+{{>homenav}}
+    <!-- hero -->
+    <section>
+      <div class="image image-overlay" style="background-image:url(/assets/images/20180701_105154.jpg)"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col text-white">
+            <h1 class="mb-3">{{title}}</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- / hero -->
+
+    <!-- listing inside -->
+    <section class="overlay">
+      <div class="container">
+          {{>resultstable}}
+
+
+        <div class="row">
+            <div class="col text-center">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="{{previous_season}}.html" aria-label="Next">
+                                <span aria-hidden="true">{{previous_season}}</span>
+                                <span class="sr-only">{{previous_season}}</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="{{next_season}}.html" aria-label="Next">
+                                <span aria-hidden="true">{{next_season}}</span>
+                                <span class="sr-only">{{next_season}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+      </div>
+    </section>
+    <!-- / listing inside -->
+{{>footer}}
+</body>
+</html>
