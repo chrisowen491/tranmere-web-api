@@ -40,6 +40,25 @@ Resources:
         MaxAge: "'600'"
         AllowCredentials: True
 
+  PlayerSearchFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/player-search/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ES_CLUSTER: !Ref 'ESCluster'
+          ES_USER: !Ref 'ESUser'
+          ES_PASSWORD: !Ref 'ESPassword'
+      Events:
+        PageRequest:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /player-search
+            RestApiId: !Ref TranmereWebApiGateway
+            Method: get
+
   SearchFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:

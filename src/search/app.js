@@ -18,6 +18,9 @@ exports.handler = async function (event, context) {
     var opposition = event.queryStringParameters.opposition;
     var date = event.queryStringParameters.date;
     var manager = event.queryStringParameters.manager;
+    var venue = event.queryStringParameters.venue;
+    var pens = event.queryStringParameters.pens;
+    var sort = event.queryStringParameters.sort;
 
     var size = 250;
 
@@ -42,10 +45,16 @@ exports.handler = async function (event, context) {
         query.body.query.bool.must.push({"match": {"Season": season}});
     if(date)
         query.body.query.bool.must.push({"match": {"Date": date}});
+    if(venue)
+        query.body.query.bool.must.push({"match": {"Venue": venue}});
+    if(pens)
+        query.body.query.bool.must.push({"exists": {"field": "pens"}});
     if(manager) {
         var dates = manager.split(',');
         query.body.query.bool.must.push({"range": {"Date":{ "gte": dates[0], "lte": dates[1]} }});
-
+    }
+    if(sort && sort == "Top Attendance") {
+        query.body.sort = [{"attendance" : {"order" : "desc"}}];
     }
 
 
