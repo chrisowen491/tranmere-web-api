@@ -1,21 +1,6 @@
 module.exports = function (client) {
     return {
 
-         buildImagePath: function (image, width, height) {
-            var body = {
-             "bucket": "trfc-programmes",
-             "key": image,
-               "edits": {
-                 "resize": {
-                   "width": width,
-                   "height": height,
-                   "fit": "fill",
-                 }
-               }
-             };
-            return "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(body)).toString('base64');
-         },
-
          calculateWinsDrawsLossesFromMatchesSearch : function(results) {
              var obj = {
                 wins: 0,
@@ -117,77 +102,6 @@ module.exports = function (client) {
                  }
              }
              return currentObj;
-         },
-
-         formatGoals: function(goals) {
-            var output = "";
-            var scorers = {};
-            for(var i=0; i < goals.length; i++) {
-                if(scorers[goals[i].Scorer]) {
-                   scorers[goals[i].Scorer] =  scorers[goals[i].Scorer] + 1;
-                } else {
-                   scorers[goals[i].Scorer] = 1;
-                }
-            }
-            const keys = Object.keys(scorers);
-            for( var x=0; x < keys.length; x++) {
-                if(scorers[keys[x]] > 1) {
-                    output = output + keys[x] + " " + scorers[keys[x]];
-                } else {
-                    output = output + keys[x]
-                }
-                if( x != keys.length-1) {
-                    output = output + ", "
-                }
-            }
-            return output;
-         },
-
-         buildMatch : async function(match, getApps) {
-            match.Opposition = match.home == "Tranmere Rovers" ? match.visitor : match.home;
-
-            if(match.venue == "Wembley Stadium") {
-                match.location = "N";
-            } else if(match.home == "Tranmere Rovers") {
-                match.location = "H";
-            } else {
-                match.location = "A";
-            }
-
-            if(getApps) {
-                var apps = await this.getAppsByDate(match.Date);
-                match.apps = apps;
-            }
-
-            if(match.Programme && match.Programme != "#N/A") {
-
-                 var smallBody = {
-                      "bucket": 'trfc-programmes',
-                      "key": match.Programme,
-                      "edits": {
-                        "resize": {
-                          "width": 100,
-                          "fit": "contain"
-                        }
-                      }
-                    };
-                     var largeBody = {
-                          "bucket": 'trfc-programmes',
-                          "key": match.Programme,
-                        };
-                 delete match.Programme;
-                 match.programme = Buffer.from(JSON.stringify(smallBody)).toString('base64');
-                 match.largeProgramme = Buffer.from(JSON.stringify(largeBody)).toString('base64');
-             }
-             var goals = await this.getGoalsByDate(match.Date);
-             match.goals = goals;
-             match.formattedGoals = this.formatGoals(goals);
-             if((match.apps && match.apps.length > 0)) {
-                match.report = true;
-             }
-             if(match.competition != "League")
-                match.isCup = true;
-             return match;
          },
 
          //Todo
