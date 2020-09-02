@@ -8,6 +8,15 @@ Parameters:
   Email:
     Type: String
     Description: The email address to send contact to
+  ESCluster:
+    Type: String
+    Description: The email address to send contact to
+  ESUser:
+    Type: String
+    Description: The email address to send contact to
+  ESPassword:
+    Type: String
+    Description: The email address to send contact to
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -39,9 +48,9 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          ES_CLUSTER: 'tranmere-web:ZXVyb3BlLXdlc3QyLmdjcC5lbGFzdGljLWNsb3VkLmNvbSRlMTQ1MGUzMTg0NTA0MDYzOWQ4MTZkMDMwMDljMWUxZCQ2YzE3ZTA3NTA3NzM0NGVhYjFiZmY3OGNmOTkzNjQzNA=='
-          ES_USER: 'elastic'
-          ES_PASSWORD: 'YsMOJrRgFtk75h4MEDRwuSwt'
+          ES_CLUSTER: !Ref 'ESCluster'
+          ES_USER: !Ref 'ESUser'
+          ES_PASSWORD: !Ref 'ESPassword'
       Events:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
