@@ -25,13 +25,13 @@ jobs:
           working-directory: src/page
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: sam/search
+          working-directory: src/search
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: sam/scraper
+          working-directory: src/scraper
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: sam/player-builder
+          working-directory: src/player-builder
       - uses: falnyr/aws-sam-deploy-action@v1.0.0
         env:
           TEMPLATE: 'template.yaml'
