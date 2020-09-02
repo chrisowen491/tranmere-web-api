@@ -34,7 +34,7 @@ Resources:
   SearchFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: tranmere-web-api/src/search/
+      CodeUri: src/search/
       Handler: app.handler
       Runtime: nodejs12.x
       Environment:
@@ -53,7 +53,7 @@ Resources:
   PageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: tranmere-web-api/src/page/
+      CodeUri: src/page/
       Handler: app.handler
       Runtime: nodejs12.x
       Events:
@@ -67,7 +67,7 @@ Resources:
   ScraperFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: tranmere-web-api/src/scraper/
+      CodeUri: src/scraper/
       Handler: app.handler
       Runtime: nodejs12.x
       Events:
@@ -81,7 +81,7 @@ Resources:
   PlayerBuilderFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: tranmere-web-api/src/player-builder/
+      CodeUri: src/player-builder/
       Handler: app.handler
       Runtime: nodejs12.x
       Events:
@@ -95,7 +95,7 @@ Resources:
   ContactUsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: tranmere-web-api/src/contact-us/
+      CodeUri: src/contact-us/
       Handler: app.handler
       Runtime: nodejs12.x
       Policies:
@@ -121,7 +121,7 @@ Resources:
   PlayerCRUDFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: tranmere-web-api/src/crud/
+      CodeUri: src/crud/
       Handler: app.playerHandler
       Runtime: nodejs12.x
       Events:

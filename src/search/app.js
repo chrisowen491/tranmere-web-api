@@ -45,12 +45,14 @@ exports.handler = async function (event, context) {
     if(manager) {
         var dates = manager.split(',');
         query.body.query.bool.must.push({"range": {"Date":{ "gte": dates[0], "lte": dates[1]} }});
+
     }
 
 
     console.log(JSON.stringify(query));
 
-    var results = await utils.findTranmereMatchesByQuery(query);
+
+    var results = await utils.findTranmereMatchesByQuery(query, date);
 
     if(date)
         results = results[0];

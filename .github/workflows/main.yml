@@ -16,22 +16,22 @@ jobs:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/src/contact-us
+          working-directory: src/contact-us
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/src/crud
+          working-directory: src/crud
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/src/page
+          working-directory: src/page
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/sam/search
+          working-directory: sam/search
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/sam/scraper
+          working-directory: sam/scraper
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: tranmere-web-api/sam/player-builder
+          working-directory: sam/player-builder
       - uses: falnyr/aws-sam-deploy-action@v1.0.0
         env:
           TEMPLATE: 'template.yaml'

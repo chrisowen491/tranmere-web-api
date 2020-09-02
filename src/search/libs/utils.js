@@ -143,19 +143,23 @@ module.exports = function (client) {
             return output;
          },
 
-         buildMatch : async function(match) {
-             match.Opposition = match.home == "Tranmere Rovers" ? match.visitor : match.home;
-             var apps = await this.getAppsByDate(match.Date);
-             match.apps = apps;
-             if(match.venue == "Wembley Stadium") {
-                 match.location = "N";
-             } else if(match.home == "Tranmere Rovers") {
-                 match.location = "H";
-             } else {
-                 match.location = "A";
-             }
+         buildMatch : async function(match, getApps) {
+            match.Opposition = match.home == "Tranmere Rovers" ? match.visitor : match.home;
 
-             if(match.Programme && match.Programme != "#N/A") {
+            if(match.venue == "Wembley Stadium") {
+                match.location = "N";
+            } else if(match.home == "Tranmere Rovers") {
+                match.location = "H";
+            } else {
+                match.location = "A";
+            }
+
+            if(getApps) {
+                var apps = await this.getAppsByDate(match.Date);
+                match.apps = apps;
+            }
+
+            if(match.Programme && match.Programme != "#N/A") {
 
                  var smallBody = {
                       "bucket": 'trfc-programmes',
@@ -302,11 +306,11 @@ module.exports = function (client) {
             return this.findTranmereMatchesByQuery(query);
          },
 
-         findTranmereMatchesByQuery: async function(query) {
+         findTranmereMatchesByQuery: async function(query, getApps) {
              var results = await client.search(query);
              var matches = [];
              for(var i=0; i < results.body.hits.hits.length; i++) {
-                 matches.push(await this.buildMatch(results.body.hits.hits[i]["_source"]));
+                 matches.push(await this.buildMatch(results.body.hits.hits[i]["_source"], getApps));
              }
              return matches;
          },
