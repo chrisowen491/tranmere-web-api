@@ -6,18 +6,21 @@ exports.playerHandler = function(event, context, callback){
     console.log(event, context);
 
     switch (event.httpMethod) {
-		case 'DELETE':
-			deleteItem(event, callback);
-			break;
+		//case 'DELETE':
+		//	deleteItem(event, callback);
+		//	break;
+		//case 'GET':
+		//	getItem(event, callback);
+		//	break;
 		case 'GET':
-			getItem(event, callback);
+			getPlayerByName(event, callback);
 			break;
 		case 'POST':
 			saveItem(event, callback);
 			break;
-		case 'PUT':
-			updateItem(event, callback);
-			break;
+		//case 'PUT':
+		//	updateItem(event, callback);
+		//	break;
 		default:
 			sendResponse(404, `Unsupported method "${event.httpMethod}"`, callback);
 	}
@@ -35,6 +38,22 @@ function saveItem(event, callback) {
 		sendResponse(400, reject, callback);
 	});
 }
+
+function getPlayerByName(event, callback) {
+	const name = event.pathParameters.name;
+
+	databaseManager.getItemByName(name).then(response => {
+		console.log(response);
+		if(response)
+			sendResponse(200, response, callback);
+		else
+		sendResponse(404, "Please pass a valid name", callback);
+
+	},(reject) =>{
+		sendResponse(400, reject, callback);
+	});
+}
+
 
 function getItem(event, callback) {
 	const itemId = event.pathParameters.playerId;

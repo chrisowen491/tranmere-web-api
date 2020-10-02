@@ -159,12 +159,18 @@ Resources:
             Path: /api-player
             Method: POST
             RestApiId: !Ref TranmereWebApiGateway
-        PlayerGetAPI:
+        PlayerGetByNameAPI:
           Type: Api
           Properties:
-            Path: /api-player/{playerId}
-            Method: ANY
+            Path: /api-player/{name}
+            Method: GET
             RestApiId: !Ref TranmereWebApiGateway
+#        PlayerGetAPI:
+#          Type: Api
+#          Properties:
+#            Path: /api-player/{playerId}
+#            Method: ANY
+#            RestApiId: !Ref TranmereWebApiGateway
 
       Policies:
         - Version: '2012-10-17'

@@ -25,6 +25,30 @@ module.exports.saveItem = item => {
 		});
 };
 
+module.exports.getItemBYName = name => {
+
+    var params = {
+        TableName : TABLE_NAME,
+        KeyConditionExpression: "#name = :name",
+        ExpressionAttributeNames:{
+            "#name": "name"
+        },
+        ExpressionAttributeValues: {
+            ":name": name,
+        }
+    };
+
+
+	return dynamo
+		.get(params)
+		.promise()
+		.then((result) => {
+			return result.Item;
+		}, (error) => {
+			return error;
+		});
+};
+
 module.exports.getItem = itemId => {
 	const params = {
 		Key: {
