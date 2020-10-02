@@ -40,7 +40,7 @@ module.exports.getItemBYName = name => {
 
 
 	return dynamo
-		.get(params)
+		.query(params)
 		.promise()
 		.then((result) => {
 			return result.Item;
