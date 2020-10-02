@@ -156,13 +156,13 @@ Resources:
         PlayerPostAPI:
           Type: Api
           Properties:
-            Path: /player
+            Path: /api-player
             Method: POST
             RestApiId: !Ref TranmereWebApiGateway
         PlayerGetAPI:
           Type: Api
           Properties:
-            Path: /player/{playerId}
+            Path: /api-player/{playerId}
             Method: ANY
             RestApiId: !Ref TranmereWebApiGateway
 

@@ -44,7 +44,7 @@ function getItem(event, callback) {
 		if(response)
 			sendResponse(200, response, callback);
 		else
-		sendResponse(404, "Please passa valid playerId", callback);
+		sendResponse(404, "Please pass a valid playerId", callback);
 
 	},(reject) =>{
 		sendResponse(400, reject, callback);
