@@ -182,6 +182,7 @@ Resources:
                 - 'dynamodb:PutItem'
                 - 'dynamodb:UpdateItem'
                 - 'dynamodb:Query'
+                - 'dynamodb:Scan'
               Resource:
                 'Fn::Join':
                   - ''

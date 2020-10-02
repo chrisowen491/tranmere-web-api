@@ -25,14 +25,11 @@ module.exports.saveItem = item => {
 		});
 };
 
-module.exports.getItemBYName = name => {
+module.exports.getItemByName = name => {
 
     var params = {
         TableName : TABLE_NAME,
-        KeyConditionExpression: "#name = :name",
-        ExpressionAttributeNames:{
-            "#name": "name"
-        },
+        FilterExpression: "playerName = :name",
         ExpressionAttributeValues: {
             ":name": name,
         }
