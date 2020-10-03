@@ -172,17 +172,26 @@ Resources:
 #            Method: ANY
 #            RestApiId: !Ref TranmereWebApiGateway
 
+  MediaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/media/
+      Handler: app.mediaHandler
+      Runtime: nodejs12.x
+      Events:
+        GetByCategoryAPI:
+          Type: Api
+          Properties:
+            Path: /api-media/{category}
+            Method: GET
+            RestApiId: !Ref TranmereWebApiGateway
+
       Policies:
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
-                - 'dynamodb:DeleteItem'
-                - 'dynamodb:GetItem'
-                - 'dynamodb:PutItem'
-                - 'dynamodb:UpdateItem'
                 - 'dynamodb:Query'
-                - 'dynamodb:Scan'
               Resource:
                 'Fn::Join':
                   - ''
@@ -190,7 +199,7 @@ Resources:
                     - Ref: 'AWS::Region'
                     - ':'
                     - Ref: 'AWS::AccountId'
-                    - ':table/PlayerTable'
+                    - ':table/MediaTable'
 
 
   PlayerTable:
@@ -203,9 +212,23 @@ Resources:
       KeySchema:
         - AttributeName: playerId
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      BillingMode: PAY_PER_REQUEST
+
+  MediaTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: MediaTable
+      AttributeDefinitions:
+        - AttributeName: category
+          AttributeType: S
+        - AttributeName: mediaId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: category
+          KeyType: HASH
+        - AttributeName: mediaId
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
 
 Outputs:
   ContactUsFunction:

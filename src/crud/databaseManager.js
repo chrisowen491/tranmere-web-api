@@ -31,16 +31,16 @@ module.exports.getItemByName = name => {
         TableName : TABLE_NAME,
         FilterExpression: "playerName = :name",
         ExpressionAttributeValues: {
-            ":name": name,
+            ":name": decodeURIComponent(name),
         }
     };
 
 
 	return dynamo
-		.query(params)
+		.scan(params)
 		.promise()
 		.then((result) => {
-			return result.Item;
+			return result.Items;
 		}, (error) => {
 			return error;
 		});

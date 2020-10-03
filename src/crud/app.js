@@ -41,9 +41,7 @@ function saveItem(event, callback) {
 
 function getPlayerByName(event, callback) {
 	const name = event.pathParameters.name;
-
 	databaseManager.getItemByName(name).then(response => {
-		console.log(response);
 		if(response)
 			sendResponse(200, response, callback);
 		else
@@ -59,7 +57,6 @@ function getItem(event, callback) {
 	const itemId = event.pathParameters.playerId;
 
 	databaseManager.getItem(itemId).then(response => {
-		console.log(response);
 		if(response)
 			sendResponse(200, response, callback);
 		else
@@ -96,7 +93,7 @@ function updateItem(event, callback) {
 function sendResponse(statusCode, message, callback) {
 	const response = {
 		statusCode: statusCode,
-		body: JSON.stringify(message)
+		body: JSON.stringify({message: message})
 	};
 	callback(null, response);
 }
