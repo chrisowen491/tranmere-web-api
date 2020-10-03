@@ -184,7 +184,7 @@ Resources:
             RestApiId: !Ref TranmereWebApiGateway
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref MediaTable
+            TableName: !Ref TranmereWebMediaTable
 
   MediaBucket:
     Type: AWS::S3::Bucket
@@ -206,7 +206,7 @@ Resources:
         - S3ReadPolicy:
             BucketName: TranmereWebMedia
         - DynamoDBCrudPolicy:
-            TableName: !Ref MediaTable
+            TableName: !Ref TranmereWebMediaTable
 
   PlayerTable:
     Type: 'AWS::DynamoDB::Table'
