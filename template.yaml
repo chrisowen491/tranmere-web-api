@@ -188,7 +188,8 @@ Resources:
 
   MediaBucket:
     Type: AWS::S3::Bucket
-    BucketName: TranmereWebMedia
+    Properties:
+      BucketName: TranmereWebMedia
 
   UploadFunction:
     Type: AWS::Serverless::Function
