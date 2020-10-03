@@ -220,10 +220,10 @@ Resources:
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
-  MediaTable:
+  TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: MediaTable
+      TableName: TranmereWebMediaTable
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S

@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 
-const TABLE_NAME = 'MediaTable';
+const TABLE_NAME = 'TranmereWebMediaTable';
 
 exports.mediaHandler = function(event, context, callback){
 
