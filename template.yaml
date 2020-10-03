@@ -186,6 +186,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref MediaTable
 
+  MediaBucket:
+    Type: AWS::S3::Bucket
+
   UploadFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -200,12 +203,9 @@ Resources:
             Events: s3:ObjectCreated:*
       Policies:
         - S3ReadPolicy:
-            - BucketName: !Ref MediaBucket
+            - BucketName: '*'
         - DynamoDBCrudPolicy:
             TableName: !Ref MediaTable
-
-  MediaBucket:
-    Type: AWS::S3::Bucket
 
   PlayerTable:
     Type: 'AWS::DynamoDB::Table'
