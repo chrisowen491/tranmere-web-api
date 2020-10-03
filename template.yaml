@@ -188,7 +188,7 @@ Resources:
 
   MediaBucket:
     Type: AWS::S3::Bucket
-
+    BucketName: TranmereWebMedia
 
   UploadFunction:
     Type: AWS::Serverless::Function
@@ -204,7 +204,7 @@ Resources:
             Events: s3:ObjectCreated:*
       Policies:
         - S3ReadPolicy:
-            BucketName: !Ref MediaBucket
+            BucketName: TranmereWebMedia
         - DynamoDBCrudPolicy:
             TableName: !Ref MediaTable
 
