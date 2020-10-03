@@ -28,9 +28,9 @@ function getMediaByCategory(event, callback) {
 	});
 }
 
-function getMediaByCategoryFromDb(category)
+function getMediaByCategoryFromDb(category) {
 
-    var params = {
+    const params = {
         TableName : TABLE_NAME,
         KeyConditionExpression: "#category = :category",
         ExpressionAttributeNames:{

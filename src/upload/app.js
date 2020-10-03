@@ -1,0 +1,37 @@
+const { v4: uuidv4 } = require('uuid');
+const csv=require('csvtojson');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const docClient = new AWS.DynamoDB.DocumentClient();
+
+exports.handler = (event, context) => {
+   console.log("Incoming Event: ", event);
+   const bucket = event.Records[0].s3.bucket.name;
+   const filename = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
+   const params = { Bucket: bucket, Key: filename };
+   const s3Stream = s3.getObject(params).createReadStream()
+
+    csv().fromStream(s3Stream)
+         .on('data', (row) => {
+            let item = JSON.parse(row);
+            console.log(JSON.stringify(jsonContent));
+            item.id = uuidv4();
+            let paramsToPush = {
+                TableName:item.TableName,
+                item
+            };
+            addData(paramsToPush);
+    });
+
+};
+
+function addData(params) {
+    console.log("Adding a new item based on: ");
+    docClient.put(params, function(err, data) {
+    if (err) {
+        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+        console.log("Added item:", JSON.stringify(params.Item, null, 2));
+        }
+    });
+}

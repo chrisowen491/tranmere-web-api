@@ -165,12 +165,9 @@ Resources:
             Path: /api-player/{name}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
-#        PlayerGetAPI:
-#          Type: Api
-#          Properties:
-#            Path: /api-player/{playerId}
-#            Method: ANY
-#            RestApiId: !Ref TranmereWebApiGateway
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PlayerTable
 
   MediaFunction:
     Type: AWS::Serverless::Function
@@ -185,22 +182,30 @@ Resources:
             Path: /api-media/{category}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
-
       Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - 'dynamodb:Query'
-              Resource:
-                'Fn::Join':
-                  - ''
-                  - - 'arn:aws:dynamodb:'
-                    - Ref: 'AWS::Region'
-                    - ':'
-                    - Ref: 'AWS::AccountId'
-                    - ':table/MediaTable'
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MediaTable
 
+  UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/upload/
+      Handler: app.mediaHandler
+      Runtime: nodejs12.x
+      Events:
+        UploadMediaEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref MediaBucket
+            Events: s3:ObjectCreated:*
+      Policies:
+        - S3ReadPolicy:
+            - BucketName: !Ref MediaBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MediaTable
+
+  MediaBucket:
+    Type: AWS::S3::Bucket
 
   PlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -221,12 +226,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S
-        - AttributeName: mediaId
+        - AttributeName: id
           AttributeType: S
       KeySchema:
         - AttributeName: category
           KeyType: HASH
-        - AttributeName: mediaId
+        - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 

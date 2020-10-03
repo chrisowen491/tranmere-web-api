@@ -34,6 +34,9 @@ jobs:
           working-directory: src/scraper
       - uses: bahmutov/npm-install@v1
         with:
+          working-directory: src/upload
+      - uses: bahmutov/npm-install@v1
+        with:
           working-directory: src/media
       - uses: bahmutov/npm-install@v1
         with:
