@@ -33,26 +33,42 @@ function getEntityByAttribute(event, callback) {
 
 function getEntitiesByCategoryFromDb(category, attribute, entity) {
 
-    const params = {
-        TableName : entity,
-        KeyConditionExpression: "#category = :category",
-        ExpressionAttributeNames:{
-            "#category": decodeURIComponent(category)
-        },
-        ExpressionAttributeValues: {
-            ":category": decodeURIComponent(attribute),
-        }
-    };
+    if(category == "ALL" && attribute == "ALL") {
+        const params = {
+            TableName : entity
+        };
 
 
-	return dynamo
-		.query(params)
-		.promise()
-		.then((result) => {
-			return result.Items;
-		}, (error) => {
-			return error;
-		});
+        return dynamo
+            .scan(params)
+            .promise()
+            .then((result) => {
+                return result.Items;
+            }, (error) => {
+                return error;
+            });
+    } else {
+        const params = {
+            TableName : entity,
+            KeyConditionExpression: "#category = :category",
+            ExpressionAttributeNames:{
+                "#category": decodeURIComponent(category)
+            },
+            ExpressionAttributeValues: {
+                ":category": decodeURIComponent(attribute),
+            }
+        };
+
+
+        return dynamo
+            .query(params)
+            .promise()
+            .then((result) => {
+                return result.Items;
+            }, (error) => {
+                return error;
+            });
+    }
 };
 
 function sendResponse(statusCode, message, callback) {

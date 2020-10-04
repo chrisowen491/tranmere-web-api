@@ -191,6 +191,9 @@ Resources:
             TableName: !Ref TranmereWebPlayerTransfers
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebManagers
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
+
 
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
@@ -220,17 +223,23 @@ Resources:
             TableName: !Ref TranmereWebPlayerTransfers
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebManagers
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
 
-  PlayerTable:
+  TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       TableName: PlayerTable
       AttributeDefinitions:
         - AttributeName: playerId
           AttributeType: S
+        - AttributeName: name
+          AttributeType: S
       KeySchema:
-        - AttributeName: playerId
+        - AttributeName: name
           KeyType: HASH
+        - AttributeName: playerId
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
 
   TranmereWebMediaTable:
@@ -240,12 +249,20 @@ Resources:
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: image
+          AttributeType: S
+        - AttributeName: author
+          AttributeType: S
+        - AttributeName: published
+          AttributeType: N
         - AttributeName: id
           AttributeType: S
       KeySchema:
         - AttributeName: category
           KeyType: HASH
-        - AttributeName: id
+        - AttributeName: published
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
@@ -255,6 +272,12 @@ Resources:
       TableName: TranmereWebPlayerLinks
       AttributeDefinitions:
         - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: link
+          AttributeType: S
+        - AttributeName: type
           AttributeType: S
         - AttributeName: id
           AttributeType: S
@@ -272,6 +295,18 @@ Resources:
       AttributeDefinitions:
         - AttributeName: name
           AttributeType: S
+        - AttributeName: date
+          AttributeType: D
+        - AttributeName: fee
+          AttributeType: S
+        - AttributeName: direction
+          AttributeType: S
+        - AttributeName: partExchange
+          AttributeType: S
+        - AttributeName: club
+          AttributeType: S
+        - AttributeName: type
+          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
@@ -288,12 +323,16 @@ Resources:
       AttributeDefinitions:
         - AttributeName: name
           AttributeType: S
+        - AttributeName: dateLeft
+          AttributeType: D
+        - AttributeName: dateJoined
+          AttributeType: D
         - AttributeName: id
           AttributeType: S
       KeySchema:
         - AttributeName: name
           KeyType: HASH
-        - AttributeName: id
+        - AttributeName: dateJoined
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
