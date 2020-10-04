@@ -258,7 +258,7 @@ Resources:
       KeySchema:
         - AttributeName: category
           KeyType: HASH
-        - AttributeName: published
+        - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
