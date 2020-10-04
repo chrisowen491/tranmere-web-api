@@ -360,7 +360,7 @@ Resources:
       TableName: TranmereWebMatches
       AttributeDefinitions:
         - AttributeName: season
-          AttributeType: N
+          AttributeType: S
         - AttributeName: date
           AttributeType: S
         - AttributeName: competition
@@ -368,7 +368,7 @@ Resources:
         - AttributeName: opposition
           AttributeType: S
         - AttributeName: attendance
-          AttributeType: N
+          AttributeType: S
         - AttributeName: venue
           AttributeType: S
         - AttributeName: pens
