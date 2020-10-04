@@ -367,12 +367,6 @@ Resources:
           AttributeType: S
         - AttributeName: opposition
           AttributeType: S
-        - AttributeName: attendance
-          AttributeType: S
-        - AttributeName: venue
-          AttributeType: S
-        - AttributeName: pens
-          AttributeType: S
       KeySchema:
         - AttributeName: date
           KeyType: HASH
@@ -383,24 +377,6 @@ Resources:
         - IndexName: CompetitionIndex
           KeySchema:
             - AttributeName: competition
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-        - IndexName: AttendanceIndex
-          KeySchema:
-            - AttributeName: attendance
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-        - IndexName: PensIndex
-          KeySchema:
-            - AttributeName: pens
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-        - IndexName: VenueIndex
-          KeySchema:
-            - AttributeName: venue
               KeyType: HASH
           Projection:
             ProjectionType: ALL
