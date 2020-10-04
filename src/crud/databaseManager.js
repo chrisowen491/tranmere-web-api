@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 
-const TABLE_NAME = 'PlayerTable';
+const TABLE_NAME = 'TranmereWebPlayerTable';
 
 module.exports.initializateDynamoClient = newDynamo => {
 	dynamo = newDynamo;

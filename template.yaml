@@ -167,7 +167,7 @@ Resources:
             RestApiId: !Ref TranmereWebApiGateway
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref PlayerTable
+            TableName: !Ref TranmereWebPlayerTable
 
   EntityFunction:
     Type: AWS::Serverless::Function
