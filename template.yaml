@@ -201,6 +201,8 @@ Resources:
             TableName: !Ref TranmereWebStars
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebClubs
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebMatches
 
 
   TranmereWebCSVUploadBucket:
@@ -237,6 +239,8 @@ Resources:
             TableName: !Ref TranmereWebStars
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebClubs
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebMatches
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -349,6 +353,53 @@ Resources:
         - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+
+  TranmereWebMatches:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebMatches
+      AttributeDefinitions:
+        - AttributeName: season
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: season
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: CompetitionIndex
+          KeySchema:
+            - AttributeName: competition
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: AttendanceIndex
+          KeySchema:
+            - AttributeName: attendance
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: PensIndex
+          KeySchema:
+            - AttributeName: pens
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: VenueIndex
+          KeySchema:
+            - AttributeName: venue
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: OppositionIndex
+          KeySchema:
+            - AttributeName: opposition
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
 Outputs:
   ContactUsFunction:

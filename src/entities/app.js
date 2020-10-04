@@ -19,8 +19,9 @@ function getEntityByAttribute(event, callback) {
 	const category = event.pathParameters.category;
 	const attribute = event.pathParameters.attribute;
 	const entity = event.pathParameters.entity;
+	const index = event.queryStringParameters.index;
 
-	getEntitiesByCategoryFromDb(category, attribute, entity).then(response => {
+	getEntitiesByCategoryFromDb(category, attribute, entity,index).then(response => {
 		if(response)
 			sendResponse(200, response, callback);
 		else
@@ -31,7 +32,7 @@ function getEntityByAttribute(event, callback) {
 	});
 }
 
-function getEntitiesByCategoryFromDb(category, attribute, entity) {
+function getEntitiesByCategoryFromDb(category, attribute, entity, index) {
 
     if(category == "ALL" && attribute == "ALL") {
         const params = {
@@ -48,7 +49,8 @@ function getEntitiesByCategoryFromDb(category, attribute, entity) {
                 return error;
             });
     } else {
-        const params = {
+
+        var params = {
             TableName : entity,
             KeyConditionExpression: "#category = :category",
             ExpressionAttributeNames:{
@@ -59,6 +61,8 @@ function getEntitiesByCategoryFromDb(category, attribute, entity) {
             }
         };
 
+        if(index)
+            params.IndexName =  index,
 
         return dynamo
             .query(params)
