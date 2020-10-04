@@ -253,14 +253,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S
-        - AttributeName: name
-          AttributeType: S
-        - AttributeName: image
-          AttributeType: S
-        - AttributeName: author
-          AttributeType: S
-        - AttributeName: published
-          AttributeType: N
         - AttributeName: id
           AttributeType: S
       KeySchema:
@@ -297,18 +289,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: name
           AttributeType: S
-        - AttributeName: date
-          AttributeType: S
-        - AttributeName: fee
-          AttributeType: S
-        - AttributeName: direction
-          AttributeType: S
-        - AttributeName: partExchange
-          AttributeType: S
-        - AttributeName: club
-          AttributeType: S
-        - AttributeName: type
-          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
@@ -325,16 +305,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: name
           AttributeType: S
-        - AttributeName: dateLeft
-          AttributeType: S
-        - AttributeName: dateJoined
-          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
         - AttributeName: name
           KeyType: HASH
-        - AttributeName: dateJoined
+        - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
