@@ -374,7 +374,7 @@ Resources:
   TranmereWebGames:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebGames
+      TableName: TranmereWebMatches
       AttributeDefinitions:
         - AttributeName: season
           AttributeType: S

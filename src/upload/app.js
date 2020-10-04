@@ -17,6 +17,9 @@ exports.mediaHandler = (event, context) => {
          .on('data', (row) => {
             let item = JSON.parse(row);
             console.log(JSON.stringify(item));
+            if(item.attendance) {
+                item.attendance = parseInt(item.attendance);
+            }
             item.id = uuidv4();
             let paramsToPush = {
                 TableName:tableName,

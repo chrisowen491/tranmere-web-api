@@ -27,17 +27,13 @@ exports.entityHandler = function(event, context, callback){
 function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
 
     var params = {
-         TableName : "TranmereWebGames",
+         TableName : "TranmereWebMatches",
          ExpressionAttributeValues: {}
     };
 
     if(season) {
-        params = {
-            KeyConditionExpression: "season = :season",
-            ExpressionAttributeValues: {
-                ":season": decodeURIComponent(season),
-            }
-        };
+        params.KeyConditionExpression =  "season = :season",
+        params.ExpressionAttributeValues[":season"] = decodeURIComponent(season);
     }
 
     if(sort && decodeURIComponent(sort) == "Top Attendance") {
