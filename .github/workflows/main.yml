@@ -40,6 +40,9 @@ jobs:
           working-directory: src/entities
       - uses: bahmutov/npm-install@v1
         with:
+          working-directory: src/results-search
+      - uses: bahmutov/npm-install@v1
+        with:
           working-directory: src/player-builder
       - uses: falnyr/aws-sam-deploy-action@v1.0.0
         env:

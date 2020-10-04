@@ -19,7 +19,7 @@ function getEntityByAttribute(event, callback) {
 	const category = event.pathParameters.category;
 	const attribute = event.pathParameters.attribute;
 	const entity = event.pathParameters.entity;
-	const index = event.queryStringParameters.index;
+	const index = event.queryStringParameters ? event.queryStringParameters.index : null;
 
 	getEntitiesByCategoryFromDb(category, attribute, entity,index).then(response => {
 		if(response)
@@ -62,7 +62,7 @@ function getEntitiesByCategoryFromDb(category, attribute, entity, index) {
         };
 
         if(index)
-            params.IndexName =  index,
+            params.IndexName =  index
 
         return dynamo
             .query(params)
