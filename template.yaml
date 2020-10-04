@@ -357,7 +357,7 @@ Resources:
   TranmereWebGames:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebGames
+      TableName: TranmereWebMatches
       AttributeDefinitions:
         - AttributeName: season
           AttributeType: S
@@ -378,12 +378,16 @@ Resources:
           KeySchema:
             - AttributeName: competition
               KeyType: HASH
+            - AttributeName: date
+              KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
         - IndexName: OppositionIndex
           KeySchema:
             - AttributeName: opposition
               KeyType: HASH
+            - AttributeName: date
+              KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
 
