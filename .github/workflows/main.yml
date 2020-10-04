@@ -37,7 +37,7 @@ jobs:
           working-directory: src/upload
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: src/media
+          working-directory: src/entities
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: src/player-builder
