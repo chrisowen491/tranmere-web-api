@@ -4,40 +4,43 @@ let dynamo = new AWS.DynamoDB.DocumentClient();
 
 const TABLE_NAME = 'TranmereWebMediaTable';
 
-exports.mediaHandler = function(event, context, callback){
+exports.entityHandler = function(event, context, callback){
 
     switch (event.httpMethod) {
 		case 'GET':
-			getMediaByCategory(event, callback);
+			getEntityByAttribute(event, callback);
 			break;
 		default:
 			sendResponse(404, `Unsupported method "${event.httpMethod}"`, callback);
 	}
 };
 
-function getMediaByCategory(event, callback) {
+function getEntityByAttribute(event, callback) {
 	const category = event.pathParameters.category;
-	getMediaByCategoryFromDb(category).then(response => {
+	const attribute = event.pathParameters.attribute;
+	const entity = event.pathParameters.entity;
+
+	getEntitiesByCategoryFromDb(category, attribute, entity).then(response => {
 		if(response)
 			sendResponse(200, response, callback);
 		else
-		sendResponse(404, "Please pass a valid category", callback);
+		sendResponse(404, "No entities found", callback);
 
 	},(reject) =>{
 		sendResponse(400, reject, callback);
 	});
 }
 
-function getMediaByCategoryFromDb(category) {
+function getEntitiesByCategoryFromDb(category, attribute, entity) {
 
     const params = {
-        TableName : TABLE_NAME,
+        TableName : entity,
         KeyConditionExpression: "#category = :category",
         ExpressionAttributeNames:{
-            "#category": "category"
+            "#category": decodeURIComponent(category)
         },
         ExpressionAttributeValues: {
-            ":category": decodeURIComponent(category),
+            ":category": decodeURIComponent(attribute),
         }
     };
 

@@ -10,7 +10,8 @@ exports.mediaHandler = (event, context) => {
    const filename = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
    const params = { Bucket: bucket, Key: filename };
    console.log(params);
-   const s3Stream = s3.getObject(params).createReadStream()
+   const s3Stream = s3.getObject(params).createReadStream();
+   const tableName = filename.replace(".csv", "");
 
     csv().fromStream(s3Stream)
          .on('data', (row) => {
@@ -18,8 +19,8 @@ exports.mediaHandler = (event, context) => {
             console.log(JSON.stringify(item));
             item.id = uuidv4();
             let paramsToPush = {
-                TableName:item.TableName,
-                item
+                TableName:tableName,
+                Item: item
             };
             addData(paramsToPush);
     });

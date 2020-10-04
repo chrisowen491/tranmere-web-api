@@ -169,27 +169,33 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref PlayerTable
 
-  MediaFunction:
+  EntityFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/media/
-      Handler: app.mediaHandler
+      CodeUri: src/entities/
+      Handler: app.entityHandler
       Runtime: nodejs12.x
       Events:
-        GetByCategoryAPI:
+        GetEntitiesByCategoryAPI:
           Type: Api
           Properties:
-            Path: /api-media/{category}
+            Path: /entities/{entity}/{category}/{attribute}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebMediaTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerLinks
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTransfers
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebManagers
 
-  MediaBucket:
+  TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: tranmere-web-media
+      BucketName: tranmere-web-csv-uploads
 
   UploadFunction:
     Type: AWS::Serverless::Function
@@ -201,13 +207,19 @@ Resources:
         UploadMediaEvent:
           Type: S3
           Properties:
-            Bucket: !Ref MediaBucket
+            Bucket: !Ref TranmereWebCSVUploadBucket
             Events: s3:ObjectCreated:*
       Policies:
         - S3ReadPolicy:
-            BucketName: tranmere-web-media
+            BucketName: tranmere-web-csv-uploads
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebMediaTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerLinks
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTransfers
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebManagers
 
   PlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -232,6 +244,54 @@ Resources:
           AttributeType: S
       KeySchema:
         - AttributeName: category
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
+  TranmereWebPlayerLinks:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebPlayerLinks
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
+  TranmereWebPlayerTransfers:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebPlayerTransfers
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
+  TranmereWebManagers:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebManagers
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
           KeyType: HASH
         - AttributeName: id
           KeyType: "RANGE"
