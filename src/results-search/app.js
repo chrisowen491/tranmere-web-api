@@ -2,20 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 
-const TABLE_NAME = 'TranmereWebMediaTable';
-
 exports.entityHandler = function(event, context, callback){
 
-    switch (event.httpMethod) {
-		case 'GET':
-			getResults(event, callback);
-			break;
-		default:
-			sendResponse(404, `Unsupported method "${event.httpMethod}"`, callback);
-	}
-};
-
-function getResults(event, callback) {
     var season = event.queryStringParameters.season;
     var competition = event.queryStringParameters.competition;
     var opposition = event.queryStringParameters.opposition;
@@ -25,7 +13,7 @@ function getResults(event, callback) {
     var pens = event.queryStringParameters.pens;
     var sort = event.queryStringParameters.sort;
 
-	getResultsFromDb(season, competition, opposition, date, manager, venue, pens, sort).then(response => {
+	getResults(season, competition, opposition, date, manager, venue, pens, sort).then(response => {
 		if(response)
 			sendResponse(200, response, callback);
 		else
@@ -36,32 +24,47 @@ function getResults(event, callback) {
 	});
 }
 
-function getResultsFromDb(season, competition, opposition, date, manager, venue, pens, sort) {
+function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
+
+    var params = {
+         TableName : "TranmereWebGames",
+         ExpressionAttributeValues: {}
+    };
 
     if(season) {
-        var params = {
-            TableName : "TranmereWebMatches",
+        params = {
             KeyConditionExpression: "season = :season",
-            ExpressionAttributeNames:{
-                "#season": "season"
-            },
             ExpressionAttributeValues: {
                 ":season": decodeURIComponent(season),
             }
         };
+    }
 
-        if(competition) {
-            params.FilterExpression = params.FilterExpression ? "#competition = :competition" : " and #competition = :competition";
-            params.ExpressionAttributeNames["#competition"] = "competition";
-            params.ExpressionAttributeNames[":competition"] = decodeURIComponent(competition);
-        }
+    if(sort && decodeURIComponent(sort) == "Top Attendance") {
+        params.IndexName = "AttendanceIndex";
+    }
 
-        if(opposition) {
-            params.FilterExpression = params.FilterExpression ? "#opposition = :opposition" : " and #opposition = :opposition";
-            params.ExpressionAttributeNames["#opposition"] = "opposition";
-            params.ExpressionAttributeNames[":opposition"] = decodeURIComponent(opposition);
-        }
+    if(competition) {
+        params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
+        params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
+    }
 
+    if(opposition) {
+        params.FilterExpression = params.FilterExpression ? " and opposition = :opposition" : "opposition = :opposition";
+        params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
+    }
+
+    if(venue) {
+        params.FilterExpression = params.FilterExpression ? " and venue = :venue" : "venue = :venue";
+        params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
+    }
+
+    if(pens) {
+        params.FilterExpression = params.FilterExpression ? " and pens <> :pens" : "pens <> :pens";
+        params.ExpressionAttributeValues[":pens"] = "";
+    }
+
+    if(season) {
         return dynamo
             .query(params)
             .promise()
@@ -71,10 +74,6 @@ function getResultsFromDb(season, competition, opposition, date, manager, venue,
                 return error;
             });
     } else {
-        const params = {
-            TableName : "TranmereWebMatches"
-        };
-
         return dynamo
             .scan(params)
             .promise()
