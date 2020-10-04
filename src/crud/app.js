@@ -29,11 +29,11 @@ exports.playerHandler = function(event, context, callback){
 function saveItem(event, callback) {
 	const item = JSON.parse(event.body);
 
-	item.playerId = uuidv4();
+	item.id = uuidv4();
 
 	databaseManager.saveItem(item).then(response => {
 		console.log(response);
-		sendResponse(200, item.playerId, callback);
+		sendResponse(200, item.id, callback);
 	}, (reject) =>{
 		sendResponse(400, reject, callback);
 	});

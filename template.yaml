@@ -235,14 +235,14 @@ Resources:
     Properties:
       TableName: PlayerTable
       AttributeDefinitions:
-        - AttributeName: playerId
+        - AttributeName: id
           AttributeType: S
         - AttributeName: name
           AttributeType: S
       KeySchema:
         - AttributeName: name
           KeyType: HASH
-        - AttributeName: playerId
+        - AttributeName: id
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
 
@@ -298,7 +298,7 @@ Resources:
         - AttributeName: name
           AttributeType: S
         - AttributeName: date
-          AttributeType: D
+          AttributeType: S
         - AttributeName: fee
           AttributeType: S
         - AttributeName: direction
@@ -326,9 +326,9 @@ Resources:
         - AttributeName: name
           AttributeType: S
         - AttributeName: dateLeft
-          AttributeType: D
+          AttributeType: S
         - AttributeName: dateJoined
-          AttributeType: D
+          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
