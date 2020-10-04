@@ -197,6 +197,10 @@ Resources:
             TableName: !Ref TranmereWebManagers
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebStars
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebClubs
 
 
   TranmereWebCSVUploadBucket:
@@ -229,6 +233,10 @@ Resources:
             TableName: !Ref TranmereWebManagers
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebStars
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebClubs
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -298,6 +306,38 @@ Resources:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       TableName: TranmereWebManagers
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
+  TranmereWebClubs:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebClubs
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
+  TranmereWebStars:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebStars
       AttributeDefinitions:
         - AttributeName: name
           AttributeType: S

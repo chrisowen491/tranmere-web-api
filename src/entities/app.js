@@ -74,7 +74,8 @@ function getEntitiesByCategoryFromDb(category, attribute, entity) {
 function sendResponse(statusCode, message, callback) {
 	const response = {
 		statusCode: statusCode,
-		body: JSON.stringify({message: message})
+		body: JSON.stringify({message: message}),
+		headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
 	};
 	callback(null, response);
 }
