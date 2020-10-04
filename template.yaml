@@ -233,7 +233,7 @@ Resources:
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: PlayerTable
+      TableName: TranmereWebPlayerTable
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
