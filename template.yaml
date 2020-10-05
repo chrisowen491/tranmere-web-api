@@ -374,14 +374,14 @@ Resources:
   TranmereWebGames:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebMatches
+      TableName: TranmereWebGames
       AttributeDefinitions:
         - AttributeName: season
           AttributeType: S
         - AttributeName: date
           AttributeType: S
         - AttributeName: attendance
-          AttributeType: S
+          AttributeType: N
       KeySchema:
         - AttributeName: season
           KeyType: HASH

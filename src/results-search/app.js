@@ -27,7 +27,7 @@ exports.entityHandler = function(event, context, callback){
 function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
 
     var params = {
-         TableName : "TranmereWebMatches",
+         TableName : "TranmereWebGames",
          ExpressionAttributeValues: {}
     };
 
@@ -38,6 +38,7 @@ function getResults(season, competition, opposition, date, manager, venue, pens,
 
     if(sort && decodeURIComponent(sort) == "Top Attendance") {
         params.IndexName = "AttendanceIndex";
+        params.ScanIndexForward = false;
     }
 
     if(competition) {
