@@ -418,7 +418,7 @@ Resources:
           AttributeType: S
         - AttributeName: Date
           AttributeType: S
-        - AttributeName: Deason
+        - AttributeName: Season
           AttributeType: S
       KeySchema:
         - AttributeName: Name
