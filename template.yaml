@@ -189,6 +189,10 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebGames
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
 
   EntityFunction:
     Type: AWS::Serverless::Function
@@ -220,7 +224,10 @@ Resources:
             TableName: !Ref TranmereWebClubs
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebGames
-
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
 
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
@@ -258,6 +265,10 @@ Resources:
             TableName: !Ref TranmereWebClubs
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebGames
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -394,6 +405,60 @@ Resources:
             - AttributeName: season
               KeyType: HASH
             - AttributeName: attendance
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+
+  TranmereWebApps:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebApps
+      AttributeDefinitions:
+        - AttributeName: Name
+          AttributeType: S
+        - AttributeName: Date
+          AttributeType: S
+        - AttributeName: Deason
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: Date
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: SeasonIndex
+          KeySchema:
+            - AttributeName: Season
+              KeyType: HASH
+            - AttributeName: Date
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+
+  TranmereWebGoals:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebGoals
+      AttributeDefinitions:
+        - AttributeName: Scorer
+          AttributeType: S
+        - AttributeName: Date
+          AttributeType: S
+        - AttributeName: Season
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Scorer
+          KeyType: HASH
+        - AttributeName: Date
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: SeasonIndex
+          KeySchema:
+            - AttributeName: Season
+              KeyType: HASH
+            - AttributeName: Date
               KeyType: "RANGE"
           Projection:
             ProjectionType: ALL

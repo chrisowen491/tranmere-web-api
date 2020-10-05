@@ -11,7 +11,13 @@ exports.mediaHandler = (event, context) => {
    const params = { Bucket: bucket, Key: filename };
    console.log(params);
    const s3Stream = s3.getObject(params).createReadStream();
-   const tableName = filename.replace(".csv", "");
+   var tableName = filename.replace(".csv", "");
+
+   if(tableName.indexOf('apps/') > -1) {
+    tableName = "TranmereWebApps"
+   } else if(tableName.indexOf('goals/') > -1) {
+    tableName = "TranmereWebGoals"
+   }
 
     csv().fromStream(s3Stream)
          .on('data', (row) => {

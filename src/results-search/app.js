@@ -27,9 +27,12 @@ exports.entityHandler = function(event, context, callback){
 function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
 
     var params = {
-         TableName : "TranmereWebGames",
-         ExpressionAttributeValues: {}
+         TableName : "TranmereWebGames"
     };
+
+    if(season || competition || opposition || venue || pens) {
+        params.ExpressionAttributeValues = {};
+    }
 
     if(season) {
         params.KeyConditionExpression =  "season = :season",
@@ -44,6 +47,18 @@ function getResults(season, competition, opposition, date, manager, venue, pens,
     if(competition) {
         params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
         params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
+    }
+
+    if(manager) {
+        var dates = manager.split(',');
+        params.FilterExpression = params.FilterExpression ? " and date > :from and date < :to" : "date > :from and date < :to";
+        params.ExpressionAttributeValues[":from"] = decodeURIComponent(dates[0]);
+        params.ExpressionAttributeValues[":to"] = decodeURIComponent(dates[1]);
+    }
+
+    if(date) {
+        params.FilterExpression = params.FilterExpression ? " and date = :date" : "date = :date";
+        params.ExpressionAttributeValues[":date"] = decodeURIComponent(date);
     }
 
     if(opposition) {
