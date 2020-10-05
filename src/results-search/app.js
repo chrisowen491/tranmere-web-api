@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 
-exports.entityHandler = function(event, context, callback){
+exports.entityHandler = async function(event, context){
 
     var season = event.queryStringParameters.season;
     var competition = event.queryStringParameters.competition;
@@ -13,60 +13,122 @@ exports.entityHandler = function(event, context, callback){
     var pens = event.queryStringParameters.pens;
     var sort = event.queryStringParameters.sort;
 
-	getResults(season, competition, opposition, date, manager, venue, pens, sort).then(response => {
-		if(response)
-			sendResponse(200, response, callback);
-		else
-		sendResponse(404, "No entities found", callback);
+    var data = await getResults(season, competition, opposition, date, manager, venue, pens, sort);
+    var results = [];
+    for(var i=0; i < data.length; i++) {
+        var match = data[i];
+        if(match.venue == "Wembley Stadium") {
+            match.location = "N";
+        } else if(match.home == "Tranmere Rovers") {
+            match.location = "H";
+        } else {
+            match.location = "A";
+        }
+        if(match.programme && match.programme != "#N/A") {
 
-	},(reject) =>{
-		sendResponse(400, reject, callback);
-	});
+             var smallBody = {
+                  "bucket": 'trfc-programmes',
+                  "key": match.programme,
+                  "edits": {
+                    "resize": {
+                      "width": 100,
+                      "fit": "contain"
+                    }
+                  }
+                };
+                 var largeBody = {
+                      "bucket": 'trfc-programmes',
+                      "key": match.programme,
+                    };
+             match.programme = Buffer.from(JSON.stringify(smallBody)).toString('base64');
+             match.largeProgramme = Buffer.from(JSON.stringify(largeBody)).toString('base64');
+        } else {
+            delete match.programme;
+        }
+        if(date) {
+            match.goals = await getGoals(date, match.season);
+            match.apps = await getApps(date, match.season);
+        }
+        results.push(match)
+    }
+
+    if(date && results.length == 1)
+        return sendResponse(200, results[0]);
+    else
+        return sendResponse(200, results);
+
 }
 
-function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
+async function getResults(season, competition, opposition, date, manager, venue, pens, sort) {
 
+    var query = false;
     var params = {
-         TableName : "TranmereWebGames"
+         TableName : "TranmereWebMatches"
     };
 
-    if(season || competition || opposition || venue || pens) {
+    if(season || competition || opposition || venue || pens || date || manager) {
         params.ExpressionAttributeValues = {};
     }
 
     if(season) {
         params.KeyConditionExpression =  "season = :season",
         params.ExpressionAttributeValues[":season"] = decodeURIComponent(season);
-    }
-
-    if(sort && decodeURIComponent(sort) == "Top Attendance") {
+        query = true;
+    } else if(opposition) {
+        params.IndexName = "OppositionIndex";
+        params.KeyConditionExpression =  "opposition = :opposition",
+        params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
+        query = true;
+    } else if(competition) {
+        params.IndexName = "CompetitionAttendance";
+        params.KeyConditionExpression =  "competition = :competition",
+        params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
+        query = true;
+    } else if(venue) {
+        params.IndexName = "VenueIndex";
+        params.KeyConditionExpression =  "venue = :venue",
+        params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
+        query = true;
+    } else if(sort && decodeURIComponent(sort) == "Top Attendance") {
         params.IndexName = "AttendanceIndex";
         params.ScanIndexForward = false;
     }
 
-    if(competition) {
-        params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
-        params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
-    }
-
     if(manager) {
         var dates = manager.split(',');
-        params.FilterExpression = params.FilterExpression ? " and date > :from and date < :to" : "date > :from and date < :to";
+        if(query) {
+            params.KeyConditionExpression =  params.KeyConditionExpression + " and #date BETWEEN :from and :to";
+        } else {
+            params.FilterExpression = "#date BETWEEN :from and :to";
+        }
+        params.ExpressionAttributeNames = {};
+        params.ExpressionAttributeNames["#date"] = "date";
         params.ExpressionAttributeValues[":from"] = decodeURIComponent(dates[0]);
         params.ExpressionAttributeValues[":to"] = decodeURIComponent(dates[1]);
     }
 
     if(date) {
-        params.FilterExpression = params.FilterExpression ? " and date = :date" : "date = :date";
+        if(query) {
+            params.KeyConditionExpression =  " and #date = :date";
+        } else {
+            params.FilterExpression = params.FilterExpression ? " and #date = :date" : "#date = :date";
+        }
+        params.ExpressionAttributeNames = {};
+        params.ExpressionAttributeNames["#date"] = "date";
         params.ExpressionAttributeValues[":date"] = decodeURIComponent(date);
     }
 
-    if(opposition) {
+    if(!season && opposition) {
         params.FilterExpression = params.FilterExpression ? " and opposition = :opposition" : "opposition = :opposition";
         params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
     }
 
-    if(venue) {
+    if(!season && competition) {
+        params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
+        params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
+    }
+
+    if(!season && venue) {
         params.FilterExpression = params.FilterExpression ? " and venue = :venue" : "venue = :venue";
         params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
     }
@@ -76,32 +138,60 @@ function getResults(season, competition, opposition, date, manager, venue, pens,
         params.ExpressionAttributeValues[":pens"] = "";
     }
 
-    if(season) {
-        return dynamo
-            .query(params)
-            .promise()
-            .then((result) => {
-                return result.Items;
-            }, (error) => {
-                return error;
-            });
+    if(query) {
+        var result = await dynamo.query(params).promise();
+        return result.Items;
     } else {
-        return dynamo
-            .scan(params)
-            .promise()
-            .then((result) => {
-                return result.Items;
-            }, (error) => {
-                return error;
-            });
+        var result = await dynamo.scan(params).promise();
+        return result.Items;
     }
 };
 
-function sendResponse(statusCode, message, callback) {
+async function getGoals(date, season) {
+
+    var params = {
+        TableName : "TranmereWebGoals",
+        KeyConditionExpression :  "Season = :season and #Date = :date",
+        IndexName : "SeasonIndex",
+        ExpressionAttributeNames : {
+            "#Date" : "Date"
+        },
+        ExpressionAttributeValues: {
+            ":date" : decodeURIComponent(date),
+            ":season" : decodeURIComponent(season)
+        }
+    }
+
+    var result = await dynamo.query(params).promise();
+
+    return result.Items;
+};
+
+async function getApps(date, season) {
+
+    var params = {
+        TableName : "TranmereWebApps",
+        KeyConditionExpression :  "Season = :season and #Date = :date",
+        IndexName : "SeasonIndex",
+        ExpressionAttributeNames : {
+            "#Date" : "Date"
+        },
+        ExpressionAttributeValues: {
+            ":date" : decodeURIComponent(date),
+            ":season" : decodeURIComponent(season)
+        }
+    }
+
+    var result = await dynamo.query(params).promise();
+
+    return result.Items;
+};
+
+function sendResponse(statusCode, message) {
 	const response = {
 		statusCode: statusCode,
-		body: JSON.stringify({message: message}),
+		body: JSON.stringify(message),
 		headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
 	};
-	callback(null, response);
+	return response;
 }
