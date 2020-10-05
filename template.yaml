@@ -391,6 +391,12 @@ Resources:
           AttributeType: S
         - AttributeName: date
           AttributeType: S
+        - AttributeName: competition
+          AttributeType: S
+        - AttributeName: venue
+          AttributeType: S
+        - AttributeName: opposition
+          AttributeType: S
         - AttributeName: attendance
           AttributeType: N
       KeySchema:
