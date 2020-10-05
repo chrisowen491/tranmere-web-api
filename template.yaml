@@ -421,7 +421,7 @@ Resources:
         - AttributeName: Deason
           AttributeType: S
       KeySchema:
-        - AttributeName: name
+        - AttributeName: Name
           KeyType: HASH
         - AttributeName: Date
           KeyType: "RANGE"
