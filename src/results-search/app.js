@@ -52,6 +52,21 @@ exports.entityHandler = async function(event, context){
         results.push(match)
     }
 
+     if(sort && (decodeURIComponent(sort) == "Top Attendance")) {
+        results.sort(function(a, b) {
+          if (a.attendance < b.attendance) return 1
+          if (a.attendance > b.attendance) return -1
+          return 0
+        });
+    } else {
+        results.sort(function(a, b) {
+          if (a.date < b.date) return -1
+          if (a.date > b.date) return 1
+          return 0
+        });
+    }
+
+
     if(date && results.length == 1)
         return sendResponse(200, results[0]);
     else
@@ -63,7 +78,7 @@ async function getResults(season, competition, opposition, date, manager, venue,
 
     var query = false;
     var params = {
-         TableName : "TranmereWebMatches"
+         TableName : "TranmereWebGames"
     };
 
     if(season || competition || opposition || venue || pens || date || manager) {
@@ -80,7 +95,7 @@ async function getResults(season, competition, opposition, date, manager, venue,
         params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
         query = true;
     } else if(competition) {
-        params.IndexName = "CompetitionAttendance";
+        params.IndexName = "CompetitionIndex";
         params.KeyConditionExpression =  "competition = :competition",
         params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
         query = true;
@@ -89,9 +104,13 @@ async function getResults(season, competition, opposition, date, manager, venue,
         params.KeyConditionExpression =  "venue = :venue",
         params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
         query = true;
-    } else if(sort && decodeURIComponent(sort) == "Top Attendance") {
+    } else if(sort && (decodeURIComponent(sort) == "Top Attendance")) {
         params.IndexName = "AttendanceIndex";
+        params.KeyConditionExpression =  "static = :static",
+        params.ExpressionAttributeValues[":static"] = "static";
         params.ScanIndexForward = false;
+        params.limit = 20;
+        query = true;
     }
 
     if(manager) {
@@ -118,17 +137,17 @@ async function getResults(season, competition, opposition, date, manager, venue,
         params.ExpressionAttributeValues[":date"] = decodeURIComponent(date);
     }
 
-    if(!season && opposition) {
+    if(season && opposition) {
         params.FilterExpression = params.FilterExpression ? " and opposition = :opposition" : "opposition = :opposition";
         params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
     }
 
-    if(!season && competition) {
+    if(season && competition) {
         params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
         params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
     }
 
-    if(!season && venue) {
+    if(season && venue) {
         params.FilterExpression = params.FilterExpression ? " and venue = :venue" : "venue = :venue";
         params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
     }

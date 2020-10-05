@@ -385,7 +385,7 @@ Resources:
   TranmereWebGames:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebMatches
+      TableName: TranmereWebGames
       AttributeDefinitions:
         - AttributeName: season
           AttributeType: S
@@ -396,6 +396,8 @@ Resources:
         - AttributeName: venue
           AttributeType: S
         - AttributeName: opposition
+          AttributeType: S
+        - AttributeName: static
           AttributeType: S
         - AttributeName: attendance
           AttributeType: N
@@ -408,7 +410,7 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: AttendanceIndex
           KeySchema:
-            - AttributeName: season
+            - AttributeName: static
               KeyType: HASH
             - AttributeName: attendance
               KeyType: "RANGE"
