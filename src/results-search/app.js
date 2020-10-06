@@ -138,7 +138,7 @@ async function getResults(season, competition, opposition, date, manager, venue,
 
     if(date) {
         if(query) {
-            params.KeyConditionExpression =  " and #date = :date";
+            params.KeyConditionExpression =  params.KeyConditionExpression + " and #date = :date";
         } else {
             params.FilterExpression = params.FilterExpression ? " and #date = :date" : "#date = :date";
         }

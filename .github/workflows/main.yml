@@ -25,9 +25,6 @@ jobs:
           working-directory: src/page
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: src/search
-      - uses: bahmutov/npm-install@v1
-        with:
           working-directory: src/player-search
       - uses: bahmutov/npm-install@v1
         with:

@@ -1,24 +1,6 @@
 module.exports = function (client) {
     return {
 
-         findAllPlayers : async function(size) {
-            var playersQuery = {
-                index: "players",
-                body: {
-                    "sort": ["Name"],
-                    "size": size,
-                }
-            };
-            var results = await client.search(playersQuery);
-            var players = [];
-            for(var i=0; i < results.body.hits.hits.length; i++) {
-                var player = results.body.hits.hits[i]["_source"];
-                player.Id = results.body.hits.hits[i]["_id"]
-                players.push(player)
-            }
-            return players;
-         },
-
          getTopPlayerBySubs : async function(size, season) {
             var query = {
                 index: "apps",

@@ -1,3 +1,5 @@
+const AWS = require('aws-sdk');
+let dynamo = new AWS.DynamoDB.DocumentClient();
 const { Client } = require('@elastic/elasticsearch')
 const client = new Client({
     cloud: {
@@ -16,7 +18,9 @@ exports.handler = async function (event, context) {
     var season = event.queryStringParameters.season;
     var sort = event.queryStringParameters.sort;
 
-    var results = await utils.findAllPlayers(600);
+    var result = await dynamo.scan({TableName:"TranmereWebPlayerTable"}).promise();
+    var results = result.Items;
+
     var apps = await utils.getTopPlayerByAppearances(600, season);
     var starts = await utils.getTopPlayerByStarts(600, season);
     var subs = await utils.getTopPlayerBySubs(600, season);

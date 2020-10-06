@@ -62,25 +62,9 @@ Resources:
             Path: /player-search
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
-
-  SearchFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: src/search/
-      Handler: app.handler
-      Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ES_CLUSTER: !Ref 'ESCluster'
-          ES_USER: !Ref 'ESUser'
-          ES_PASSWORD: !Ref 'ESPassword'
-      Events:
-        PageRequest:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /search
-            RestApiId: !Ref TranmereWebApiGateway
-            Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
 
   PageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
