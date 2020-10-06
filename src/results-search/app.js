@@ -1,6 +1,16 @@
 const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
+const { Client } = require('@elastic/elasticsearch')
+const client = new Client({
+    cloud: {
+        id: process.env.ES_CLUSTER,
+      },
+      auth: {
+        username: process.env.ES_USER,
+        password: process.env.ES_PASSWORD
+      }
+});
 
 exports.entityHandler = async function(event, context){
 
@@ -46,8 +56,8 @@ exports.entityHandler = async function(event, context){
             delete match.programme;
         }
         if(date) {
-            match.goals = await getGoals(date, match.season);
-            match.apps = await getApps(date, match.season);
+            match.goals = await getGoalsByDate(date, match.season);
+            match.apps = await getAppsByDate(date, match.season);
         }
         results.push(match)
     }
@@ -214,3 +224,60 @@ function sendResponse(statusCode, message) {
 	};
 	return response;
 }
+
+async function getAppsByDate(date, season) {
+      var query = {
+        index: "apps",
+        body: {
+           "sort": ["Number"],
+           "size": 20,
+           "query": {
+             "bool": {
+                "must": [
+                  {
+                    "match": {
+                     "Date" : date
+                    }
+                  }
+                ]
+              }
+           }
+        }
+      };
+
+     var results = await client.search(query);
+     var apps = [];
+     for(var i=0; i < results.body.hits.hits.length; i++) {
+        var app = results.body.hits.hits[i]["_source"];
+        apps.push(app)
+     }
+     return apps;
+};
+
+async function getGoalsByDate(date, season) {
+       var query = {
+         index: "goals",
+         body: {
+            "size": 20,
+            "query": {
+              "bool": {
+                 "must": [
+                   {
+                     "match": {
+                      "Date" : date
+                     }
+                   }
+                 ]
+               }
+            }
+         }
+       };
+
+      var results = await client.search(query);
+      var goals = [];
+      for(var i=0; i < results.body.hits.hits.length; i++) {
+         var goal = results.body.hits.hits[i]["_source"];
+         goals.push(goal)
+      }
+      return goals;
+  }

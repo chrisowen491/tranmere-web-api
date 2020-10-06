@@ -179,6 +179,11 @@ Resources:
       CodeUri: src/results-search/
       Handler: app.entityHandler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          ES_CLUSTER: !Ref 'ESCluster'
+          ES_USER: !Ref 'ESUser'
+          ES_PASSWORD: !Ref 'ESPassword'
       Events:
         GetResults:
           Type: Api
@@ -228,6 +233,9 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebCompetitions
+
 
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
@@ -269,6 +277,8 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebCompetitions
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -365,6 +375,23 @@ Resources:
         - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+
+  TranmereWebCompetitions:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebCompetitions
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+
 
   TranmereWebStars:
     Type: 'AWS::DynamoDB::Table'
