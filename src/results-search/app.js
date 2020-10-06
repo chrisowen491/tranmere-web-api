@@ -116,10 +116,13 @@ async function getResults(season, competition, opposition, date, manager, venue,
         query = true;
     } else if(sort && (decodeURIComponent(sort) == "Top Attendance")) {
         params.IndexName = "AttendanceIndex";
-        params.KeyConditionExpression =  "static = :static",
+        params.ExpressionAttributeNames = {};
+        params.ExpressionAttributeValues = {};
+        params.KeyConditionExpression =  "#static = :static",
         params.ExpressionAttributeValues[":static"] = "static";
+        params.ExpressionAttributeNames["#static"] = "static";
         params.ScanIndexForward = false;
-        params.limit = 20;
+        params.Limit = 20;
         query = true;
     }
 
