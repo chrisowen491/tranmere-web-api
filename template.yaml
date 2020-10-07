@@ -181,6 +181,11 @@ Resources:
       CodeUri: src/updateJob/
       Handler: app.handler
       Runtime: nodejs12.x
+      Events:
+        Daily:
+          Type: Schedule
+          Properties:
+            Schedule: cron(5 17 * * ? *)
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
