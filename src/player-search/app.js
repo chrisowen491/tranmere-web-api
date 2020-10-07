@@ -9,12 +9,11 @@ exports.handler = async function (event, context) {
     var sort = event.queryStringParameters.sort;
     var player = event.queryStringParameters.player
 
-    var query = {
-        TableName:TABLE_NAME
-    };
+    var query = {};
 
     if(player) {
         query = {
+            TableName:TABLE_NAME,
             IndexName: "ByPlayerIndex",
             KeyConditionExpression :  "Player = :player",
             ExpressionAttributeValues: {
@@ -26,6 +25,7 @@ exports.handler = async function (event, context) {
             season = "TOTAL";
 
         query = {
+           TableName:TABLE_NAME,
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
                 ":season" : season

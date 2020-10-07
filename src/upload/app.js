@@ -14,9 +14,9 @@ exports.mediaHandler = (event, context) => {
    var tableName = filename.replace(".csv", "");
 
    if(tableName.indexOf('apps/') > -1) {
-    tableName = "TranmereWebApps"
+    tableName = "TranmereWebAppsTable"
    } else if(tableName.indexOf('goals/') > -1) {
-    tableName = "TranmereWebGoals"
+    tableName = "TranmereWebGoalsTable"
    }
 
     csv().fromStream(s3Stream)

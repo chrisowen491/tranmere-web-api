@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "TranmereWebPlayerSeasonSummary";
+const TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 
 exports.handler = async function (event, context) {
    console.log('Received event:', event);
@@ -17,16 +17,14 @@ exports.handler = async function (event, context) {
     for(var i = 1984; i <2021; i++) {
         var playerHash = {};
         var appsQuery = {
-            TableName:"TranmereWebApps",
-            IndexName: "SeasonIndex",
+            TableName:"TranmereWebAppsTable",
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
                 ":season" : i.toString()
             }
         };
         var goalsQuery = {
-            TableName:"TranmereWebGoals",
-            IndexName: "SeasonIndex",
+            TableName:"TranmereWebGoalsTable",
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
                 ":season" : i.toString()

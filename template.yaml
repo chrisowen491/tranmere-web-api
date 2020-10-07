@@ -160,11 +160,6 @@ Resources:
       CodeUri: src/results-search/
       Handler: app.entityHandler
       Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ES_CLUSTER: !Ref 'ESCluster'
-          ES_USER: !Ref 'ESUser'
-          ES_PASSWORD: !Ref 'ESPassword'
       Events:
         GetResults:
           Type: Api
@@ -279,8 +274,6 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebCompetitions
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerSeasonSummary
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -474,34 +467,23 @@ Resources:
   TranmereWebApps:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebApps
+      TableName: TranmereWebAppsTable
       AttributeDefinitions:
-        - AttributeName: Name
-          AttributeType: S
-        - AttributeName: Date
+        - AttributeName: id
           AttributeType: S
         - AttributeName: Season
           AttributeType: S
       KeySchema:
-        - AttributeName: Name
+        - AttributeName: Season
           KeyType: HASH
-        - AttributeName: Date
+        - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
-      GlobalSecondaryIndexes:
-        - IndexName: SeasonIndex
-          KeySchema:
-            - AttributeName: Season
-              KeyType: HASH
-            - AttributeName: Date
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: ALL
 
   TranmereWebPlayerSeasonSummary:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebPlayerSeasonSummary
+      TableName: TranmereWebPlayerSeasonSummaryTable
       AttributeDefinitions:
         - AttributeName: Player
           AttributeType: S
@@ -529,29 +511,18 @@ Resources:
   TranmereWebGoals:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebGoals
+      TableName: TranmereWebGoalsTable
       AttributeDefinitions:
-        - AttributeName: Scorer
-          AttributeType: S
-        - AttributeName: Date
+        - AttributeName: id
           AttributeType: S
         - AttributeName: Season
           AttributeType: S
       KeySchema:
-        - AttributeName: Scorer
+        - AttributeName: Season
           KeyType: HASH
-        - AttributeName: Date
+        - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
-      GlobalSecondaryIndexes:
-        - IndexName: SeasonIndex
-          KeySchema:
-            - AttributeName: Season
-              KeyType: HASH
-            - AttributeName: Date
-              KeyType: "RANGE"
-          Projection:
-            ProjectionType: ALL
 
 Outputs:
   ContactUsFunction:
