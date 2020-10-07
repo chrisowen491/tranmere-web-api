@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "TranmereWebPlayerSeasonSummary";
+const TABLE_NAME = "TranmereWebPlayerSummary";
 
 exports.handler = async function (event, context) {
    console.log('Received event:', event);
@@ -11,28 +11,37 @@ exports.handler = async function (event, context) {
         var playerHash = {};
         var appsQuery = {
             TableName:"TranmereWebApps",
+            IndexName: "SeasonIndex",
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
-                ":season" : i
+                ":season" : i.toString()
             }
         };
         var goalsQuery = {
             TableName:"TranmereWebGoals",
+            IndexName: "SeasonIndex",
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
-                ":season" : i
+                ":season" : i.toString()
             }
         };
-        var apps = await dynamo.query(appsQuery).promise().Items;
-        var goals= await dynamo.query(goalsQuery).promise().Items;
 
-        for(var a=0; a < apps.length; g++) {
+        var appsResult = await dynamo.query(appsQuery).promise();
+
+        var goalsResult = await dynamo.query(goalsQuery).promise();
+
+        var apps = appsResult.Items ? appsResult.Items : [];
+        var goals = goalsResult.Items ? goalsResult.Items : [];
+
+        console.log("Found " + apps.length + " for season " + i);
+        console.log("Found " + goals.length + " for season " + i);
+        for(var a=0; a < apps.length; a++) {
             var app = apps[a];
             if(!playerHash[app.Name]) {
                playerHash[app.Name] = buildNewPlayer(i,app.Name);
             }
             playerHash[app.Name].starts++;
-            playerHash[app.Name].apps++;
+            playerHash[app.Name].Apps++;
 
             if(app.YellowCard)
                 playerHash[app.Name].yellow++;
@@ -44,7 +53,7 @@ exports.handler = async function (event, context) {
                    playerHash[app.SubbedBy] = buildNewPlayer(i,app.SubbedBy);
                 }
                 playerHash[app.SubbedBy].subs++;
-                playerHash[app.SubbedBy].apps++;
+                playerHash[app.SubbedBy].Apps++;
 
                 if(app.SubYellow)
                     playerHash[app.SubbedBy].yellow++;
@@ -54,10 +63,10 @@ exports.handler = async function (event, context) {
         }
         for(var g=0; g < goals.length; g++) {
             var goal = goals[g];
-            if(!playerHash[goal.Name]) {
-               playerHash[goal.Name] = buildNewPlayer(i,goal.Name);
+            if(!playerHash[goal.Scorer]) {
+               playerHash[goal.Scorer] = buildNewPlayer(i,goal.Scorer);
             }
-            playerHash[goal.Name].goals++;
+            playerHash[goal.Scorer].goals++;
             if(goal.GoalType == "Header") {
                 playerHash[goal.Name].headers++;
             } else if(goal.GoalType == "FreeKick") {
@@ -73,37 +82,45 @@ exports.handler = async function (event, context) {
             }
         }
 
-        await dynamo.delete({Key: {season: i}, TableName: TABLE_NAME}).promise();
-
-        Object.keys(playerHash).forEach(function(key,index) {
-            await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
-            if(!playerTotalsHash[key]) {
-               playerTotalsHash[key] = buildNewPlayer("TOTAL",key);
+        for (var key in playerHash) {
+            if (Object.prototype.hasOwnProperty.call(playerHash, key)) {
+                await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
+                console.log("Updated DB for " + key + " during season "  + i);
+                if(!playerTotalsHash[key]) {
+                   playerTotalsHash[key] = buildNewPlayer("TOTAL",key);
+                }
+                playerTotalsHash[key].Apps = playerTotalsHash[key].Apps + playerHash[key].Apps;
+                playerTotalsHash[key].starts = playerTotalsHash[key].starts + playerHash[key].starts;
+                playerTotalsHash[key].subs = playerTotalsHash[key].subs + playerHash[key].subs;
+                playerTotalsHash[key].goals = playerTotalsHash[key].goals + playerHash[key].goals;
+                playerTotalsHash[key].assists = playerTotalsHash[key].assists + playerHash[key].assists;
+                playerTotalsHash[key].headers = playerTotalsHash[key].headers + playerHash[key].headers;
+                playerTotalsHash[key].freekicks = playerTotalsHash[key].freekicks + playerHash[key].freekicks;
+                playerTotalsHash[key].penalties = playerTotalsHash[key].penalties + playerHash[key].penalties;
+                playerTotalsHash[key].yellow = playerTotalsHash[key].yellow + playerHash[key].yellow;
+                playerTotalsHash[key].red = playerTotalsHash[key].red + playerHash[key].red;
             }
-            playerTotalsHash[key].apps = playerTotalsHash[key].apps + playerHash[key].apps;
-            playerTotalsHash[key].starts = playerTotalsHash[key].starts + playerHash[key].starts;
-            playerTotalsHash[key].subs = playerTotalsHash[key].subs + playerHash[key].subs;
-            playerTotalsHash[key].goals = playerTotalsHash[key].goals + playerHash[key].goals;
-            playerTotalsHash[key].assists = playerTotalsHash[key].assists + playerHash[key].assists;
-            playerTotalsHash[key].headers = playerTotalsHash[key].headers + playerHash[key].headers;
-            playerTotalsHash[key].freekicks = playerTotalsHash[key].freekicks + playerHash[key].freekicks;
-            playerTotalsHash[key].penalties = playerTotalsHash[key].penalties + playerHash[key].penalties;
-            playerTotalsHash[key].yellow = playerTotalsHash[key].yellow + playerHash[key].yellow;
-            playerTotalsHash[key].red = playerTotalsHash[key].red + playerHash[key].red;
-        });
+        }
     }
-    await dynamo.delete({Key: {season: "TOTAL"}, TableName: TABLE_NAME}).promise();
-    Object.keys(playerTotalsHash).forEach(function(key,index) {
-        await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
-    });
+
+    for (var key in playerTotalsHash) {
+        if (Object.prototype.hasOwnProperty.call(playerTotalsHash, key)) {
+            await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
+        }
+    }
 
 };
 
 function buildNewPlayer(season, name) {
+    const SECONDS_IN_AN_HOUR = 60 * 60;
+    const secondsSinceEpoch = Math.round(Date.now() / 1000);
+    const expirationTime = secondsSinceEpoch + 24 * SECONDS_IN_AN_HOUR;
+
     return {
-        season: season,
-        name: name,
-        apps: 0,
+        Season: season.toString(),
+        Player: name,
+        TimeToLive: expirationTime,
+        Apps: 0,
         starts: 0,
         subs: 0,
         goals: 0,

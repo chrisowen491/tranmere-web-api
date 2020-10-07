@@ -13,9 +13,9 @@ exports.handler = async function (event, context) {
     if(player) {
         query = {
             TableName:"TranmereWebPlayerTable",
-            IndexName: "ByPlayerIndex"
+            IndexName: "ByPlayerIndex",
             KeyConditionExpression :  "player = :player",
-            ExpressionAttributeValues: {,
+            ExpressionAttributeValues: {
                 ":player" : player
             }
         };
@@ -26,7 +26,7 @@ exports.handler = async function (event, context) {
         query = {
             TableName:"TranmereWebPlayerTable",
             KeyConditionExpression :  "season = :season",
-            ExpressionAttributeValues: {,
+            ExpressionAttributeValues: {
                 ":season" : season
             }
         };

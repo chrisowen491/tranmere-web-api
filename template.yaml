@@ -60,6 +60,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
 
   PageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -496,7 +498,7 @@ Resources:
   TranmereWebPlayerSeasonSummary:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebPlayerSeasonSummary
+      TableName: TranmereWebPlayerSummary
       AttributeDefinitions:
         - AttributeName: Player
           AttributeType: S
@@ -507,7 +509,7 @@ Resources:
       KeySchema:
         - AttributeName: Season
           KeyType: HASH
-        - AttributeName: Apps
+        - AttributeName: Player
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
       GlobalSecondaryIndexes:
@@ -519,6 +521,9 @@ Resources:
               KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: TimeToLive
+        Enabled: true
 
   TranmereWebGoals:
     Type: 'AWS::DynamoDB::Table'
