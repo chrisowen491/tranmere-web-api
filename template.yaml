@@ -502,8 +502,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: Player
           AttributeType: S
-        - AttributeName: Apps
-          AttributeType: N
         - AttributeName: Season
           AttributeType: S
       KeySchema:
