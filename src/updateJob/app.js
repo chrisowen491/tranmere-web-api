@@ -1,9 +1,16 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "TranmereWebPlayerSummary";
+const TABLE_NAME = "TranmereWebPlayerSeasonSummary";
 
 exports.handler = async function (event, context) {
    console.log('Received event:', event);
+
+    var playersData = await dynamo.scan({TableName:"TranmereWebPlayerTable"}).promise();
+    var bioHash = {};
+
+    for(var p =0; p < playersData.Items.length; p++) {
+        bioHash[p.name] = p;
+    }
 
     var playerTotalsHash = {};
 
@@ -68,11 +75,11 @@ exports.handler = async function (event, context) {
             }
             playerHash[goal.Scorer].goals++;
             if(goal.GoalType == "Header") {
-                playerHash[goal.Name].headers++;
+                playerHash[goal.Scorer].headers++;
             } else if(goal.GoalType == "FreeKick") {
-                playerHash[goal.Name].freekicks++;
+                playerHash[goal.Scorer].freekicks++;
             } else if(goal.GoalType == "Penalty") {
-                playerHash[goal.Name].penalties++;
+                playerHash[goal.Scorer].penalties++;
             }
             if(goal.Assist) {
                 if(!playerHash[goal.Assist]) {
@@ -84,7 +91,12 @@ exports.handler = async function (event, context) {
 
         for (var key in playerHash) {
             if (Object.prototype.hasOwnProperty.call(playerHash, key)) {
+
+                if(bioHash[key)
+                   playerHash[key].bio = bioHash[key]
+
                 await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
+
                 console.log("Updated DB for " + key + " during season "  + i);
                 if(!playerTotalsHash[key]) {
                    playerTotalsHash[key] = buildNewPlayer("TOTAL",key);
@@ -105,6 +117,8 @@ exports.handler = async function (event, context) {
 
     for (var key in playerTotalsHash) {
         if (Object.prototype.hasOwnProperty.call(playerTotalsHash, key)) {
+            if(bioHash[key)
+               playerTotalsHash[key].bio = bioHash[key]
             await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
         }
     }

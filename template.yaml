@@ -498,7 +498,7 @@ Resources:
   TranmereWebPlayerSeasonSummary:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebPlayerSummary
+      TableName: TranmereWebPlayerSeasonSummary
       AttributeDefinitions:
         - AttributeName: Player
           AttributeType: S

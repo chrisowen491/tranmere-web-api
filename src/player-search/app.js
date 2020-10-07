@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
+const TABLE_NAME = "TranmereWebPlayerSeasonSummary";
 
 exports.handler = async function (event, context) {
     console.log('Received event:', event);
@@ -8,13 +9,14 @@ exports.handler = async function (event, context) {
     var sort = event.queryStringParameters.sort;
     var player = event.queryStringParameters.player
 
-    var query = {};
+    var query = {
+        TableName:TABLE_NAME
+    };
 
     if(player) {
         query = {
-            TableName:"TranmereWebPlayerTable",
             IndexName: "ByPlayerIndex",
-            KeyConditionExpression :  "player = :player",
+            KeyConditionExpression :  "Player = :player",
             ExpressionAttributeValues: {
                 ":player" : player
             }
@@ -24,8 +26,7 @@ exports.handler = async function (event, context) {
             season = "TOTAL";
 
         query = {
-            TableName:"TranmereWebPlayerTable",
-            KeyConditionExpression :  "season = :season",
+            KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
                 ":season" : season
             }
@@ -36,9 +37,15 @@ exports.handler = async function (event, context) {
     var results = result.Items;
 
     if(sort == "Goals") {
-        players.sort(function(a, b) {
+        results.sort(function(a, b) {
           if (a.goals < b.goals) return 1
           if (a.goals > b.goals) return -1
+          return 0
+        });
+    } else {
+        results.sort(function(a, b) {
+          if (a.Apps < b.Apps) return 1
+          if (a.Apps > b.Apps) return -1
           return 0
         });
     }
