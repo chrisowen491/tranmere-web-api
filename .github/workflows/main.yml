@@ -37,6 +37,9 @@ jobs:
           working-directory: src/entities
       - uses: bahmutov/npm-install@v1
         with:
+          working-directory: src/updateJob
+      - uses: bahmutov/npm-install@v1
+        with:
           working-directory: src/results-search
       - uses: bahmutov/npm-install@v1
         with:

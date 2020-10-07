@@ -50,11 +50,6 @@ Resources:
       CodeUri: src/player-search/
       Handler: app.handler
       Runtime: nodejs12.x
-      Environment:
-        Variables:
-          ES_CLUSTER: !Ref 'ESCluster'
-          ES_USER: !Ref 'ESUser'
-          ES_PASSWORD: !Ref 'ESPassword'
       Events:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -64,7 +59,7 @@ Resources:
             Method: get
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
+            TableName: !Ref TranmereWebPlayerSeasonSummary
 
   PageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -183,6 +178,20 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
 
+  UpdateSummariesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/updateJob/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerSeasonSummary
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
+
   EntityFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -219,6 +228,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebCompetitions
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerSeasonSummary
 
 
   TranmereWebCSVUploadBucket:
@@ -263,6 +274,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebCompetitions
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerSeasonSummary
 
   TranmereWebPlayerTable:
     Type: 'AWS::DynamoDB::Table'
@@ -476,6 +489,33 @@ Resources:
             - AttributeName: Season
               KeyType: HASH
             - AttributeName: Date
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+
+  TranmereWebPlayerSeasonSummary:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebPlayerSeasonSummary
+      AttributeDefinitions:
+        - AttributeName: Player
+          AttributeType: S
+        - AttributeName: Apps
+          AttributeType: N
+        - AttributeName: Season
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Season
+          KeyType: HASH
+        - AttributeName: Apps
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: ByPlayerIndex
+          KeySchema:
+            - AttributeName: Player
+              KeyType: HASH
+            - AttributeName: Season
               KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
