@@ -193,6 +193,9 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
+
 
   EntityFunction:
     Type: AWS::Serverless::Function

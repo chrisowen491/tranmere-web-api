@@ -92,7 +92,7 @@ exports.handler = async function (event, context) {
         for (var key in playerHash) {
             if (Object.prototype.hasOwnProperty.call(playerHash, key)) {
 
-                if(bioHash[key)
+                if(bioHash[key])
                    playerHash[key].bio = bioHash[key]
 
                 await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
@@ -117,7 +117,7 @@ exports.handler = async function (event, context) {
 
     for (var key in playerTotalsHash) {
         if (Object.prototype.hasOwnProperty.call(playerTotalsHash, key)) {
-            if(bioHash[key)
+            if(bioHash[key])
                playerTotalsHash[key].bio = bioHash[key]
             await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
         }
