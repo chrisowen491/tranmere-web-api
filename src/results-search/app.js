@@ -48,6 +48,8 @@ exports.entityHandler = async function(event, context){
             match.goals = await getGoals(date, match.season);
             match.apps = await getApps(date, match.season);
         }
+        if(match.attendance == 0)
+            match.attendance = null:
         results.push(match)
     }
 
