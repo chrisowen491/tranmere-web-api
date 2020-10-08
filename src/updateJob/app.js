@@ -82,8 +82,8 @@ exports.handler = async function (event, context) {
 
         for (var key in playerHash) {
             if (Object.prototype.hasOwnProperty.call(playerHash, key)) {
-
-                await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
+                if(key != "")
+                    await dynamo.put({Item: playerHash[key], TableName: TABLE_NAME}).promise();
 
                 console.log("Updated DB for " + key + " during season "  + i);
                 if(!playerTotalsHash[key]) {
@@ -105,7 +105,8 @@ exports.handler = async function (event, context) {
 
     for (var key in playerTotalsHash) {
         if (Object.prototype.hasOwnProperty.call(playerTotalsHash, key)) {
-            await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
+            if(key != "")
+                await dynamo.put({Item: playerTotalsHash[key], TableName: TABLE_NAME}).promise();
         }
     }
 

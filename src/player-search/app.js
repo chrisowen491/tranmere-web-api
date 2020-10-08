@@ -31,7 +31,7 @@ exports.handler = async function (event, context) {
             season = "TOTAL";
 
         query = {
-           TableName:TABLE_NAME,
+            TableName:TABLE_NAME,
             KeyConditionExpression :  "Season = :season",
             ExpressionAttributeValues: {
                 ":season" : season
@@ -64,6 +64,6 @@ exports.handler = async function (event, context) {
      "isBase64Encoded": false,
      "headers": { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
      "statusCode": 200,
-     "body": JSON.stringify({players: results})
+     "body": JSON.stringify({players: results.slice(0, 50)})
      };
 };
