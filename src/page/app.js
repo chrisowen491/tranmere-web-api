@@ -15,6 +15,7 @@ exports.handler = async function (event, context) {
     view.title = "Player Profile" + decodeURIComponent(playerName);
     view.pageType = "AboutPage";
     view.description = "Player Profile for " + decodeURIComponent(playerName);
+    view.url = "/page/player/"+decodeURIComponent(playerName);
 
     var page = utils.buildPage(view, pages[pageName].template);
     return {

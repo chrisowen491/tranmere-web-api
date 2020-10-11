@@ -1,5 +1,0 @@
-"Date","Opposition","Competition","Season","Name","Number","Started","SubbedBy","SubTime","YellowCard","RedCard"
-{{#matches}}
-{{Date}},{{Opposition}},{{competition}},{{Season}}
-{{/matches}}
-
