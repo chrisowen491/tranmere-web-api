@@ -7,12 +7,16 @@ var axios = require("axios");
 
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
+    var playerName = event.pathParameters.player;
 
-    var player = await axios.get("https://api.tranmere-web.com/profile/John Aldridge");
+    var player = await axios.get("https://api.tranmere-web.com/profile/"+ playerName);
     var view = player.data;
-    view.image: utils.buildImagePath("photos/kop.jpg", 1920,1080)
+    view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
+    view.title = "Player Profile" + playerName;
+    view.pageType = "AboutPage";
+    view.description = "Player Profile for " + playerName;
 
-    var page = utils.buildPage(pages[pageName], pages[pageName].template);
+    var page = utils.buildPage(view, pages[pageName].template);
     return {
      "isBase64Encoded": false,
      "headers": { 'Content-Type': 'text/html'},
