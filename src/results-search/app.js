@@ -1,5 +1,7 @@
+const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
+AWSXRay.captureAWSClient(dynamo.service);
 
 exports.entityHandler = async function(event, context){
 

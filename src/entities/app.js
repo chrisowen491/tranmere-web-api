@@ -1,8 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
+const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-
-const TABLE_NAME = 'TranmereWebMediaTable';
+AWSXRay.captureAWSClient(dynamo.service);
 
 exports.entityHandler = function(event, context, callback){
 

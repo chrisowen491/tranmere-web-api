@@ -50,6 +50,7 @@ Resources:
       CodeUri: src/player-search/
       Handler: app.handler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -161,6 +162,7 @@ Resources:
       CodeUri: src/results-search/
       Handler: app.entityHandler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         GetResults:
           Type: Api
@@ -182,6 +184,7 @@ Resources:
       CodeUri: src/updateJob/
       Handler: app.handler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         Daily:
           Type: Schedule
@@ -230,6 +233,7 @@ Resources:
       CodeUri: src/entities/
       Handler: app.entityHandler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         GetEntitiesByCategoryAPI:
           Type: Api
