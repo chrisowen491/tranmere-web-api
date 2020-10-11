@@ -196,6 +196,31 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
 
+  ProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/entities/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Events:
+        GetProfile:
+          Type: Api
+          Properties:
+            Path: /profile/{player}
+            Method: GET
+            RestApiId: !Ref TranmereWebApiGateway
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerLinks
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTransfers
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerSeasonSummary
+
 
   EntityFunction:
     Type: AWS::Serverless::Function
@@ -484,6 +509,15 @@ Resources:
         - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: ByPlayerIndex
+          KeySchema:
+            - AttributeName: Name
+              KeyType: HASH
+            - AttributeName: Date
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
 
   TranmereWebPlayerSeasonSummary:
     Type: 'AWS::DynamoDB::Table'
