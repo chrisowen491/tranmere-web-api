@@ -69,6 +69,7 @@ Resources:
       CodeUri: src/page/
       Handler: app.handler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -202,6 +203,7 @@ Resources:
       CodeUri: src/profile/
       Handler: app.handler
       Runtime: nodejs12.x
+      Tracing: Active
       Events:
         GetProfile:
           Type: Api
