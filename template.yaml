@@ -503,6 +503,10 @@ Resources:
           AttributeType: S
         - AttributeName: Season
           AttributeType: S
+        - AttributeName: Name
+          AttributeType: S
+        - AttributeName: Date
+          AttributeType: S
       KeySchema:
         - AttributeName: Season
           KeyType: HASH
