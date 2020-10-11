@@ -1,3 +1,11 @@
+if (process.env._X_AMZN_TRACE_ID) {
+  const AWSXRay = require('aws-xray-sdk');
+  const http = require('http');
+  const https = require('https');
+  AWSXRay.captureHTTPsGlobal(http);
+  AWSXRay.captureHTTPsGlobal(https);
+}
+
 var Mustache = require("mustache");
 var fs = require("fs");
 var path = require('path');

@@ -1,5 +1,6 @@
+const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
-let dynamo = new AWS.DynamoDB.DocumentClient();
+let dynamo = AWSXRay.captureAWSClient(new AWS.DynamoDB.DocumentClient());
 const SUMMARY_TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 const LINKS_TABLE_NAME = "TranmereWebPlayerLinks";
 const APPS_TABLE_NAME = "TranmereWebAppsTable";
