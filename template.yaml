@@ -199,7 +199,7 @@ Resources:
   ProfileFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/entities/
+      CodeUri: src/profile/
       Handler: app.handler
       Runtime: nodejs12.x
       Events:
