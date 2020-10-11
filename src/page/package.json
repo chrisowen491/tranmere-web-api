@@ -6,6 +6,7 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.20.0",
     "mustache": "^4.0.1"
   },
   "scripts": {

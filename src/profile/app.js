@@ -15,7 +15,7 @@ exports.handler = async function (event, context) {
             TableName: PLAYER_TABLE_NAME,
             KeyConditionExpression: "#name = :name",
             ExpressionAttributeNames:{
-                "#name": "Name"
+                "#name": "name"
             },
             ExpressionAttributeValues: {
                 ":name": decodeURIComponent(player),
@@ -27,7 +27,7 @@ exports.handler = async function (event, context) {
             TableName: LINKS_TABLE_NAME,
             KeyConditionExpression: "#name = :name",
             ExpressionAttributeNames:{
-                "#name": "Name"
+                "#name": "name"
             },
             ExpressionAttributeValues: {
                 ":name": decodeURIComponent(player),
@@ -65,7 +65,7 @@ exports.handler = async function (event, context) {
             TableName: TRANSFERS_TABLE_NAME,
             KeyConditionExpression: "#name = :name",
             ExpressionAttributeNames:{
-                "#name": "Name"
+                "#name": "name"
             },
             ExpressionAttributeValues: {
                 ":name": decodeURIComponent(player),
@@ -77,7 +77,7 @@ exports.handler = async function (event, context) {
         links: linksSearch.Items,
         transfers: transfersSearch.Items,
         seasons: summarySearch.Items,
-        debut: debutSearch.Items
+        debut: debutSearch.Items[0]
     }
 
 

@@ -19,5 +19,12 @@
     "description": "All about Tranmere-Web",
     "template": "./templates/about.tpl.html",
     "url": "/about.html"
+  },
+  "player": {
+    "title": "About the site",
+    "pageType":"AboutPage",
+    "description": "All about Tranmere-Web",
+    "template": "./templates/player.tpl.html",
+    "url": "/player.html"
   }
 }

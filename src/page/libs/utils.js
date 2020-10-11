@@ -17,6 +17,20 @@ module.exports = function (path, fs, Mustache) {
            }
            return partials;
          },
+         buildImagePath: function (image, width, height) {
+            var body = {
+             "bucket": "trfc-programmes",
+             "key": image,
+               "edits": {
+                 "resize": {
+                   "width": width,
+                   "height": height,
+                   "fit": "fill",
+                 }
+               }
+             };
+            return "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(body)).toString('base64');
+         },
          buildPage: function (view, pageTpl) {
             var pageHTML = Mustache.render(fs.readFileSync(pageTpl).toString(), view, this.loadSharedPartials());
             return pageHTML;
