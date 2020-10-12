@@ -44,6 +44,14 @@ Resources:
         MaxAge: "'600'"
         AllowCredentials: True
 
+  LambdaCommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: 'Common code used by lambdas'
+      ContentUri: src/common-layer/
+      CompatibleRuntimes:
+        - nodejs12.x
+
   PlayerSearchFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -63,7 +71,9 @@ Resources:
             TableName: !Ref TranmereWebPlayerSeasonSummary
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
-
+      Layers:
+        - !Ref LambdaCommonLayer
+        -
   PageFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -78,6 +88,8 @@ Resources:
             Path: /page/{pageName}/{player}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Layers:
+        - !Ref LambdaCommonLayer
 
   ScraperFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -92,6 +104,8 @@ Resources:
             Path: /scraper/{season}/{id}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Layers:
+        - !Ref LambdaCommonLayer
 
   PlayerBuilderFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -106,6 +120,8 @@ Resources:
             Path: /player-builder/{kit}/{hair}/{body}/{features}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Layers:
+        - !Ref LambdaCommonLayer
 
   ContactUsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -132,6 +148,8 @@ Resources:
             Path: /contact-us
             RestApiId: !Ref TranmereWebApiGateway
             Method: post
+      Layers:
+        - !Ref LambdaCommonLayer
 
   PlayerCRUDFunction:
     Type: AWS::Serverless::Function
@@ -155,6 +173,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
+      Layers:
+        - !Ref LambdaCommonLayer
 
   ResultsSearchFunction:
     Type: AWS::Serverless::Function
@@ -177,6 +197,8 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
+      Layers:
+        - !Ref LambdaCommonLayer
 
   UpdateSummariesFunction:
     Type: AWS::Serverless::Function
@@ -199,6 +221,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerTable
+      Layers:
+        - !Ref LambdaCommonLayer
 
   ProfileFunction:
     Type: AWS::Serverless::Function
@@ -225,7 +249,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
-
+      Layers:
+        - !Ref LambdaCommonLayer
 
   EntityFunction:
     Type: AWS::Serverless::Function
@@ -266,7 +291,8 @@ Resources:
             TableName: !Ref TranmereWebCompetitions
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
-
+      Layers:
+        - !Ref LambdaCommonLayer
 
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket

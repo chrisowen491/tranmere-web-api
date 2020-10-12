@@ -16,37 +16,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: src/contact-us
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/crud
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/page
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/profile
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/player-search
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/scraper
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/upload
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/entities
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/updateJob
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/results-search
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/player-builder
+          working-directory: src/common-layer
       - uses: falnyr/aws-sam-deploy-action@v1.0.0
         env:
           TEMPLATE: 'template.yaml'

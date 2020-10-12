@@ -12,18 +12,6 @@ exports.handler = async function (event, context) {
     console.log('Received event:', event);
     const player = decodeURIComponent(event.pathParameters.player);
 
-    var playerSearch = await dynamo.query(
-        {
-            TableName: PLAYER_TABLE_NAME,
-            KeyConditionExpression: "#name = :name",
-            ExpressionAttributeNames:{
-                "#name": "name"
-            },
-            ExpressionAttributeValues: {
-                ":name": decodeURIComponent(player),
-            }
-        }).promise();
-
     var linksSearch = await dynamo.query(
         {
             TableName: LINKS_TABLE_NAME,
@@ -36,6 +24,19 @@ exports.handler = async function (event, context) {
             }
         }).promise();
 
+    var playerSearch = await dynamo.query(
+        {
+            TableName: PLAYER_TABLE_NAME,
+            KeyConditionExpression: "#name = :name",
+            ExpressionAttributeNames:{
+                "#name": "name"
+            },
+            ExpressionAttributeValues: {
+                ":name": decodeURIComponent(player),
+            },
+            Limit : 1
+        }).promise();
+
     var debutSearch = await dynamo.query(
         {
             TableName: APPS_TABLE_NAME,
@@ -46,7 +47,8 @@ exports.handler = async function (event, context) {
             },
             ExpressionAttributeValues: {
                 ":name": decodeURIComponent(player),
-            }
+            },
+            Limit : 1
         }).promise();
 
     var summarySearch = await dynamo.query(
