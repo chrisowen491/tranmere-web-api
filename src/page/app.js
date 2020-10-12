@@ -34,7 +34,15 @@ exports.handler = async function (event, context) {
     var page = utils.buildPage(view, pages[pageName].template);
     return {
      "isBase64Encoded": false,
-     "headers": { 'Content-Type': 'text/html'},
+     "headers": {
+        "Content-Type": "text/html",
+        "Content-Security-Policy" : "upgrade-insecure-requests",
+        "Strict-Transport-Security" : "max-age=1000",
+        "X-Xss-Protection" : "1; mode=block",
+        "X-Frame-Options" : "DENY",
+        "X-Content-Type-Options" : "nosniff",
+        "Referrer-Policy" : "strict-origin-when-cross-origin"
+     },
      "statusCode": 200,
      "body": page
      };
