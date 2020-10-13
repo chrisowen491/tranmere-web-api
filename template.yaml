@@ -33,6 +33,12 @@ Resources:
         DomainName: api.tranmere-web.com
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
         EndpointConfiguration: EDGE
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'https://www.tranmere-web.com'"
+        MaxAge: "'600'"
+        AllowCredentials: True
       DefinitionBody:
         swagger: "2.0"
         info:
