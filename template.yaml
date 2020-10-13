@@ -42,6 +42,13 @@ Resources:
           version: "1.0"
           title:
             Ref: AWS::StackName
+        securityDefinitions:
+          APIKeyHeader:
+            type: "apiKey"
+            name: "X-API-Key"
+            in: "header"
+        security:
+          - APIKeyHeader: []
         tags:
           - name: "players"
             description: "Player information"
