@@ -83,6 +83,77 @@ Resources:
             type: "apiKey"
             name: "x-api-Key"
             in: "header"
+        definitions:
+          Result:
+            type: object
+            properties:
+              season:
+                type: string
+              ft:
+                type: string
+              opposition:
+                type: string
+          Player:
+            type: "object"
+            properties:
+              foot:
+                type: "string"
+              placeOfBirth:
+                type: "string"
+              height:
+                type: "string"
+              profile:
+                type: "string"
+              dateOfBirth:
+                type: "string"
+              pic:
+                type: "string"
+              id:
+                type: "string"
+              name:
+                type: "string"
+              position:
+                type: "string"
+          PlayerSummary:
+            type: "object"
+            properties:
+              Season:
+                type: "string"
+              starts:
+                type: "integer"
+                format: "int64"
+              assists:
+                type: "integer"
+                format: "int32"
+              goals:
+                type: "integer"
+                format: "int32"
+              penalties:
+                type: "integer"
+                format: "int32"
+              headers:
+                type: "integer"
+                format: "int32"
+              subs:
+                type: "integer"
+                format: "int32"
+              red:
+                type: "integer"
+                format: "int32"
+              yellow:
+                type: "integer"
+                format: "int32"
+              freekicks:
+                type: "integer"
+                format: "int32"
+              Apps:
+                type: "integer"
+                format: "int32"
+              Player:
+                type: "string"
+              bio:
+                $ref: "#/definitions/Player"
+
         tags:
           - name: "players"
             description: "Player information"
@@ -119,6 +190,13 @@ Resources:
               responses:
                 "200":
                   description: "Success"
+                  schema:
+                    type: "object"
+                    properties:
+                      players:
+                        type: "array"
+                        items:
+                          $ref: "#/definitions/PlayerSummary"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
@@ -144,10 +222,22 @@ Resources:
                   description: "The type of page to generate"
                   required: true
                   schema:
-                    type: object
+                    type: "object"
+                    properties:
+                      name:
+                        type: "string"
+                      email:
+                        type: "string"
+                      desc:
+                        type: "string"
               responses:
                 "200":
                   description: "Success"
+                  schema:
+                    type: "object"
+                    properties:
+                      result:
+                        type: string
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
@@ -173,6 +263,8 @@ Resources:
               responses:
                 "200":
                   description: "Success"
+                  schema:
+                    $ref: "#/definitions/Player"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
@@ -196,7 +288,7 @@ Resources:
                   required: true
                   type: "string"
                   enum:
-                    - player
+                    - "player"
                 - name: "category"
                   in: "path"
                   description: "The name of the attribute to filter on"
@@ -238,7 +330,7 @@ Resources:
                   required: true
                   type: "string"
                   enum:
-                    - player
+                    - "player"
                 - name: "player"
                   in: "path"
                   description: "The name of the player"
@@ -287,11 +379,17 @@ Resources:
                   default: "starts"
                   type: "string"
                   enum:
-                    - goals
-                    - starts
+                    - "goals"
+                    - "starts"
               responses:
                 "200":
                   description: "Success"
+                  type: "object"
+                  properties:
+                    players:
+                      type: "array"
+                      items:
+                        $ref: "#/definitions/Result"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy

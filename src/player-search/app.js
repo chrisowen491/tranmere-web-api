@@ -45,6 +45,7 @@ exports.handler = async function (event, context) {
     var results = result.Items;
 
     for(var x=0; x < results.length; x++ ) {
+        delete results[x].TimeToLive;
         results[x].bio = playerHash[results[x].Player];
     }
 
