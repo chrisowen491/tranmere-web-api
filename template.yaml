@@ -74,7 +74,7 @@ Resources:
                   type: "string"
                   enum: ["starts", "goals"]
               responses:
-                200:
+                "200":
                   description: "Success"
               x-amazon-apigateway-integration:
                 httpMethod: POST
