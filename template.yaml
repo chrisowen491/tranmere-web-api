@@ -40,6 +40,16 @@ Resources:
           ResponseParameters:
             Headers:
               Access-Control-Allow-Origin: "'*'"
+        INVALID_API_KEY:
+          StatusCode: 403
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        MISSING_AUTHENTICATION_TOKEN:
+          StatusCode: 403
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
         DEFAULT_5XX:
           StatusCode: 500
           ResponseParameters:
