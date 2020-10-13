@@ -45,7 +45,7 @@ Resources:
         securityDefinitions:
           APIKeyHeader:
             type: "apiKey"
-            name: "X-API-Key"
+            name: "x-api-Key"
             in: "header"
         security:
           - APIKeyHeader: []
