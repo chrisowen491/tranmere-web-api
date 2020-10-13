@@ -22,10 +22,6 @@ Parameters:
 Globals:
   Function:
     Timeout: 600
-  Api:
-    Cors:
-      AllowHeaders: "'Content-Type'"
-      AllowOrigin: "'*'"
 
 Resources:
   TranmereWebApiGateway:
@@ -37,12 +33,6 @@ Resources:
         DomainName: api.tranmere-web.com
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
         EndpointConfiguration: EDGE
-      Cors:
-        AllowMethods: "'POST, GET'"
-        AllowHeaders: "'Content-Type'"
-        AllowOrigin: "'https://www.tranmere-web.com'"
-        MaxAge: "'600'"
-        AllowCredentials: True
       DefinitionBody:
         swagger: 2.0
         info:
@@ -50,8 +40,10 @@ Resources:
           title:
             Ref: AWS::StackName
         tags:
-          - name: "player"
+          - name: "players"
             description: "Player information"
+          - name: "results"
+            description: "Match history"
         paths:
           "/player-search":
             get:
@@ -87,6 +79,128 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
+          "/contact-us":
+            post:
+              tags:
+                - "utility"
+              summary: "Send a message to site admin"
+              description: "Send a message to site admin"
+              operationId: "contactUs"
+              consumes:
+                - "application/json"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "body"
+                  in: "body"
+                  description: "The type of page to generate"
+                  required: true
+                  type: "string"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
+          "/profile/{player}":
+            get:
+              tags:
+                - "players"
+              summary: "Get a summary of information about a single player"
+              description: "Get a summary of information about a single player"
+              operationId: "getProfile"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "player"
+                  in: "path"
+                  description: "The name of the player"
+                  required: true
+                  example: "John Aldridge"
+                  type: "string"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+          "/entities/{entity}/{category}/{attribute}":
+            get:
+              tags:
+                - "utility"
+              summary: "Simple utility API to return entities from the database"
+              description: "Simple utility API to return entities from the database"
+              operationId: "entitySearch"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "entity"
+                  in: "path"
+                  description: "The name of the entity to search"
+                  required: true
+                  type: "string"
+                  enum:
+                    - player
+                - name: "category"
+                  in: "path"
+                  description: "The name of the attribute to filter on"
+                  required: true
+                  example: "ALL"
+                  type: "string"
+                - name: "attribute"
+                  in: "path"
+                  description: "The attribute value to filter"
+                  required: true
+                  example: "ALL"
+                  type: "string"
+                - name: "indexName"
+                  in: "query"
+                  description: "An index to change the default sort "
+                  required: fase
+                  type: "string"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EntityFunction.Arn}/invocations
+          "/page/{pageName}/{player}":
+            get:
+              tags:
+                - "players"
+              summary: "Generate a pre-rendered profile page"
+              description: "Generate a pre-rendered profile page"
+              operationId: "pageGeneration"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "pageName"
+                  in: "path"
+                  description: "The type of page to generate"
+                  required: true
+                  type: "string"
+                  enum:
+                    - player
+                - name: "player"
+                  in: "path"
+                  description: "The name of the player"
+                  required: true
+                  example: "John Aldridge"
+                  type: "string"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PageFunction.Arn}/invocations
           "/result-search":
             get:
               tags:
@@ -540,7 +654,6 @@ Resources:
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
-
   TranmereWebStars:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -615,7 +728,6 @@ Resources:
               KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
-
 
   TranmereWebApps:
     Type: 'AWS::DynamoDB::Table'
