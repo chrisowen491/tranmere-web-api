@@ -51,8 +51,6 @@ Resources:
             type: "apiKey"
             name: "x-api-Key"
             in: "header"
-        security:
-          - APIKeyHeader: []
         tags:
           - name: "players"
             description: "Player information"
@@ -66,6 +64,8 @@ Resources:
               summary: "Find player appearances and goals by season"
               description: "Find player appearances and goals by season"
               operationId: "playerSearch"
+              security:
+                - APIKeyHeader: []
               produces:
                 - "application/json"
               parameters:
@@ -99,6 +99,8 @@ Resources:
               summary: "Send a message to site admin"
               description: "Send a message to site admin"
               operationId: "contactUs"
+              security:
+                - APIKeyHeader: []
               consumes:
                 - "application/json"
               produces:
@@ -125,6 +127,8 @@ Resources:
               summary: "Get a summary of information about a single player"
               description: "Get a summary of information about a single player"
               operationId: "getProfile"
+              security:
+                - APIKeyHeader: []
               produces:
                 - "application/json"
               parameters:
@@ -148,6 +152,8 @@ Resources:
               summary: "Simple utility API to return entities from the database"
               description: "Simple utility API to return entities from the database"
               operationId: "entitySearch"
+              security:
+                - APIKeyHeader: []
               produces:
                 - "application/json"
               parameters:
@@ -188,6 +194,8 @@ Resources:
               summary: "Generate a pre-rendered profile page. This isn't really a consumable API"
               description: "Generate a pre-rendered profile page. This isn't really a consumable API"
               operationId: "pageGeneration"
+              security:
+                - APIKeyHeader: []
               produces:
                 - "application/json"
               parameters:
@@ -218,6 +226,8 @@ Resources:
               summary: "Find results by season, competition or opposition"
               description: "Find results by season, competition or opposition"
               operationId: "resultSearch"
+              security:
+                - APIKeyHeader: []
               produces:
                 - "application/json"
               parameters:
