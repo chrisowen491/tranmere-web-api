@@ -16,10 +16,6 @@ Parameters:
 Globals:
   Function:
     Timeout: 600
-  Api:
-    Cors:
-      AllowHeaders: "'Content-Type'"
-      AllowOrigin: "'*'"
 
 Resources:
   TranmereWebApiGateway:
@@ -33,12 +29,7 @@ Resources:
         DomainName: api.tranmere-web.com
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
         EndpointConfiguration: EDGE
-      Cors:
-        AllowMethods: "'POST, GET, OPTIONS'"
-        AllowHeaders: "'Content-Type, x-api-key'"
-        AllowOrigin: "'https://portal.tranmere-web.com'"
-        MaxAge: "'600'"
-        AllowCredentials: True
+
       DefinitionBody:
         swagger: "2.0"
         info:
@@ -92,6 +83,44 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
+            options:
+              summary: CORS support
+              description: |
+                Enable CORS by returning correct headers
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              tags:
+                - CORS
+              x-amazon-apigateway-integration:
+                type: mock
+                requestTemplates:
+                  application/json: |
+                    {
+                      "statusCode" : 200
+                    }
+                responses:
+                  "default":
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Headers : "'Content-Type,Allow,x-api-key'"
+                      method.response.header.Access-Control-Allow-Methods : "'*'"
+                      method.response.header.Access-Control-Allow-Origin : "'*'"
+                    responseTemplates:
+                      application/json: |
+                        {}
+              responses:
+                200:
+                  description: Default response for CORS method
+                  headers:
+                    Access-Control-Allow-Headers:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Origin:
+                      type: "string"
+
           "/contact-us":
             post:
               tags:
