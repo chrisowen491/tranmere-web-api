@@ -46,16 +46,19 @@ Resources:
       DefinitionBody:
         swagger: 2.0
         info:
-          description: "This api used to get access to the raw data that powrs the site."
+          description: "This api used to get access to the raw data that powers the site."
           title:
             Ref: AWS::StackName
+        tags:
+          - name: "player"
+            description: "Player information"
         paths:
           "/player-search":
             get:
               tags:
                 - "players"
               summary: "Find player appearances and goals by season"
-              description: ""
+              description: "Find player appearances and goals by season"
               operationId: "playerSearch"
               produces:
                 - "application/json"
@@ -64,6 +67,7 @@ Resources:
                   in: "query"
                   description: "The season to search from - leave empty for top players in all time stats"
                   required: false
+                  example: "2020"
                   type: "integer"
                   format: "int64"
                 - name: "sort"
@@ -72,7 +76,9 @@ Resources:
                   required: false
                   default: "starts"
                   type: "string"
-                  enum: ["starts", "goals"]
+                  enum:
+                    - "goals"
+                    - "starts"
               responses:
                 "200":
                   description: "Success"
