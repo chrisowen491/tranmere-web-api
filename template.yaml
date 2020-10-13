@@ -29,6 +29,8 @@ Resources:
     Properties:
       Name: TranmereWebApi Gateway
       StageName: Prod
+      Auth:
+        ApiKeyRequired: true
       Domain:
         DomainName: api.tranmere-web.com
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
@@ -69,8 +71,8 @@ Resources:
                   default: "starts"
                   type: "string"
                   enum:
-                    - "goals"
-                    - "starts"
+                    - goals
+                    - starts
               responses:
                 "200":
                   description: "Success"
@@ -172,8 +174,8 @@ Resources:
             get:
               tags:
                 - "players"
-              summary: "Generate a pre-rendered profile page"
-              description: "Generate a pre-rendered profile page"
+              summary: "Generate a pre-rendered profile page. This isn't really a consumable API"
+              description: "Generate a pre-rendered profile page. This isn't really a consumable API"
               operationId: "pageGeneration"
               produces:
                 - "application/json"
@@ -231,8 +233,8 @@ Resources:
                   default: "starts"
                   type: "string"
                   enum:
-                    - "goals"
-                    - "starts"
+                    - goals
+                    - starts
               responses:
                 "200":
                   description: "Success"
