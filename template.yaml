@@ -55,7 +55,7 @@ Resources:
           ResponseParameters:
             Headers:
               Access-Control-Allow-Origin: "'*'"
-              Access-Control-Allow-Headers: "'x-api-key'"
+              Access-Control-Allow-Headers: "'x-api-key,content-type'"
         MISSING_AUTHENTICATION_TOKEN:
           StatusCode: 403
           ResponseParameters:
@@ -84,15 +84,40 @@ Resources:
             name: "x-api-Key"
             in: "header"
         definitions:
+          ContactUsRequest:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              email:
+                type: "string"
+              desc:
+                type: "string"
+          ContactUsResponse:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+          Results:
+            type: "array"
+            items:
+              $ref: "#/definitions/Result"
+          PlayerSummarys:
+            type: "object"
+            properties:
+              players:
+                type: "array"
+                items:
+                  $ref: "#/definitions/PlayerSummary"
           Result:
-            type: object
+            type: "object"
             properties:
               season:
-                type: string
+                type: "string"
               ft:
-                type: string
+                type: "string"
               opposition:
-                type: string
+                type: "string"
           Player:
             type: "object"
             properties:
@@ -159,6 +184,8 @@ Resources:
             description: "Player information"
           - name: "results"
             description: "Match history"
+          - name: "utility"
+            description: "Utility APIs generally not useful to external users"
         paths:
           "/player-search":
             get:
@@ -185,18 +212,13 @@ Resources:
                   default: "starts"
                   type: "string"
                   enum:
-                    - goals
-                    - starts
+                    - "goals"
+                    - "starts"
               responses:
                 "200":
                   description: "Success"
                   schema:
-                    type: "object"
-                    properties:
-                      players:
-                        type: "array"
-                        items:
-                          $ref: "#/definitions/PlayerSummary"
+                    $ref: "#/definitions/PlayerSummarys"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
@@ -219,30 +241,21 @@ Resources:
               parameters:
                 - name: "body"
                   in: "body"
-                  description: "The type of page to generate"
+                  description: "The request body"
                   required: true
                   schema:
-                    type: "object"
-                    properties:
-                      name:
-                        type: "string"
-                      email:
-                        type: "string"
-                      desc:
-                        type: "string"
+                    $ref: "#/definitions/ContactUsRequest"
               responses:
                 "200":
                   description: "Success"
                   schema:
-                    type: "object"
-                    properties:
-                      result:
-                        type: string
+                    $ref: "#/definitions/ContactUsResponse"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
+
           "/profile/{player}":
             get:
               tags:
@@ -270,6 +283,7 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
+
           "/entities/{entity}/{category}/{attribute}":
             get:
               tags:
@@ -312,10 +326,11 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EntityFunction.Arn}/invocations
+
           "/page/{pageName}/{player}":
             get:
               tags:
-                - "players"
+                - "utility"
               summary: "Generate a pre-rendered profile page. This isn't really a consumable API"
               description: "Generate a pre-rendered profile page. This isn't really a consumable API"
               operationId: "pageGeneration"
@@ -344,6 +359,7 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PageFunction.Arn}/invocations
+
           "/result-search":
             get:
               tags:
@@ -384,12 +400,8 @@ Resources:
               responses:
                 "200":
                   description: "Success"
-                  type: "object"
-                  properties:
-                    players:
-                      type: "array"
-                      items:
-                        $ref: "#/definitions/Result"
+                  schema:
+                    $ref: "#/definitions/Results"
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
