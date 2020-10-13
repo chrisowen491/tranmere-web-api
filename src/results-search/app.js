@@ -5,14 +5,14 @@ AWSXRay.captureAWSClient(dynamo.service);
 
 exports.entityHandler = async function(event, context){
 
-    var season = event.queryStringParameters.season;
-    var competition = event.queryStringParameters.competition;
-    var opposition = event.queryStringParameters.opposition;
-    var date = event.queryStringParameters.date;
-    var manager = event.queryStringParameters.manager;
-    var venue = event.queryStringParameters.venue;
-    var pens = event.queryStringParameters.pens;
-    var sort = event.queryStringParameters.sort;
+    var season = event.queryStringParameters ? event.queryStringParameters.season : null;
+    var competition = event.queryStringParameters ? event.queryStringParameters.competition : null;
+    var opposition = event.queryStringParameters ? event.queryStringParameters.opposition : null;
+    var date = event.queryStringParameters ? event.queryStringParameters.date : null;
+    var manager = event.queryStringParameters ? event.queryStringParameters.manager : null;
+    var venue = event.queryStringParameters ? event.queryStringParameters.venue : null;
+    var pens = event.queryStringParameters ? event.queryStringParameters.pens : null;
+    var sort = event.queryStringParameters ? event.queryStringParameters.sort : null;
 
     var data = await getResults(season, competition, opposition, date, manager, venue, pens, sort);
     var results = [];

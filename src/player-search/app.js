@@ -13,9 +13,9 @@ exports.handler = async function (event, context) {
         playerHash[squadSearch.Items[i].name] = squadSearch.Items[i];
     }
 
-    var season = event.queryStringParameters.season;
-    var sort = event.queryStringParameters.sort;
-    var player = event.queryStringParameters.player
+    var season = event.queryStringParameters ? event.queryStringParameters.season : null;
+    var sort = event.queryStringParameters ? event.queryStringParameters.sort : null;
+    var player = event.queryStringParameters ? event.queryStringParameters.player : null;
 
     var query = {};
 
