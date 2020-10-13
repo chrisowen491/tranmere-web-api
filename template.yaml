@@ -43,6 +43,45 @@ Resources:
         AllowOrigin: "'https://www.tranmere-web.com'"
         MaxAge: "'600'"
         AllowCredentials: True
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          description: "This api used to get access to the raw data that powrs the site."
+          title:
+            Ref: AWS::StackName
+        paths:
+          "/player-search":
+            get:
+              tags:
+                - "players"
+              summary: "Find player appearances and goals by season"
+              description: ""
+              operationId: "playerSearch"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "season"
+                  in: "query"
+                  description: "The season to search from - leave empty for top players in all time stats"
+                  required: false
+                  type: "integer"
+                  format: "int64"
+                - name: "sort"
+                  in: "query"
+                  description: "Sort order of players"
+                  required: false
+                  default: "starts"
+                  type: "string"
+                  enum: ["starts", "goals"]
+              responses:
+                200:
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
+
 
   TranmereWebCommonLayer:
     Type: AWS::Serverless::LayerVersion

@@ -1,4 +1,3 @@
-
 const AWSXRay = require('aws-xray-sdk');
 const http = require('http');
 const https = require('https');
