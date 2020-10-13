@@ -8,7 +8,7 @@ Parameters:
   Email:
     Type: String
     Description: The email address to send contact to
-  API_KEY:
+  APIKEY:
     Type: String
     Description: The api key
 
@@ -292,7 +292,7 @@ Resources:
             Method: get
       Environment:
         Variables:
-          API_KEY: !Ref 'API_KEY'
+          APIKEY: !Ref 'APIKEY'
       Layers:
         - !Ref TranmereWebCommonLayer
 
