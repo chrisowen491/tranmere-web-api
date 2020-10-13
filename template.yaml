@@ -87,6 +87,52 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
+          "/result-search":
+            get:
+              tags:
+                - "results"
+              summary: "Find results by season, competition or opposition"
+              description: "Find results by season, competition or opposition"
+              operationId: "resultSearch"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "season"
+                  in: "query"
+                  description: "The season to search from - leave empty for top players in all time stats"
+                  required: false
+                  example: "2020"
+                  type: "integer"
+                  format: "int64"
+                - name: "competition"
+                  in: "query"
+                  description: "The competition to search for"
+                  required: false
+                  example: "FA Cup"
+                  type: "string"
+                - name: "opposition"
+                  in: "query"
+                  description: "The opposition team for results"
+                  required: false
+                  example: "Arsenal"
+                  type: "string"
+                - name: "sort"
+                  in: "query"
+                  description: "Sort order of players"
+                  required: false
+                  default: "starts"
+                  type: "string"
+                  enum:
+                    - "goals"
+                    - "starts"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ResultsSearchFunction.Arn}/invocations
 
 
   TranmereWebCommonLayer:
