@@ -1,8 +1,8 @@
 addEventListener("fetch", (event) => {
   let url = new URL(event.request.url)
   url.host = "api.tranmere-web.com"
-
   let request = new Request(url, event.request)
+  request.headers.set("x-api-key", api_key)
   event.respondWith(
     fetch(request, {
       cf: {

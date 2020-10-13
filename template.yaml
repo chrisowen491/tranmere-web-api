@@ -8,15 +8,9 @@ Parameters:
   Email:
     Type: String
     Description: The email address to send contact to
-  ESCluster:
+  API_KEY:
     Type: String
-    Description: The email address to send contact to
-  ESUser:
-    Type: String
-    Description: The email address to send contact to
-  ESPassword:
-    Type: String
-    Description: The email address to send contact to
+    Description: The api key
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -296,6 +290,9 @@ Resources:
             Path: /page/{pageName}/{player}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Environment:
+        Variables:
+          API_KEY: !Ref 'API_KEY'
       Layers:
         - !Ref TranmereWebCommonLayer
 

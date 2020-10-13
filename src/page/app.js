@@ -21,8 +21,8 @@ var pages = require('./pages.json');
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
     var playerName = event.pathParameters.player;
-
-    var player = await instance.get("https://api.tranmere-web.com/profile/"+ playerName);
+    var options = {headers: {"x-api-key": process.env.API_KEY}};
+    var player = await instance.get("https://api.tranmere-web.com/profile/"+ playerName,options);
     var view = player.data;
     view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
     view.title = "Player Profile " + decodeURIComponent(playerName);
