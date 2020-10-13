@@ -34,9 +34,10 @@ Resources:
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
         EndpointConfiguration: EDGE
       DefinitionBody:
-        swagger: 2.0
+        swagger: "2.0"
         info:
           description: "This api used to get access to the raw data that powers the site."
+          version: "1.0"
           title:
             Ref: AWS::StackName
         tags:
@@ -59,7 +60,6 @@ Resources:
                   in: "query"
                   description: "The season to search from - leave empty for top players in all time stats"
                   required: false
-                  example: "2020"
                   type: "integer"
                   format: "int64"
                 - name: "sort"
@@ -95,7 +95,8 @@ Resources:
                   in: "body"
                   description: "The type of page to generate"
                   required: true
-                  type: "string"
+                  schema:
+                    type: object
               responses:
                 "200":
                   description: "Success"
@@ -118,7 +119,6 @@ Resources:
                   in: "path"
                   description: "The name of the player"
                   required: true
-                  example: "John Aldridge"
                   type: "string"
               responses:
                 "200":
@@ -149,18 +149,16 @@ Resources:
                   in: "path"
                   description: "The name of the attribute to filter on"
                   required: true
-                  example: "ALL"
                   type: "string"
                 - name: "attribute"
                   in: "path"
                   description: "The attribute value to filter"
                   required: true
-                  example: "ALL"
                   type: "string"
                 - name: "indexName"
                   in: "query"
                   description: "An index to change the default sort "
-                  required: fase
+                  required: false
                   type: "string"
               responses:
                 "200":
@@ -191,7 +189,6 @@ Resources:
                   in: "path"
                   description: "The name of the player"
                   required: true
-                  example: "John Aldridge"
                   type: "string"
               responses:
                 "200":
@@ -215,20 +212,17 @@ Resources:
                   in: "query"
                   description: "The season to search from - leave empty for top players in all time stats"
                   required: false
-                  example: "2020"
                   type: "integer"
                   format: "int64"
                 - name: "competition"
                   in: "query"
                   description: "The competition to search for"
                   required: false
-                  example: "FA Cup"
                   type: "string"
                 - name: "opposition"
                   in: "query"
                   description: "The opposition team for results"
                   required: false
-                  example: "Arsenal"
                   type: "string"
                 - name: "sort"
                   in: "query"
