@@ -16,6 +16,10 @@ Parameters:
 Globals:
   Function:
     Timeout: 600
+  Api:
+    Cors:
+      AllowHeaders: "'Content-Type'"
+      AllowOrigin: "'*'"
 
 Resources:
   TranmereWebApiGateway:
