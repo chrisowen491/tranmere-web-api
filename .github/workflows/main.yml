@@ -17,7 +17,7 @@ jobs:
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: src/common-layer/nodejs
-      - uses: falnyr/aws-sam-deploy-action@v1.0.0
+      - uses: chrisowen491/aws-sam-deploy-action
         env:
           TEMPLATE: 'template.yaml'
           AWS_STACK_NAME: Tranmere-Web-Api
