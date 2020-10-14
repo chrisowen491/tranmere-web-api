@@ -15,5 +15,4 @@ Within each lambda within the src folder.
  * npm install
 
 ### Deploying
-
  * ./deploy-api.sh  

@@ -1,0 +1,14 @@
+name = "tranmere-web-api"
+type = "javascript"
+account_id = "5411bb1d842d66317f9306513b9d0093"
+workers_dev = false
+route = [
+            "www.tranmere-web.com/api-player*",
+            "www.tranmere-web.com/entities*",
+            "www.tranmere-web.com/page/*",
+            "www.tranmere-web.com/player-search*",
+            "www.tranmere-web.com/profile*",
+            "www.tranmere-web.com/result-search*",
+            "www.tranmere-web.com/search*",
+        ]
+zone_id = "8bd91b6141740b009cb5df367013f744"
