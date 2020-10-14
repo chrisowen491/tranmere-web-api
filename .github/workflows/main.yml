@@ -33,14 +33,13 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: cloudflare worker
-        uses: cloudflare/serverless-action@master
+      - uses: cloudflare/wrangler-action@1.2.0
+        with:
+          apiKey: ${{ secrets.CLOUDFLARE_AUTH_KEY }}
+          workingDirectory: 'tranmere-web-api'
+          email: ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
+          secrets: |
+            APIKEY
         env:
-          CLOUDFLARE_ACCOUNT_ID : ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_ZONE_ID : ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          CLOUDFLARE_AUTH_EMAIL : ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
-          CLOUDFLARE_SCRIPT_NAME : "tranmere-web-api"
-          CLOUDFLARE_AUTH_KEY: ${{ secrets.CLOUDFLARE_AUTH_KEY }}
+          APIKEY: ${{ secrets.API_KEY }}
