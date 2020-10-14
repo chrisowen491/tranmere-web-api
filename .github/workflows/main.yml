@@ -39,3 +39,9 @@ jobs:
           apiKey: ${{ secrets.CLOUDFLARE_AUTH_KEY }}
           workingDirectory: 'tranmere-web-api'
           email: ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
+          secrets: |
+            APIKEY
+            APIKEY2
+        env:
+          APIKEY: ${{ secrets.API_KEY }}
+          APIKEY2: ${{ secrets.API_KEY }}
