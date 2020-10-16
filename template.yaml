@@ -219,33 +219,6 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
-            options:
-              consumes:
-                - application/json
-              produces:
-                - application/json
-              responses:
-                '200':
-                  description: 200 response
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: string
-                    Access-Control-Allow-Methods:
-                      type: string
-                    Access-Control-Allow-Headers:
-                      type: string
-              x-amazon-apigateway-integration:
-                responses:
-                  default:
-                    statusCode: 200
-                    responseParameters:
-                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
-                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,Accept,x-api-key'"
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
-                passthroughBehavior: when_no_match
-                requestTemplates:
-                  application/json: "{\"statusCode\": 200}"
-                type: mock
 
           "/contact-us":
             post:
@@ -453,6 +426,14 @@ Resources:
             Path: /player-search
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+        Cors:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /player-search
+            RestApiId: !Ref TranmereWebApiGateway
+            Method: options
+            Auth:
+              ApiKeyRequired: true
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
