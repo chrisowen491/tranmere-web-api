@@ -23,6 +23,8 @@ Resources:
     Properties:
       Name: TranmereWebApi Gateway
       StageName: Prod
+      Auth:
+        ApiKeyRequired: true
       Domain:
         DomainName: api.tranmere-web.com
         CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
@@ -217,6 +219,33 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PlayerSearchFunction.Arn}/invocations
+            options:
+              consumes:
+                - application/json
+              produces:
+                - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,Accept,x-api-key'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                type: mock
 
           "/contact-us":
             post:
@@ -421,8 +450,6 @@ Resources:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /player-search
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
@@ -445,8 +472,6 @@ Resources:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /page/{pageName}/{player}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
@@ -510,8 +535,6 @@ Resources:
         ContactRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /contact-us
             RestApiId: !Ref TranmereWebApiGateway
             Method: post
@@ -528,16 +551,12 @@ Resources:
         PlayerPostAPI:
           Type: Api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /api-player
             Method: POST
             RestApiId: !Ref TranmereWebApiGateway
         PlayerGetByNameAPI:
           Type: Api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /api-player/{name}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
@@ -558,8 +577,6 @@ Resources:
         GetResults:
           Type: Api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /result-search
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
@@ -608,8 +625,6 @@ Resources:
         GetProfile:
           Type: Api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /profile/{player}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
@@ -638,8 +653,6 @@ Resources:
         GetEntitiesByCategoryAPI:
           Type: Api
           Properties:
-            Auth:
-              ApiKeyRequired: true
             Path: /entities/{entity}/{category}/{attribute}
             Method: GET
             RestApiId: !Ref TranmereWebApiGateway
