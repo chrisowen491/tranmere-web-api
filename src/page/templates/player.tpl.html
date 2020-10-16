@@ -9,17 +9,17 @@
             <div class="col-7 text-white mb-md-0">
                 <div class="row gutter-2">
                     <div class="col">
-                        <h1 class="mb-3" itemprop="name" id="PlayerName">{{player.name}}</h1>
+                        <h1 class="mb-3" itemprop="name" id="PlayerName">{{name}}</h1>
                     </div>
                 </div>
             </div>
             <div class="col-5 pic">
-                {{#player.pic}}
-                <img src="{{player.pic}}" alt="Image" class="overlay-item-bottom">
-                {{/player.pic}}
-                {{^player.pic}}
+                {{#player.pic.fields.file.url}}
+                <img src="{{player.pic.fields.file.url}}" alt="Image" class="overlay-item-bottom">
+                {{/player.pic.fields.file.url}}
+                {{^player.pic.fields.file.url}}
                 <img src="/assets/shirts/blank.svg" alt="Image" class="overlay-item-bottom">
-                {{/player.pic}}
+                {{/player.pic.fields.file.url}}
             </div>
         </div>
     </div>
@@ -30,9 +30,15 @@
 <!-- listing inside -->
 <section class="overlay" id="profile">
     <div class="container">
-        <p>{{player.profile}}</p>
+        {{#player.biography.content}}
+            {{#content}}
+                <p>{{value}}</p>
+            {{/content}}
+        {{/player.biography.content}}
         <p><strong>Debut:</strong> {{debut.Opposition}} ({{debut.Date}})</p>
-        {{#player.dateOfBirth}}<p><strong>Born:</strong> {{player.dateOfBirth}}, {{player.placeOfBirth}} </p>{{/player.dateOfBirth}}
+        {{#player.dateOfBirth}}
+            <p><strong>Born:</strong> {{player.dateOfBirth}}, {{player.placeOfBirth}} </p>
+        {{/player.dateOfBirth}}
         <ul class="nav nav-tabs lavalamp mb-2" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="true">Stats</a>
@@ -87,10 +93,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{#transfers}}
+                    {{#player.transfers}}
                     <tr>
                         <td><small><time datetime="{{date}}" class="text-muted d-block">{{date}}</time></small></td>
-                        <td><small>{{^incoming}}<span class="icon-arrow-right text-danger"></span>{{/incoming}}{{#incoming}}<span class="icon-arrow-left text-success"></span>{{/incoming}}<a href="/teams/{{club}}.html">{{club}}</a></small></td>
+                        <td><small>{{^incoming}}<span class="icon-arrow-right text-danger"></span>{{/incoming}}{{#incoming}}<span class="icon-arrow-left text-success"></span>{{/incoming}}{{club}}</small></td>
                         <td><small>
                             {{^noFee}}
                             {{#currencyFormat}}{{fee}}{{/currencyFormat}}
@@ -98,17 +104,17 @@
                             {{#other}} {{type}} {{/other}}
                         </small></td>
                     </tr>
-                    {{/transfers}}
+                    {{/player.transfers}}
                 </table>
             </div>
             <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
                 <table class="table table-striped boxed">
                     <tbody>
-                    {{#links}}
+                    {{#player.links}}
                     <tr>
-                        <td><a href="{{link}}">{{type}}</a></td>
+                        <td><a href="{{.}}">{{.}}</a></td>
                     </tr>
-                    {{/links}}
+                    {{/player.links}}
                 </table>
             </div>
         </div>

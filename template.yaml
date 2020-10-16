@@ -256,63 +256,6 @@ Resources:
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
 
-          "/content-publication":
-            post:
-              tags:
-                - "utility"
-              summary: "Content update hook"
-              description: "Publish content to the website"
-              operationId: "contentUpdate"
-              consumes:
-                - "application/json"
-              produces:
-                - "application/json"
-              parameters:
-                - name: "body"
-                  in: "body"
-                  description: "The request body"
-                  required: true
-                  schema:
-                    type: object
-              responses:
-                "200":
-                  description: "Success"
-                  schema:
-                    type: object
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentPublicationFunction.Arn}/invocations
-
-          "/profile/{player}":
-            get:
-              tags:
-                - "players"
-              summary: "Get a summary of information about a single player"
-              description: "Get a summary of information about a single player"
-              operationId: "getProfile"
-              security:
-                - APIKeyHeader: []
-              produces:
-                - "application/json"
-              parameters:
-                - name: "player"
-                  in: "path"
-                  description: "The name of the player"
-                  required: true
-                  type: "string"
-              responses:
-                "200":
-                  description: "Success"
-                  schema:
-                    $ref: "#/definitions/Player"
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProfileFunction.Arn}/invocations
-
           "/entities/{entity}/{category}/{attribute}":
             get:
               tags:
@@ -463,8 +406,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -554,31 +495,6 @@ Resources:
       Layers:
         - !Ref TranmereWebCommonLayer
 
-  PlayerCRUDFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/crud/
-      Handler: app.playerHandler
-      Runtime: nodejs12.x
-      Events:
-        PlayerPostAPI:
-          Type: Api
-          Properties:
-            Path: /api-player
-            Method: POST
-            RestApiId: !Ref TranmereWebApiGateway
-        PlayerGetByNameAPI:
-          Type: Api
-          Properties:
-            Path: /api-player/{name}
-            Method: GET
-            RestApiId: !Ref TranmereWebApiGateway
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
-      Layers:
-        - !Ref TranmereWebCommonLayer
-
   ResultsSearchFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -622,36 +538,7 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
-      Layers:
-        - !Ref TranmereWebCommonLayer
 
-  ProfileFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/profile/
-      Handler: app.handler
-      Runtime: nodejs12.x
-      Tracing: Active
-      Events:
-        GetProfile:
-          Type: Api
-          Properties:
-            Path: /profile/{player}
-            Method: GET
-            RestApiId: !Ref TranmereWebApiGateway
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerLinks
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTransfers
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebApps
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerSeasonSummary
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -673,13 +560,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebMediaTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerLinks
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTransfers
-        - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebManagers
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebStars
         - DynamoDBCrudPolicy:
@@ -694,30 +575,6 @@ Resources:
             TableName: !Ref TranmereWebCompetitions
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
-      Layers:
-        - !Ref TranmereWebCommonLayer
-
-  ContentPublicationFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/content-publication/
-      Handler: app.handler
-      Runtime: nodejs12.x
-      Tracing: Active
-      Environment:
-        Variables:
-          CF_SPACE: !Ref 'CFSPACE'
-          CF_KEY: !Ref 'CFKEY'
-      Events:
-        PublishContent:
-          Type: Api
-          Properties:
-            Path: /content-publication
-            Method: POST
-            RestApiId: !Ref TranmereWebApiGateway
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -744,13 +601,7 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebMediaTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerLinks
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTransfers
-        - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebManagers
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebStars
         - DynamoDBCrudPolicy:
@@ -764,22 +615,6 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebCompetitions
 
-  TranmereWebPlayerTable:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: TranmereWebPlayerTable
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-        - AttributeName: name
-          AttributeType: S
-      KeySchema:
-        - AttributeName: name
-          KeyType: HASH
-        - AttributeName: id
-          KeyType: RANGE
-      BillingMode: PAY_PER_REQUEST
-
   TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -791,38 +626,6 @@ Resources:
           AttributeType: S
       KeySchema:
         - AttributeName: category
-          KeyType: HASH
-        - AttributeName: id
-          KeyType: "RANGE"
-      BillingMode: PAY_PER_REQUEST
-
-  TranmereWebPlayerLinks:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: TranmereWebPlayerLinks
-      AttributeDefinitions:
-        - AttributeName: name
-          AttributeType: S
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: name
-          KeyType: HASH
-        - AttributeName: id
-          KeyType: "RANGE"
-      BillingMode: PAY_PER_REQUEST
-
-  TranmereWebPlayerTransfers:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: TranmereWebPlayerTransfers
-      AttributeDefinitions:
-        - AttributeName: name
-          AttributeType: S
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: name
           KeyType: HASH
         - AttributeName: id
           KeyType: "RANGE"

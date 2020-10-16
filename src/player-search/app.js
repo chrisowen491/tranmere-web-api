@@ -3,14 +3,20 @@ const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
 const TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
+const contentful = require("contentful");
+const client = contentful.createClient({
+  space: process.env.CF_SPACE,
+  accessToken: process.env.CF_KEY
+});
 
 exports.handler = async function (event, context) {
     console.log('Received event:', event);
 
-    var squadSearch = await dynamo.scan({TableName:"TranmereWebPlayerTable"}).promise();
+    var squad = await client.getEntries({'content_type': 'player'});
+
     var playerHash = {};
-    for(var i=0; i < squadSearch.Items.length; i++) {
-        playerHash[squadSearch.Items[i].name] = squadSearch.Items[i];
+    for(var i=0; i < squad.items.length; i++) {
+        playerHash[squad.items[i].name] = squadSearch.Items[i];
     }
 
     var season = event.queryStringParameters ? event.queryStringParameters.season : null;
@@ -46,7 +52,7 @@ exports.handler = async function (event, context) {
 
     for(var x=0; x < results.length; x++ ) {
         delete results[x].TimeToLive;
-        results[x].bio = playerHash[results[x].Player];
+        results[x].bio = playerHash[results[x].fields];
     }
 
     if(sort == "Goals") {

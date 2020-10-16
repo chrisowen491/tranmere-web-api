@@ -1,3 +1,4 @@
+const AWS = require('aws-sdk');
 const AWSXRay = require('aws-xray-sdk');
 const http = require('http');
 const https = require('https');
@@ -24,10 +25,13 @@ const client = contentful.createClient({
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
     var playerName = event.pathParameters.player;
-    var content = await client.getEntry({
+    var content = await client.getEntries({
                                           'content_type': 'player',
-                                          'fields.name': playerName
+                                          'fields.name': decodeURIComponent(playerName)
                                         });
+    var playerBio = content && content.items && content.items[0] ? content.items[0].fields : {};
+    if(playerBio && playerBio.dateOfBirth)
+        playerBio.dateOfBirth = playerBio.dateOfBirth.substring(0, 10)
 
     var debutSearch = await dynamo.query(
         {
@@ -57,10 +61,13 @@ exports.handler = async function (event, context) {
         }).promise();
 
     var view = {
+        name: decodeURIComponent(playerName),
         debut: debutSearch.Items[0],
         seasons: summarySearch.Items,
-        player: content.fields
+        player: playerBio
     };
+
+    console.log(JSON.stringify(view));
     view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
     view.title = "Player Profile " + decodeURIComponent(playerName);
     view.pageType = "AboutPage";
