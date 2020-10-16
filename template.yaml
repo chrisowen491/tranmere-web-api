@@ -403,6 +403,10 @@ Resources:
             Path: /player-search
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
