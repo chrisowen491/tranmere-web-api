@@ -700,6 +700,9 @@ Resources:
             Path: /content-publication
             Method: POST
             RestApiId: !Ref TranmereWebApiGateway
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
       Layers:
         - !Ref TranmereWebCommonLayer
 
