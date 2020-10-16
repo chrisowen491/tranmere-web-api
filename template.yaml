@@ -251,6 +251,35 @@ Resources:
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
 
+          "/content-publication":
+            post:
+              tags:
+                - "utility"
+              summary: "Content update hook"
+              description: "Publish content to the website
+              operationId: "contentUpdate"
+              consumes:
+                - "application/json"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "body"
+                  in: "body"
+                  description: "The request body"
+                  required: true
+                  schema:
+                    type: object
+              responses:
+                "200":
+                  description: "Success"
+                  schema:
+                    type: object
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
+
           "/profile/{player}":
             get:
               tags:
@@ -654,6 +683,23 @@ Resources:
             TableName: !Ref TranmereWebCompetitions
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
+      Layers:
+        - !Ref TranmereWebCommonLayer
+
+  ContentPUblicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/content-publication/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Tracing: Active
+      Events:
+        PublishContent:
+          Type: Api
+          Properties:
+            Path: /content-publication
+            Method: POST
+            RestApiId: !Ref TranmereWebApiGateway
       Layers:
         - !Ref TranmereWebCommonLayer
 
