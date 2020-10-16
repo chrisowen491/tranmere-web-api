@@ -256,7 +256,7 @@ Resources:
               tags:
                 - "utility"
               summary: "Content update hook"
-              description: "Publish content to the website
+              description: "Publish content to the website"
               operationId: "contentUpdate"
               consumes:
                 - "application/json"
