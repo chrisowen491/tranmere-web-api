@@ -484,9 +484,15 @@ Resources:
             Method: get
       Environment:
         Variables:
-          APIKEY: !Ref 'APIKEY'
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'
       Layers:
         - !Ref TranmereWebCommonLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerSeasonSummary
 
   ScraperFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction

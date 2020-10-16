@@ -15,11 +15,14 @@ exports.handler = async function (event, context) {
 
     if(event.body) {
         var body = JSON.parse(event.body)
-
-        client
-          .getEntry(body.sys.id)
-          .then(entry => console.log(entry))
-          .catch(err => console.log(err));
+        var content = await client.getEntry(body.sys.id);
+        var player = constructPlayer(content);
+        if(body.sys.revision == 1) {
+            player.id = uuidv4();
+            await insertPlayer(player);
+        } else {
+            await updatePlayer(player);
+        }
     }
 
     return {
@@ -31,33 +34,28 @@ exports.handler = async function (event, context) {
 };
 
 function constructPlayer(obj) {
-    var player = {
-        name: obj.fields.name["en-US"],
-        dateOfBirth: obj.fields.dateOfBirth["en-US"],
-        id: uuidv4(),
-        profile: JSON.stringify(obj.fields.biography["en-US"].content)
-    };
+    var player = obj.fields;
+    player.profile = JSON.stringify(player.biography.content);
+    delete player.biography;
+    if(player.pic && player.pic.fields && player.pic.fields.file && player.pic.fields.file.url)
+        player.pic = player.pic.fields.file.url;
+    delete player.links;
     return player;
 }
 
-function insertPlayer(player){
+async function insertPlayer(player){
 	const params = {
 		TableName: TABLE_NAME,
 		Item: player
 	};
 
-	return dynamo
-		.put(params)
-		.promise()
-		.then((result) => {
-			return item;
-		}, (error) => {
-			return error;
-		});
+	return await dynamo.put(params).promise();
 }
 
-function updatePlayer(player){
+async function updatePlayer(player){
 
+	var name = player.name;
+	delete player.name;
 	let vbl = "x";
 	let adder = "y";
 	let updateexp = 'set ';
@@ -81,20 +79,12 @@ function updatePlayer(player){
 	const params = {
 		TableName: TABLE_NAME,
 		Key: {
-			name: player.name
+			name: name
 		},
-		ConditionExpression: 'attribute_exists(playerId)',
 		UpdateExpression: updateexp,
 		ExpressionAttributeValues: expattvalues,
 		ReturnValues: 'ALL_NEW'
 	};
 
-	return dynamo
-		.update(params)
-		.promise()
-		.then(response => {
-			return response.Attributes;
-		}, (error) => {
-			return error;
-		});
+	return await dynamo.update(params).promise();
 }
