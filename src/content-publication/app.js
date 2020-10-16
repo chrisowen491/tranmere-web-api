@@ -1,22 +1,25 @@
 const { v4: uuidv4 } = require('uuid');
 const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
+const contentful = require("contentful");
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
 const TABLE_NAME = 'TranmereWebPlayerTable';
+const client = contentful.createClient({
+  space: process.env.CF_SPACE,
+  accessToken: process.env.CF_KEY
+});
 
 exports.handler = async function (event, context) {
     console.log('Received event:', event);
 
     if(event.body) {
         var body = JSON.parse(event.body)
-        if(body.sys.ContentType.sys.id === "player" && body.sys.revision = 1) {
-            var player = constructPlayer(body);
-            await insertPlayer(player);
-        } else if(body.sys.ContentType.sys.id === "player") {
-            var player = constructPlayer(body);
-            await updatePlayer(player);
-        }
+
+        client
+          .getEntry(body.sys.id)
+          .then(entry => console.log(entry))
+          .catch(err => console.log(err));
     }
 
     return {

@@ -11,7 +11,12 @@ Parameters:
   APIKEY:
     Type: String
     Description: The api key
-
+  CFSPACE:
+    Type: String
+    Description: The contentful space
+  CFKEY:
+    Type: String
+    Description: The contentful key
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -693,6 +698,10 @@ Resources:
       Handler: app.handler
       Runtime: nodejs12.x
       Tracing: Active
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'
       Events:
         PublishContent:
           Type: Api

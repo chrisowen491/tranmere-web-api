@@ -25,7 +25,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
-          PARAMETER_OVERRIDES: Email=${{ secrets.CLOUDFLARE_AUTH_EMAIL }} APIKEY=${{ secrets.API_KEY }}
+          PARAMETER_OVERRIDES: Email=${{ secrets.CLOUDFLARE_AUTH_EMAIL }} APIKEY=${{ secrets.API_KEY }} CFSPACE=${{ secrets.CF_SPACE }} CFKEY=${{ secrets.CF_KEY }}
 
   deploy-cloudflare:
     # The type of runner that the job will run on
