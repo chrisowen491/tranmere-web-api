@@ -278,7 +278,7 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
-                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContentPublicationFunction.Arn}/invocations
 
           "/profile/{player}":
             get:
@@ -686,7 +686,7 @@ Resources:
       Layers:
         - !Ref TranmereWebCommonLayer
 
-  ContentPUblicationFunction:
+  ContentPublicationFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/content-publication/
