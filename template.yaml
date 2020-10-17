@@ -314,7 +314,7 @@ Resources:
                   description: "The attribute value to filter"
                   required: true
                   type: "string"
-                - name: "indexName"
+                - name: "index"
                   in: "query"
                   description: "An index to change the default sort "
                   required: false
@@ -675,7 +675,7 @@ Resources:
   TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebMediaTable
+      TableName: TranmereWebMediaSyncTable
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S
@@ -684,8 +684,6 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: category
-          KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
       GlobalSecondaryIndexes:
         - IndexName: ByCategoryIndex
