@@ -617,6 +617,8 @@ Resources:
             TableName: !Ref TranmereWebCompetitions
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
       Layers:
         - !Ref TranmereWebCommonLayer
 

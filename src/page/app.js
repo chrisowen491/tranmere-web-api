@@ -16,6 +16,7 @@ var utils = require('./libs/utils')(path,fs,Mustache);
 var pages = require('./pages.json');
 const SUMMARY_TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 const APPS_TABLE_NAME = "TranmereWebAppsTable";
+const PLAYER_TABLE_NAME = "TranmereWebPlayerTable";
 
 const client = contentful.createClient({
   space: process.env.CF_SPACE,
@@ -34,9 +35,9 @@ exports.handler = async function (event, context) {
                 "#name": "name"
             },
             ExpressionAttributeValues: {
-                ":name": decodeURIComponent(player),
+                ":name": decodeURIComponent(playerName),
             },
-            IndexName: ByNameIndex,
+            IndexName: "ByNameIndex",
             Limit : 1
         }).promise();
 
