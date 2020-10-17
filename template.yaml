@@ -256,7 +256,7 @@ Resources:
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
 
-          "/media-content-sync":
+          "/media-content-sync/{type}":
             post:
               tags:
                 - "utility"
