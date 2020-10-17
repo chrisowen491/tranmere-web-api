@@ -333,7 +333,7 @@ Resources:
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EntityFunction.Arn}/invocations
 
-          "/page/{pageName}/{player}":
+          "/page/{pageName}/{classifier}":
             get:
               tags:
                 - "utility"
