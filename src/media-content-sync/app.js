@@ -4,7 +4,6 @@ const AWS = require('aws-sdk');
 const contentful = require("contentful");
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
-const TABLE_NAME = 'TranmereWebMediaSyncTable';
 const client = contentful.createClient({
   space: process.env.CF_SPACE,
   accessToken: process.env.CF_KEY
@@ -12,17 +11,18 @@ const client = contentful.createClient({
 
 exports.handler = async function (event, context) {
     console.log('Received event:', event);
+    console.log(event.pathParameters.type);
 
     if(event.body) {
         var body = JSON.parse(event.body)
 
         if(body.sys.type === "Entry") {
-            var content = await client.getEntry(body.sys.id);
+            var content = await client.getEntry(body.sys.id, );
             var item = content.fields;
             item.id = body.sys.id;
-            await insertUpdateItem(item);
+            await insertUpdateItem(item, event.pathParameters.type);
         } else if(body.sys.type === "DeletedEntry"){
-            await deleteItem(body.sys.id);
+            await deleteItem(body.sys.id, event.pathParameters.type);
         }
     }
 
@@ -34,19 +34,19 @@ exports.handler = async function (event, context) {
      };
 };
 
-async function insertUpdateItem(item){
+async function insertUpdateItem(item, type){
 	const params = {
-		TableName: TABLE_NAME,
+		TableName: type,
 		Item: item
 	};
 
 	return await dynamo.put(params).promise();
 }
 
-async function deleteItem(id){
+async function deleteItem(id, type){
 	console.log(id);
 	const params = {
-		TableName: TABLE_NAME,
+		TableName: type,
 		Key:{
             "id": id
         },

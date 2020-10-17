@@ -25,13 +25,20 @@ const client = contentful.createClient({
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
     var playerName = event.pathParameters.player;
-    var content = await client.getEntries({
-                                          'content_type': 'player',
-                                          'fields.name': decodeURIComponent(playerName)
-                                        });
-    var playerBio = content && content.items && content.items[0] ? content.items[0].fields : {};
-    if(playerBio && playerBio.dateOfBirth)
-        playerBio.dateOfBirth = playerBio.dateOfBirth.substring(0, 10)
+
+    var playerSearch = await dynamo.query(
+        {
+            TableName: PLAYER_TABLE_NAME,
+            KeyConditionExpression: "#name = :name",
+            ExpressionAttributeNames:{
+                "#name": "name"
+            },
+            ExpressionAttributeValues: {
+                ":name": decodeURIComponent(player),
+            },
+            IndexName: ByNameIndex,
+            Limit : 1
+        }).promise();
 
     var debutSearch = await dynamo.query(
         {
@@ -64,7 +71,7 @@ exports.handler = async function (event, context) {
         name: decodeURIComponent(playerName),
         debut: debutSearch.Items[0],
         seasons: summarySearch.Items,
-        player: playerBio
+        player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null
     };
 
     console.log(JSON.stringify(view));

@@ -274,6 +274,11 @@ Resources:
                   required: true
                   schema:
                     type: object
+                - name: "type"
+                  in: "path"
+                  description: "The type of object to sync"
+                  required: true
+                  type: "string"
               responses:
                 "200":
                   description: "Success"
@@ -439,6 +444,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -467,6 +474,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
 
   ScraperFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -626,12 +635,17 @@ Resources:
         PublishContent:
           Type: Api
           Properties:
-            Path: /media-content-sync
+            Path: /media-content-sync/{type}
             Method: POST
             RestApiId: !Ref TranmereWebApiGateway
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebMediaTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebPlayerTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebStars
+
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -695,6 +709,29 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  TranmereWebPlayerTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebPlayerTable
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: name
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: ByNameIndex
+          KeySchema:
+            - AttributeName: name
+              KeyType: HASH
+            - AttributeName: id
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+
   TranmereWebManagers:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -746,17 +783,13 @@ Resources:
   TranmereWebStars:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebStars
+      TableName: TranmereWebStarsTable
       AttributeDefinitions:
-        - AttributeName: name
-          AttributeType: S
         - AttributeName: id
           AttributeType: S
       KeySchema:
-        - AttributeName: name
-          KeyType: HASH
         - AttributeName: id
-          KeyType: "RANGE"
+          KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
   TranmereWebGames:
