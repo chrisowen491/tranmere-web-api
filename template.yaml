@@ -681,8 +681,6 @@ Resources:
           AttributeType: S
         - AttributeName: id
           AttributeType: S
-        - AttributeName: published
-          AttributeType: N
       KeySchema:
         - AttributeName: id
           KeyType: HASH
