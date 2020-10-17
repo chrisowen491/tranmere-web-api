@@ -5,19 +5,20 @@ const https = require('https');
 AWSXRay.captureHTTPsGlobal(http);
 AWSXRay.captureHTTPsGlobal(https);
 
+
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
 
-const contentful = require("contentful");
 var Mustache = require("mustache");
 var fs = require("fs");
 var path = require('path');
 var utils = require('./libs/utils')(path,fs,Mustache);
+const contentful = require("contentful");
 var pages = require('./pages.json');
+var contentfulSDK = require('@contentful/rich-text-html-renderer');
 const SUMMARY_TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 const APPS_TABLE_NAME = "TranmereWebAppsTable";
 const PLAYER_TABLE_NAME = "TranmereWebPlayerTable";
-
 const client = contentful.createClient({
   space: process.env.CF_SPACE,
   accessToken: process.env.CF_KEY
@@ -25,62 +26,71 @@ const client = contentful.createClient({
 
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
-    var playerName = event.pathParameters.player;
+    var playerName = event.pathParameters.classifier;
+    var view = ""
 
-    var playerSearch = await dynamo.query(
-        {
-            TableName: PLAYER_TABLE_NAME,
-            KeyConditionExpression: "#name = :name",
-            ExpressionAttributeNames:{
-                "#name": "name"
-            },
-            ExpressionAttributeValues: {
-                ":name": decodeURIComponent(playerName),
-            },
-            IndexName: "ByNameIndex",
-            Limit : 1
-        }).promise();
+    if(pageName === "player") {
+        var playerSearch = await dynamo.query(
+            {
+                TableName: PLAYER_TABLE_NAME,
+                KeyConditionExpression: "#name = :name",
+                ExpressionAttributeNames:{
+                    "#name": "name"
+                },
+                ExpressionAttributeValues: {
+                    ":name": decodeURIComponent(playerName),
+                },
+                IndexName: "ByNameIndex",
+                Limit : 1
+            }).promise();
 
-    var debutSearch = await dynamo.query(
-        {
-            TableName: APPS_TABLE_NAME,
-            KeyConditionExpression: "#name = :name",
-            IndexName: "ByPlayerIndex",
-            ExpressionAttributeNames:{
-                "#name": "Name"
-            },
-            ExpressionAttributeValues: {
-                ":name": decodeURIComponent(playerName),
-            },
-            Limit : 1
-        }).promise();
+        var debutSearch = await dynamo.query(
+            {
+                TableName: APPS_TABLE_NAME,
+                KeyConditionExpression: "#name = :name",
+                IndexName: "ByPlayerIndex",
+                ExpressionAttributeNames:{
+                    "#name": "Name"
+                },
+                ExpressionAttributeValues: {
+                    ":name": decodeURIComponent(playerName),
+                },
+                Limit : 1
+            }).promise();
 
-    var summarySearch = await dynamo.query(
-        {
-            TableName: SUMMARY_TABLE_NAME,
-            KeyConditionExpression: "#player = :player",
-            IndexName: "ByPlayerIndex",
-            ExpressionAttributeNames:{
-                "#player": "Player"
-            },
-            ExpressionAttributeValues: {
-                ":player": decodeURIComponent(playerName),
-            }
-        }).promise();
+        var summarySearch = await dynamo.query(
+            {
+                TableName: SUMMARY_TABLE_NAME,
+                KeyConditionExpression: "#player = :player",
+                IndexName: "ByPlayerIndex",
+                ExpressionAttributeNames:{
+                    "#player": "Player"
+                },
+                ExpressionAttributeValues: {
+                    ":player": decodeURIComponent(playerName),
+                }
+            }).promise();
 
-    var view = {
-        name: decodeURIComponent(playerName),
-        debut: debutSearch.Items[0],
-        seasons: summarySearch.Items,
-        player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null
-    };
+        view = {
+            name: decodeURIComponent(playerName),
+            debut: debutSearch.Items[0],
+            seasons: summarySearch.Items,
+            player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null
+        };
 
-    console.log(JSON.stringify(view));
-    view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
-    view.title = "Player Profile " + decodeURIComponent(playerName);
-    view.pageType = "AboutPage";
-    view.description = "Player Profile for " + decodeURIComponent(playerName);
-    view.url = "/page/player/"+decodeURIComponent(playerName);
+        view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
+        view.title = "Player Profile " + decodeURIComponent(playerName);
+        view.pageType = "AboutPage";
+        view.description = "Player Profile for " + decodeURIComponent(playerName);
+        view.url = "/page/player/"+decodeURIComponent(playerName);
+    } else if(pageName === "blog") {
+        var content = await client.getEntry(blogId);
+        var view = content.fields;
+        view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
+        view.pageType = "AboutPage";
+        view.description = "Blog Page | " + content.fields.title;
+        view.blogContent = contentfulSDK.documentToHtmlString(content.fields.blog);
+    }
 
     var page = utils.buildPage(view, pages[pageName].template);
     return {

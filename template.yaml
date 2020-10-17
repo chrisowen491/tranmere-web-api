@@ -352,9 +352,9 @@ Resources:
                   type: "string"
                   enum:
                     - "player"
-                - name: "player"
+                - name: "classifier"
                   in: "path"
-                  description: "The name of the player"
+                  description: "The classifier of the page"
                   required: true
                   type: "string"
               responses:
@@ -460,7 +460,7 @@ Resources:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /page/{pageName}/{player}
+            Path: /page/{pageName}/{classifier}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
       Environment:
@@ -672,11 +672,7 @@ Resources:
         - S3ReadPolicy:
             BucketName: tranmere-web-csv-uploads
         - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebMediaTable
-        - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebManagers
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebStars
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebClubs
         - DynamoDBCrudPolicy:

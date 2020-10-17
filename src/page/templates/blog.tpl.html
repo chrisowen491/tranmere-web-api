@@ -1,0 +1,32 @@
+{{>head}}
+<body id="top" class="penpic">
+{{>homenav}}
+<!-- hero -->
+<section class="hero overlay">
+    <div class="image image-overlay" style="background-image:url({{{image}}})"></div>
+    <div class="container">
+        <div class="row align-items-end justify-content-between">
+            <div class="col-7 text-white mb-md-0">
+                <div class="row gutter-2">
+                    <div class="col">
+                        <h1 class="mb-3" >{{title}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / hero -->
+
+
+<!-- listing inside -->
+<section class="overlay" id="profile">
+    <div class="container">
+        {{blogContent}}
+    </div>
+
+</section>
+<!-- / listing inside -->
+{{>footer}}
+</body>
+</html>
