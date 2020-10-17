@@ -26,10 +26,11 @@ const client = contentful.createClient({
 
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
-    var playerName = event.pathParameters.classifier;
+    var classifier = event.pathParameters.classifier;
     var view = ""
 
     if(pageName === "player") {
+        var playerName = classifier;
         var playerSearch = await dynamo.query(
             {
                 TableName: PLAYER_TABLE_NAME,
@@ -84,6 +85,8 @@ exports.handler = async function (event, context) {
         view.description = "Player Profile for " + decodeURIComponent(playerName);
         view.url = "/page/player/"+decodeURIComponent(playerName);
     } else if(pageName === "blog") {
+        var blogId = classifier;
+        console.log(blogId);
         var content = await client.getEntry(blogId);
         var view = content.fields;
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
