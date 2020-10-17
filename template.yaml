@@ -682,7 +682,7 @@ Resources:
         - AttributeName: id
           AttributeType: S
         - AttributeName: published
-          AttributeType: S
+          AttributeType: N
       KeySchema:
         - AttributeName: id
           KeyType: HASH
@@ -694,7 +694,7 @@ Resources:
           KeySchema:
             - AttributeName: category
               KeyType: HASH
-            - AttributeName: published
+            - AttributeName: id
               KeyType: "RANGE"
           Projection:
             ProjectionType: ALL
