@@ -16,7 +16,8 @@ exports.handler = async function (event, context) {
 
     var playerHash = {};
     for(var i=0; i < squad.items.length; i++) {
-        playerHash[squad.items[i].name] = squadSearch.Items[i];
+        console.log(squad.items[i].fields.name);
+        playerHash[squad.items[i].fields.name] = squad.items[i].fields;
     }
 
     var season = event.queryStringParameters ? event.queryStringParameters.season : null;
@@ -52,7 +53,7 @@ exports.handler = async function (event, context) {
 
     for(var x=0; x < results.length; x++ ) {
         delete results[x].TimeToLive;
-        results[x].bio = playerHash[results[x].fields];
+        results[x].bio = playerHash[results[x].Player];
     }
 
     if(sort == "Goals") {

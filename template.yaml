@@ -256,6 +256,35 @@ Resources:
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ContactUsFunction.Arn}/invocations
 
+          "/media-content-sync":
+            post:
+              tags:
+                - "utility"
+              summary: "Content update hook"
+              description: "Publish content to the website"
+              operationId: "contentUpdate"
+              consumes:
+                - "application/json"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "body"
+                  in: "body"
+                  description: "The request body"
+                  required: true
+                  schema:
+                    type: object
+              responses:
+                "200":
+                  description: "Success"
+                  schema:
+                    type: object
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MediaContentSyncFunction.Arn}/invocations
+
           "/entities/{entity}/{category}/{attribute}":
             get:
               tags:
@@ -582,6 +611,30 @@ Resources:
       Layers:
         - !Ref TranmereWebCommonLayer
 
+  MediaContentSyncFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/media-content-sync/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Tracing: Active
+      Environment:
+        Variables:
+          CF_SPACE: !Ref 'CFSPACE'
+          CF_KEY: !Ref 'CFKEY'
+      Events:
+        PublishContent:
+          Type: Api
+          Properties:
+            Path: /media-content-sync
+            Method: POST
+            RestApiId: !Ref TranmereWebApiGateway
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebMediaTable
+      Layers:
+        - !Ref TranmereWebCommonLayer
+
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -622,18 +675,29 @@ Resources:
   TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebMediaTable
+      TableName: TranmereWebMediaSyncTable
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S
         - AttributeName: id
           AttributeType: S
+        - AttributeName: published
+          AttributeType: S
       KeySchema:
-        - AttributeName: category
-          KeyType: HASH
         - AttributeName: id
+          KeyType: HASH
+        - AttributeName: category
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: ByCategoryIndex
+          KeySchema:
+            - AttributeName: category
+              KeyType: HASH
+            - AttributeName: published
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
 
   TranmereWebManagers:
     Type: 'AWS::DynamoDB::Table'
