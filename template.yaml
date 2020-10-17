@@ -675,7 +675,7 @@ Resources:
   TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: TranmereWebMediaSyncTable
+      TableName: TranmereWebMediaTable
       AttributeDefinitions:
         - AttributeName: category
           AttributeType: S

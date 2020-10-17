@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 const contentful = require("contentful");
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
-const TABLE_NAME = 'TranmereWebMediaSyncTable';
+const TABLE_NAME = 'TranmereWebMediaTable';
 const client = contentful.createClient({
   space: process.env.CF_SPACE,
   accessToken: process.env.CF_KEY
