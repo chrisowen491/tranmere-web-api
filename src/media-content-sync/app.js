@@ -19,7 +19,7 @@ exports.handler = async function (event, context) {
         var content = await client.getEntry(body.sys.id);
         var item = content.fields;
         item.id = body.sys.id;
-        await insertItem(item);
+        await insertUpdateItem(item);
     }
 
     return {
@@ -30,47 +30,11 @@ exports.handler = async function (event, context) {
      };
 };
 
-function insertItem(item){
+async function insertUpdateItem(item){
 	const params = {
 		TableName: TABLE_NAME,
 		Item: item
 	};
 
 	return await dynamo.put(params).promise();
-}
-
-function updatePlayer(item){
-
-	let vbl = "x";
-	let adder = "y";
-	let updateexp = 'set ';
-	let itemKeys =  Object.keys(item);
-	let expattvalues = {};
-
-	for (let i = 0; i < itemKeys.length; i++) {
-		vbl = vbl+adder;
-
-		if((itemKeys.length-1)==i)
-			updateexp += itemKeys[i] + ' = :'+ vbl;
-		else
-			updateexp += itemKeys[i] + ' = :'+ vbl + ", ";
-
-		expattvalues[":"+vbl] = item[itemKeys[i]];
-	}
-
-	console.log("update expression and expressionAttributeValues");
-	console.log(updateexp, expattvalues);
-
-	const params = {
-		TableName: TABLE_NAME,
-		Key: {
-			id: item.id
-		},
-		ConditionExpression: 'attribute_exists(id)',
-		UpdateExpression: updateexp,
-		ExpressionAttributeValues: expattvalues,
-		ReturnValues: 'ALL_NEW'
-	};
-
-	return dynamo.update(params).promise();
 }
