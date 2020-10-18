@@ -109,7 +109,7 @@ exports.handler = async function (event, context) {
         view.random =  Math.ceil(Math.random() * 100000);
 
     } else if(pageName === "gallery") {
-
+        var content = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
         var gallerySearch = await dynamo.query(
             {
                 TableName: MEDIA_TABLE_NAME,
@@ -127,11 +127,43 @@ exports.handler = async function (event, context) {
             title: "Tranmere Rovers " + decodeURIComponent(classifier),
             pageType:"WebPage",
             description: `decodeURIComponent(classifier) Featuring Tranmere Rovers`,
-            carousel: gallerySearch.Items,
             blogs: content.items,
             random:  Math.ceil(Math.random() * 100000)
         };
+        var media = [];
 
+        for(var i=0; i < gallerySearch.Items.length; i++) {
+           var item = gallerySearch.Items[i];
+           var image = {
+             "bucket": "trfc-programmes",
+             "key": item.image,
+             "edits": {
+               "resize": {
+                 "height": 400,
+                 "fit": "contain"
+               }
+             }
+           };
+           var link = {
+                "bucket": "trfc-programmes",
+                "key": item.image,
+                "edits": {
+                 "resize": {
+                   "height": 1200,
+                   "fit": "contain"
+                 }
+               }
+           };
+           item.imagePath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(image)).toString('base64');
+           item.linkPath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(link)).toString('base64');
+           media.push(item)
+         }
+         media.sort(function(a, b) {
+           if (a.published < b.published) return -1
+           if (a.published > b.published) return 1
+           return 0
+         });
+        view.carousel = media;
     }
 
     var page = utils.buildPage(view, pages[pageName].template);
