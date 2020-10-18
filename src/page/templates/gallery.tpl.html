@@ -1,0 +1,50 @@
+{{>head}}
+  <body data-spy="scroll" data-target="#toc">
+
+  <!-- header -->
+  {{>homenav}}
+  <!-- / header -->
+
+  <!-- hero -->
+  {{>media-breadcrumb}}
+  <!-- / hero -->
+
+    <!-- sidebar layout -->
+    <section class="overlay">
+      <div class="container overlay-item-top">
+        <div class="row">
+          <div class="col">
+            <div class="content boxed">
+              <div class="row separated">
+
+                <!-- content -->
+                <article class="col-md-8 content-body">
+
+                  <div class="owl-carousel" data-margin="30" data-nav="true" data-center="true" data-dots="true" data-items="[3,2,1]">
+                    {{#carousel}}
+                    <figure class="photo">
+                      <a class="lightbox" href="{{linkPath}}" title="{{name}}">
+                        <img src="{{imagePath}}" alt="Image">
+                      </a>
+                    </figure>
+                    {{/carousel}}
+                  </div>
+
+                </article>
+                <!-- / content -->
+
+                <!-- sidebar -->
+                {{>recent}}
+                <!-- / sidebar -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- / sidebar layout -->
+
+    {{>footer}}
+  </body>
+</html>

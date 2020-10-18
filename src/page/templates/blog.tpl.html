@@ -1,17 +1,28 @@
 {{>head}}
-<body id="top" class="penpic">
+
+<body>
+
+<!-- header -->
 {{>homenav}}
+<!-- / header -->
+
 <!-- hero -->
-<section class="hero overlay">
-    <div class="image image-overlay" style="background-image:url({{{image}}})"></div>
+<section class="hero bg-blue overlay">
     <div class="container">
         <div class="row align-items-end justify-content-between">
-            <div class="col-7 text-white mb-md-0">
+            <div class="col-md-6 text-white mb-3 mb-md-0">
                 <div class="row gutter-2">
-                    <div class="col">
-                        <h1 class="mb-3" >{{title}}</h1>
+                    <div class="col-12">
+                        <h1 class="h2 font-weight-normal">{{title}}</h1>
+                        <h3 class="h3 font-weight-normal">{{datePosted}}</h3>
+                    </div>
+                    <div class="col-12">
+
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6 pl-md-5">
+                <img src="{{pic.fields.file.url}}" alt="Image" class="overlay-item-bottom">
             </div>
         </div>
     </div>
@@ -19,14 +30,25 @@
 <!-- / hero -->
 
 
-<!-- listing inside -->
-<section class="overlay" id="profile">
+<!-- categories -->
+<section class="bg-white">
     <div class="container">
-        {{blogContent}}
-    </div>
-
+        <div class="row">
+            <div class="col-12">
+                {{{blogContent}}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {{#tags}}
+                <span class="badge badge-primary">{{.}}</span>
+                {{/tags}}
+            </div>
+            </row>
+        </div>
 </section>
-<!-- / listing inside -->
+<!-- / categories -->
+
 {{>footer}}
 </body>
 </html>

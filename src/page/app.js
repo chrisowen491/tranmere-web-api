@@ -19,6 +19,7 @@ var contentfulSDK = require('@contentful/rich-text-html-renderer');
 const SUMMARY_TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 const APPS_TABLE_NAME = "TranmereWebAppsTable";
 const PLAYER_TABLE_NAME = "TranmereWebPlayerTable";
+const MEDIA_TABLE_NAME = "TranmereWebMediaSyncTable";
 const client = contentful.createClient({
   space: process.env.CF_SPACE,
   accessToken: process.env.CF_KEY
@@ -27,9 +28,18 @@ const client = contentful.createClient({
 exports.handler = async function (event, context) {
     var pageName = event.pathParameters.pageName;
     var classifier = event.pathParameters.classifier;
-    var view = ""
+    var view = {}
 
-    if(pageName === "player") {
+    if(pageName === "home") {
+        var content = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
+        view = {
+            title: "Home",
+            pageType:"WebPage",
+            description: "Tranmere-Web.com is a website full of data, statistics and information about Tranmere Rovers FC",
+            blogs: content.items,
+            random: Math.ceil(Math.random() * 100000)
+        };
+    } else if(pageName === "player") {
         var playerName = classifier;
         var playerSearch = await dynamo.query(
             {
@@ -76,7 +86,8 @@ exports.handler = async function (event, context) {
             name: decodeURIComponent(playerName),
             debut: debutSearch.Items[0],
             seasons: summarySearch.Items,
-            player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null
+            player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null,
+            random: Math.ceil(Math.random() * 100000)
         };
 
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
@@ -84,15 +95,43 @@ exports.handler = async function (event, context) {
         view.pageType = "AboutPage";
         view.description = "Player Profile for " + decodeURIComponent(playerName);
         view.url = "/page/player/"+decodeURIComponent(playerName);
+
     } else if(pageName === "blog") {
-        var blogId = classifier;
-        console.log(blogId);
+
+        var blogId = decodeURIComponent(classifier);
         var content = await client.getEntry(blogId);
+        console.log(JSON.stringify(content));
         var view = content.fields;
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
         view.pageType = "AboutPage";
         view.description = "Blog Page | " + content.fields.title;
         view.blogContent = contentfulSDK.documentToHtmlString(content.fields.blog);
+        view.random =  Math.ceil(Math.random() * 100000);
+
+    } else if(pageName === "gallery") {
+
+        var gallerySearch = await dynamo.query(
+            {
+                TableName: MEDIA_TABLE_NAME,
+                KeyConditionExpression: "#category = :category",
+                IndexName: "ByCategoryIndex",
+                ExpressionAttributeNames:{
+                    "#category": "category"
+                },
+                ExpressionAttributeValues: {
+                    ":category": decodeURIComponent(classifier),
+                }
+            }).promise();
+
+        var view = {
+            title: "Tranmere Rovers " + decodeURIComponent(classifier),
+            pageType:"WebPage",
+            description: `decodeURIComponent(classifier) Featuring Tranmere Rovers`,
+            carousel: gallerySearch.Items,
+            blogs: content.items,
+            random:  Math.ceil(Math.random() * 100000)
+        };
+
     }
 
     var page = utils.buildPage(view, pages[pageName].template);
@@ -105,7 +144,8 @@ exports.handler = async function (event, context) {
         "X-Xss-Protection" : "1; mode=block",
         "X-Frame-Options" : "DENY",
         "X-Content-Type-Options" : "nosniff",
-        "Referrer-Policy" : "strict-origin-when-cross-origin"
+        "Referrer-Policy" : "strict-origin-when-cross-origin",
+        "Cache-Control": "public"
      },
      "statusCode": 200,
      "body": page

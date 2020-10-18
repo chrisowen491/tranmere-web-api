@@ -4,5 +4,11 @@
   },
   "blog": {
     "template": "./templates/blog.tpl.html"
+  },
+  "home": {
+    "template": "./templates/home.tpl.html"
+  },
+  "gallery": {
+    "template": "./templates/gallery.tpl.html"
   }
 }
