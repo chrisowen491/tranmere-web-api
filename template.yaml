@@ -649,7 +649,6 @@ Resources:
             TableName: !Ref TranmereWebPlayerTable
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebStars
-
       Layers:
         - !Ref TranmereWebCommonLayer
 
@@ -685,6 +684,8 @@ Resources:
             TableName: !Ref TranmereWebApps
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebCompetitions
+      Layers:
+        - !Ref TranmereWebCommonLayer
 
   TranmereWebMediaTable:
     Type: 'AWS::DynamoDB::Table'
