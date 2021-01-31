@@ -498,7 +498,7 @@ Resources:
   KinesisConsumer:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/scraper/
+      CodeUri: src/consumer/
       Handler: app.handler
       Runtime: nodejs12.x
       Timeout: 10
