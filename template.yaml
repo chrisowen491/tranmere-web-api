@@ -516,7 +516,7 @@ Resources:
   stream:
     Type: AWS::Kinesis::Stream
     Properties:
-      Name : TranmereWebGamesStream,
+      Name : TranmereWebGamesStream
       ShardCount: 1
 
 
