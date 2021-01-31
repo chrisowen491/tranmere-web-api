@@ -55,7 +55,7 @@ exports.entityHandler = async function(event, context){
         results.push(match)
     }
 
-     if(sort && (decodeURIComponent(sort) == "Top Attendance")) {
+    if(sort && (decodeURIComponent(sort) == "Top Attendance")) {
         results.sort(function(a, b) {
           if (a.attendance < b.attendance) return 1
           if (a.attendance > b.attendance) return -1
@@ -136,7 +136,7 @@ async function getResults(season, competition, opposition, date, manager, venue,
         if(query) {
             params.KeyConditionExpression =  params.KeyConditionExpression + " and #date = :date";
         } else {
-            params.FilterExpression = params.FilterExpression ? " and #date = :date" : "#date = :date";
+            params.FilterExpression = params.FilterExpression ? params.FilterExpression + " and #date = :date" : "#date = :date";
         }
         params.ExpressionAttributeNames = {};
         params.ExpressionAttributeNames["#date"] = "date";
@@ -144,22 +144,22 @@ async function getResults(season, competition, opposition, date, manager, venue,
     }
 
     if(season && opposition) {
-        params.FilterExpression = params.FilterExpression ? " and opposition = :opposition" : "opposition = :opposition";
+        params.FilterExpression = params.FilterExpression ? params.FilterExpression + " and opposition = :opposition" : "opposition = :opposition";
         params.ExpressionAttributeValues[":opposition"] = decodeURIComponent(opposition);
     }
 
-    if(season && competition) {
-        params.FilterExpression = params.FilterExpression ? " and competition = :competition" : "competition = :competition";
+    if(season && competition || (!season && opposition && competition)) {
+        params.FilterExpression = params.FilterExpression ? params.FilterExpression + " and competition = :competition" : "competition = :competition";
         params.ExpressionAttributeValues[":competition"] = decodeURIComponent(competition);
     }
 
-    if(season && venue) {
-        params.FilterExpression = params.FilterExpression ? " and venue = :venue" : "venue = :venue";
+    if(season && venue || (competition && venue) || (opposition && venue)) {
+        params.FilterExpression = params.FilterExpression ? params.FilterExpression + " and venue = :venue" : "venue = :venue";
         params.ExpressionAttributeValues[":venue"] = decodeURIComponent(venue);
     }
 
     if(pens) {
-        params.FilterExpression = params.FilterExpression ? " and pens <> :pens" : "pens <> :pens";
+        params.FilterExpression = params.FilterExpression ? params.FilterExpression + " and pens <> :pens" : "pens <> :pens";
         params.ExpressionAttributeValues[":pens"] = "";
     }
 
@@ -168,7 +168,13 @@ async function getResults(season, competition, opposition, date, manager, venue,
         return result.Items;
     } else {
         var result = await dynamo.scan(params).promise();
-        return result.Items;
+        var items = result.Items;
+        if (typeof result.LastEvaluatedKey != "undefined") {
+            params.ExclusiveStartKey = result.LastEvaluatedKey;
+            var nextResults = await dynamo.scan(params).promise();
+            items = items.concat(nextResults.Items);
+        }
+        return items;
     }
 };
 
