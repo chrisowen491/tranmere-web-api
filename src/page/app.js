@@ -134,6 +134,7 @@ exports.handler = async function (event, context) {
 
         for(var i=0; i < gallerySearch.Items.length; i++) {
            var item = gallerySearch.Items[i];
+           console.log(gallerySearch.Items[i]);
            var image = {
              "bucket": "trfc-programmes",
              "key": item.image,
