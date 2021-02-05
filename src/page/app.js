@@ -134,29 +134,34 @@ exports.handler = async function (event, context) {
 
         for(var i=0; i < gallerySearch.Items.length; i++) {
            var item = gallerySearch.Items[i];
-           console.log(gallerySearch.Items[i]);
-           var image = {
-             "bucket": "trfc-programmes",
-             "key": item.image,
-             "edits": {
-               "resize": {
-                 "height": 400,
-                 "fit": "contain"
-               }
-             }
-           };
-           var link = {
-                "bucket": "trfc-programmes",
-                "key": item.image,
-                "edits": {
-                 "resize": {
-                   "height": 1200,
-                   "fit": "contain"
+
+           if(gallerySearch.Items[i].cmsImage) {
+                item.imagePath = gallerySearch.Items[i].cmsImage.fields.file.url;
+                item.linkPath = gallerySearch.Items[i].cmsImage.fields.file.url;
+           } else {
+               var image = {
+                 "bucket": "trfc-programmes",
+                 "key": item.image,
+                 "edits": {
+                   "resize": {
+                     "height": 400,
+                     "fit": "contain"
+                   }
                  }
-               }
-           };
-           item.imagePath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(image)).toString('base64');
-           item.linkPath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(link)).toString('base64');
+               };
+               var link = {
+                    "bucket": "trfc-programmes",
+                    "key": item.image,
+                    "edits": {
+                     "resize": {
+                       "height": 1200,
+                       "fit": "contain"
+                     }
+                   }
+               };
+               item.imagePath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(image)).toString('base64');
+               item.linkPath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(link)).toString('base64');
+           }
            media.push(item)
          }
          media.sort(function(a, b) {

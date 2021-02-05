@@ -17,6 +17,15 @@ Parameters:
   CFKEY:
     Type: String
     Description: The contentful key
+  SCRAPESEASON:
+    Type: String
+    Description: The scrape season
+  SCRAPEID:
+    Type: String
+    Description: The scrape season id
+  SCRAPEURL:
+    Type: String
+    Description: The scrape URL
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -485,6 +494,11 @@ Resources:
       CodeUri: src/scraper/
       Handler: app.handler
       Runtime: nodejs12.x
+      Environment:
+        Variables:
+          SCRAPE_ID: !Ref 'SCRAPEID'
+          SCRAPE_SEASON: !Ref 'SCRAPESEASON'
+          SCRAPE_URL: !Ref 'SCRAPEURL'
       Events:
         PageRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -492,6 +506,13 @@ Resources:
             Path: /scraper/{season}/{id}
             RestApiId: !Ref TranmereWebApiGateway
             Method: get
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGames
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebApps
       Layers:
         - !Ref TranmereWebCommonLayer
 
