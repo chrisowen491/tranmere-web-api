@@ -1,5 +1,27 @@
 const cheerio = require('cheerio');
 const moment = require('moment');
+const { v4: uuidv4 } = require('uuid');
+
+function extractExtraFromHTML (html, date, competition, season, match) {
+  const $ = cheerio.load(html);
+
+  const homeTeam = $('span.teamA').text().trim().replace(/\s\d+/, '');
+  const homeScore = $('span.teamA em').text().trim().replace(/\s\d+/, '');
+  const awayTeam = $('span.teamB').text().trim().replace(/\d+\s/, '');
+  const awayScore = $('span.teamB em').text().trim().replace(/\s\d+/, '');
+
+  match.home = homeTeam == "Tranmere" ? "Tranmere Rovers" : homeTeam;
+  match.visitor = awayTeam == "Tranmere" ? "Tranmere Rovers" : homeTeam;
+  match.opposition = awayTeam == "Tranmere" ? homeTeam : awayTeam;
+  match.venue = homeTeam == "Tranmere" ? "Prenton Park" : "Unknown";
+  match.static = "static";
+  match.season = season;
+  match.hgoal = homeScore;
+  match.vgoal = awayScore;
+  match.ft = homeScore + '-' +awayScore
+
+  return match;
+}
 
 function extractSquadFromHTML (html, date, competition, season) {
   const $ = cheerio.load(html);
@@ -19,6 +41,7 @@ function extractSquadFromHTML (html, date, competition, season) {
 
     for(var i=0; i < minute.length; i ++) {
         var goal = {
+            id: uuidv4(),
             Date: date,
             Opposition: awayTeam == "Tranmere" ? homeTeam : awayTeam,
             Competition:  competition,
@@ -74,6 +97,7 @@ function extractSquadFromHTML (html, date, competition, season) {
         }
 
         var app = {
+            id: uuidv4(),
             Date: date,
             Opposition: awayTeam == "Tranmere" ? homeTeam : awayTeam,
             Competition:  competition,
@@ -108,7 +132,7 @@ function extractSquadFromHTML (html, date, competition, season) {
     }
   });
 
-  return {goals: goals, apps: apps, home: homeTeam, away: awayTeam};
+  return {goals: goals, apps: apps};
 }
 
 function extractMatchesFromHTML (html) {
@@ -159,9 +183,11 @@ function extractMatchesFromHTML (html) {
     }
 
     var match = {
-        id : $(el).attr('id').replace('tgc',''),
+        scrape_id : $(el).attr('id').replace('tgc',''),
+        id: uuidv4(),
         date: dateMatch[0],
-        comp: comp
+        competition: comp,
+        programme: "#N/A"
     };
     games.push(match);
   });
@@ -620,11 +646,18 @@ function translatePlayerName(input) {
         'H McGahey':'Harrison McGahey',
         'J Mooney':'Jason Mooney',
         'Jonathon Margetts':'JonnyMargetts',
+        'D Lloyd':'Danny Lloyd',
+        'K Woolery':'Kaiyne Woolery',
+        'P Lewis':'Paul Lewis',
+        'O Khan':'Otis Khan',
+        'N Kirby':'Nya Kirby',
+        'C MacDonald':'Calum MacDonald',
+        "L O'Connor": "Lee O'Connor"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
 }
 
 module.exports = {
-  extractSquadFromHTML, extractMatchesFromHTML
+  extractSquadFromHTML, extractMatchesFromHTML, extractExtraFromHTML
 };

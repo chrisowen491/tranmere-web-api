@@ -34,6 +34,13 @@ module.exports = function (path, fs, Mustache) {
          buildPage: function (view, pageTpl) {
             var pageHTML = Mustache.render(fs.readFileSync(pageTpl).toString(), view, this.loadSharedPartials());
             return pageHTML;
-         }
+         },
+         renderFragment : function(view, templateKey) {
+            if(view.chart) {
+                view.chart = JSON.stringify(view.chart);
+            }
+            var tpl = `./templates/partials/${templateKey}.partial.mustache`;
+            return Mustache.render(fs.readFileSync(tpl).toString(), view, this.loadSharedPartials());
+         },
     };
 };

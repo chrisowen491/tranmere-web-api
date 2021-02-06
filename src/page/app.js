@@ -95,19 +95,49 @@ exports.handler = async function (event, context) {
         view.pageType = "AboutPage";
         view.description = "Player Profile for " + decodeURIComponent(playerName);
         view.url = "/page/player/"+decodeURIComponent(playerName);
-
     } else if(pageName === "blog") {
-
         var blogId = decodeURIComponent(classifier);
         var content = await client.getEntry(blogId);
-        console.log(JSON.stringify(content));
+        var blogs = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
         var view = content.fields;
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
         view.pageType = "AboutPage";
         view.description = "Blog Page | " + content.fields.title;
         view.blogContent = contentfulSDK.documentToHtmlString(content.fields.blog);
         view.random =  Math.ceil(Math.random() * 100000);
+        view.blogs = blogs.items;
+        if(view.gallery) {
+             view.carousel = [];
+             for(var i=0; i < view.gallery.length; i++) {
 
+                var image = {
+                    imagePath: view.gallery[i].fields.file.url,
+                    linkPath: view.gallery[i].fields.file.url,
+                    name: view.gallery[i].fields.title,
+                    description: view.gallery[i].fields.description
+                }
+
+                view.carousel.push(image);
+            }
+            pageName = "gallery";
+            delete view.gallery;
+        }
+
+        if(view.blocks) {
+            var blockContent = "";
+            for(var b=0; b < view.blocks.length; b++) {
+                blockContent = blockContent + "\n" + utils.renderFragment(view.blocks[b].fields, view.blocks[b].sys.contentType.sys.id);
+            }
+            view.blockHTML = blockContent;
+        }
+
+        if(view.cardBlocks) {
+            var blockContent = "";
+            for(var b=0; b<view.cardBlocks.length; b++) {
+                blockContent = blockContent + "\n" + utils.renderFragment(view.cardBlocks[b].fields, view.cardBlocks[b].sys.contentType.sys.id);
+            }
+            view.cardBlocksHTML = blockContent;
+        }
     } else if(pageName === "gallery") {
         var content = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
         var gallerySearch = await dynamo.query(
