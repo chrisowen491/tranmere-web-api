@@ -33,10 +33,10 @@ exports.handler = async function (event, context) {
         if(!found) {
             var apps = extractSquadFromHTML(res.data, matches[i].date, matches[i].comp, theSeason);
             for(var y=0; y < apps.apps.length; y++) {
-                //await insertUpdateItem(apps.apps[y], "TranmereWebAppsTable");
+                await insertUpdateItem(apps.apps[y], "TranmereWebAppsTable");
             }
             for(var y=0; y < apps.goals.length; y++) {
-                //await insertUpdateItem(apps.goals[y], "TranmereWebGoalsTable");
+                await insertUpdateItem(apps.goals[y], "TranmereWebGoalsTable");
             }
             delete matches[i].scrape_id;
             matches[i] = extractExtraFromHTML(res.data, matches[i].date, matches[i].comp, theSeason, matches[i]);

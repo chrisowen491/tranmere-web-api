@@ -95,11 +95,25 @@ exports.handler = async function (event, context) {
         view.pageType = "AboutPage";
         view.description = "Player Profile for " + decodeURIComponent(playerName);
         view.url = "/page/player/"+decodeURIComponent(playerName);
+    } else if(pageName === "tag") {
+        var tagId = decodeURIComponent(classifier);
+        var items = await client.getEntries({'fields.tag': tagId, 'content_type': 'blogPost', order: '-fields.datePosted'});
+        var blogs = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
+
+        view = {
+            items: items.items,
+            pageType: "SearchResultsPage",
+            title: "All blogs for " + tagId,
+            description: "All blogs for " + tagId,
+            view.random =  Math.ceil(Math.random() * 100000),
+            view.blogs = blogs.items
+        }
+
     } else if(pageName === "blog") {
         var blogId = decodeURIComponent(classifier);
         var content = await client.getEntry(blogId);
         var blogs = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
-        var view = content.fields;
+        view = content.fields;
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
         view.pageType = "AboutPage";
         view.description = "Blog Page | " + content.fields.title;

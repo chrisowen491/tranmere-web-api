@@ -1,57 +1,43 @@
 {{>head}}
-
-<body>
+<body data-spy="scroll" data-target="#toc">
 
 <!-- header -->
 {{>homenav}}
 <!-- / header -->
 
 <!-- hero -->
-<section class="hero bg-blue overlay">
-    <div class="container">
-        <div class="row align-items-end justify-content-between">
-            <div class="col-md-6 text-white mb-3 mb-md-0">
-                <div class="row gutter-2">
-                    <div class="col-12">
-                        <h1 class="h2 font-weight-normal">{{title}}</h1>
-                        <h3 class="h3 font-weight-normal">{{datePosted}}</h3>
-                    </div>
-                    <div class="col-12">
+{{>media-breadcrumb}}
+<!-- / hero -->
+
+<!-- sidebar layout -->
+<section class="overlay">
+    <div class="container overlay-item-top">
+        <div class="row">
+            <div class="col">
+                <div class="content boxed">
+                    <div class="row separated">
+
+                        <!-- content -->
+                        <article class="col-md-8 content-body">
+
+                            {{#items}}
+                            {{.}}
+                            {{/items}}
+                        </article>
+                        <!-- / content -->
+
+                        <!-- sidebar -->
+                        {{>recent}}
+                        <!-- / sidebar -->
 
                     </div>
+
                 </div>
-            </div>
-            <div class="col-md-6 pl-md-5">
-                <img src="{{pic.fields.file.url}}" alt="Image" class="overlay-item-bottom">
             </div>
         </div>
     </div>
 </section>
-<!-- / hero -->
-
-
-<!-- categories -->
-<section class="bg-white">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                {{{blogContent}}}
-                {{{blockHTML}}}
-            </div>
-        </div>
-        <div class="row gutter-2">
-            {{{cardBlocksHTML}}}
-        </div>
-        <div class="row">
-            <div class="col-12">
-                {{#tags}}
-                <span class="badge badge-primary">{{.}}</span>
-                {{/tags}}
-            </div>
-            </row>
-        </div>
-</section>
-<!-- / categories -->
+<!-- / sidebar layout -->
 
 {{>footer}}
 </body>

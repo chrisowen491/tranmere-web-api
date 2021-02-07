@@ -652,7 +652,9 @@ function translatePlayerName(input) {
         'O Khan':'Otis Khan',
         'N Kirby':'Nya Kirby',
         'C MacDonald':'Calum MacDonald',
-        "L O'Connor": "Lee O'Connor"
+        "L O'Connor": "Lee O'Connor",
+        "J Spearing": "Jay Spearing",
+        "L Feeney": "Liam Feeney",
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();

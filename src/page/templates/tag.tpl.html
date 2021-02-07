@@ -1,0 +1,65 @@
+{{>head}}
+
+<body>
+
+<!-- header -->
+{{>homenav}}
+<!-- / header -->
+
+<!-- hero -->
+<section class="hero bg-blue overlay">
+    <div class="container">
+        <div class="row align-items-end justify-content-between">
+            <div class="col-md-6 text-white mb-3 mb-md-0">
+                <div class="row gutter-2">
+                    <div class="col-12">
+                        <h1 class="h2 font-weight-normal">{{title}}</h1>
+                        {{#datePosted}}<h3 class="h3 font-weight-normal">{{datePosted}}</h3>{{/datePosted}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-md-5">
+                {{#pic}}
+                <img src="{{pic.fields.file.url}}?h=300" alt="Image" class="overlay-item-bottom" style="margin-bottom: -6.2rem;">
+                {{/pic}}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- / hero -->
+
+
+<!-- categories -->
+<div class="bg-white">
+    <div class="container">
+        <div class="row">
+            <article class="col-md-8 content-body">
+                <div class="row">
+                    <div class="col-12">
+                        {{{blogContent}}}
+                        {{{blockHTML}}}
+                    </div>
+                </div>
+                <div class="row gutter-2">
+                    {{{cardBlocksHTML}}}
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{#tags}}
+                        <span class="badge badge-primary">{{.}}</span>
+                        {{/tags}}
+                    </div>
+                    </row>
+                </div>
+            </article>
+            <!-- sidebar -->
+            {{>recent}}
+            <!-- / sidebar -->
+        </div>
+    </div>
+</div>
+<!-- / categories -->
+
+{{>footer}}
+</body>
+</html>

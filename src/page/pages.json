@@ -10,5 +10,8 @@
   },
   "gallery": {
     "template": "./templates/gallery.tpl.html"
+  },
+  "tag": {
+    "template": "./templates/tag.tpl.html"
   }
 }
