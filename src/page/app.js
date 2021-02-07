@@ -87,17 +87,17 @@ exports.handler = async function (event, context) {
             debut: debutSearch.Items[0],
             seasons: summarySearch.Items,
             player: playerSearch.Items.length == 1 ? playerSearch.Items[0] : null,
-            random: Math.ceil(Math.random() * 100000)
+            random: Math.ceil(Math.random() * 100000),
+            url: `/page/${pageName}/${classifier}`
         };
 
         view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
         view.title = "Player Profile " + decodeURIComponent(playerName);
         view.pageType = "AboutPage";
         view.description = "Player Profile for " + decodeURIComponent(playerName);
-        view.url = "/page/player/"+decodeURIComponent(playerName);
     } else if(pageName === "tag") {
         var tagId = decodeURIComponent(classifier);
-        var items = await client.getEntries({'fields.tag': tagId, 'content_type': 'blogPost', order: '-fields.datePosted'});
+        var items = await client.getEntries({'fields.tags': tagId, 'content_type': 'blogPost', order: '-fields.datePosted'});
         var blogs = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
 
         view = {
@@ -105,21 +105,28 @@ exports.handler = async function (event, context) {
             pageType: "SearchResultsPage",
             title: "All blogs for " + tagId,
             description: "All blogs for " + tagId,
-            view.random =  Math.ceil(Math.random() * 100000),
-            view.blogs = blogs.items
+            random: Math.ceil(Math.random() * 100000),
+            blogs: blogs.items,
+            url: `/page/${pageName}/${classifier}`,
         }
 
     } else if(pageName === "blog") {
         var blogId = decodeURIComponent(classifier);
         var content = await client.getEntry(blogId);
         var blogs = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
+        let options = {
+          renderNode: {
+            'embedded-asset-block': (node) =>
+              `<img src="${node.data.target.fields.file.url}?h=400"/>`
+          }
+        }
         view = content.fields;
-        view.image = utils.buildImagePath("photos/kop.jpg", 1920,1080)
         view.pageType = "AboutPage";
         view.description = "Blog Page | " + content.fields.title;
-        view.blogContent = contentfulSDK.documentToHtmlString(content.fields.blog);
+        view.blogContent = contentfulSDK.documentToHtmlString(content.fields.blog, options);
         view.random =  Math.ceil(Math.random() * 100000);
         view.blogs = blogs.items;
+        view.url =  `/page/${pageName}/${classifier}`;
         if(view.gallery) {
              view.carousel = [];
              for(var i=0; i < view.gallery.length; i++) {
@@ -152,68 +159,6 @@ exports.handler = async function (event, context) {
             }
             view.cardBlocksHTML = blockContent;
         }
-    } else if(pageName === "gallery") {
-        var content = await client.getEntries({'content_type': 'blogPost', order: '-fields.datePosted'});
-        var gallerySearch = await dynamo.query(
-            {
-                TableName: MEDIA_TABLE_NAME,
-                KeyConditionExpression: "#category = :category",
-                IndexName: "ByCategoryIndex",
-                ExpressionAttributeNames:{
-                    "#category": "category"
-                },
-                ExpressionAttributeValues: {
-                    ":category": decodeURIComponent(classifier),
-                }
-            }).promise();
-
-        var view = {
-            title: "Tranmere Rovers " + decodeURIComponent(classifier),
-            pageType:"WebPage",
-            description: `decodeURIComponent(classifier) Featuring Tranmere Rovers`,
-            blogs: content.items,
-            random:  Math.ceil(Math.random() * 100000)
-        };
-        var media = [];
-
-        for(var i=0; i < gallerySearch.Items.length; i++) {
-           var item = gallerySearch.Items[i];
-
-           if(gallerySearch.Items[i].cmsImage) {
-                item.imagePath = gallerySearch.Items[i].cmsImage.fields.file.url;
-                item.linkPath = gallerySearch.Items[i].cmsImage.fields.file.url;
-           } else {
-               var image = {
-                 "bucket": "trfc-programmes",
-                 "key": item.image,
-                 "edits": {
-                   "resize": {
-                     "height": 400,
-                     "fit": "contain"
-                   }
-                 }
-               };
-               var link = {
-                    "bucket": "trfc-programmes",
-                    "key": item.image,
-                    "edits": {
-                     "resize": {
-                       "height": 1200,
-                       "fit": "contain"
-                     }
-                   }
-               };
-               item.imagePath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(image)).toString('base64');
-               item.linkPath = "https://images.tranmere-web.com/" + Buffer.from(JSON.stringify(link)).toString('base64');
-           }
-           media.push(item)
-         }
-         media.sort(function(a, b) {
-           if (a.published < b.published) return -1
-           if (a.published > b.published) return 1
-           return 0
-         });
-        view.carousel = media;
     }
 
     var page = utils.buildPage(view, pages[pageName].template);
