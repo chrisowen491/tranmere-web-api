@@ -13,10 +13,10 @@ exports.handler = (event, context, callback) => {
                  readTimeout: 5,
                  keepaliveTimeout: 5,
                  customHeaders: {
-                    "x-api-key": "Ubz2w38CTS18anpiEApqf1pBWayHRcmLz5fKyyW4"
                  }
              }
          };
+         request.headers['x-api-key'] = [{ key: 'x-api-key', value: 'Ubz2w38CTS18anpiEApqf1pBWayHRcmLz5fKyyW4'}];
          request.headers['host'] = [{ key: 'host', value: 'api.tranmere-web.com'}];
     }
     callback(null, request);
