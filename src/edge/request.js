@@ -1,7 +1,8 @@
 exports.handler = (event, context, callback) => {
      const request = event.Records[0].cf.request;
 
-     if (request.uri.startsWith("/page") || request.uri.startsWith("/player-search") || request.uri.startsWith("/result-search")) {
+     if (request.uri.startsWith("/page") || request.uri.startsWith("/player-search")
+        || request.uri.startsWith("/result-search") || request.uri.startsWith("/contact-us")) {
          if(!request.uri.startsWith("/player-search.html")) {
              /* Set custom origin fields*/
              request.origin = {
