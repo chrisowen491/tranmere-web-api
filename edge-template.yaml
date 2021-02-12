@@ -31,14 +31,14 @@ Resources:
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
 
-    EdgeFunction:
-      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-      Properties:
-        CodeUri: src/edge/
-        Handler: app.handler
-        Runtime: nodejs12.x
-        Role: !GetAtt LambdaEdgeFunctionRole.Arn
-        AutoPublishAlias: live
+  EdgeFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/edge/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt LambdaEdgeFunctionRole.Arn
+      AutoPublishAlias: live
 
   LambdaEdgeFunctionRole:
     Type: AWS::IAM::Role

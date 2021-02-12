@@ -970,55 +970,6 @@ Resources:
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
 
-  cdn:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        DefaultCacheBehavior:
-          Compress: true
-          TargetOriginId: AmplifyMaster
-          ViewerProtocolPolicy: redirect-to-https
-          LambdaFunctionAssociations:
-            - EventType: origin-request
-              LambdaFunctionARN: !GetAtt EdgeFunction.VersionArn
-        DefaultRootObject: index.html
-        Enabled: true
-        Origins:
-          - DomainName: master.dj8vrlzimytqk.amplifyapp.com
-            Id: AmplifyMaster
-            CustomOriginConfig:
-              OriginProtocolPolicy: https-only
-
-    EdgeFunction:
-      Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-      Properties:
-        CodeUri: src/edge/
-        Handler: app.handler
-        Runtime: nodejs12.x
-        Role: !GetAtt LambdaEdgeFunctionRole.Arn
-        AutoPublishAlias: live
-
-  LambdaEdgeFunctionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      Path: /
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          -
-            Sid: AllowLambdaServiceToAssumeRole
-            Effect: Allow
-            Action:
-              - sts:AssumeRole
-            Principal:
-              Service:
-                - "lambda.amazonaws.com"
-                - "edgelambda.amazonaws.com"
-
-
 Outputs:
   ContactUsFunction:
     Description: "Contact Us Lambda Function ARN"
