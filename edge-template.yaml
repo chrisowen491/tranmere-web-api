@@ -28,6 +28,8 @@ Resources:
           LambdaFunctionAssociations:
             - EventType: origin-response
               LambdaFunctionARN: !Ref EdgeFunction.Version
+            - EventType: origin-request
+              LambdaFunctionARN: !Ref EdgeRequestFunction.Version
         DefaultRootObject: index.html
         Enabled: true
         Origins:
@@ -41,6 +43,15 @@ Resources:
     Properties:
       CodeUri: src/edge/
       Handler: app.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt LambdaEdgeFunctionRole.Arn
+      AutoPublishAlias: live
+
+  EdgeRequestFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/edge/
+      Handler: request.handler
       Runtime: nodejs12.x
       Role: !GetAtt LambdaEdgeFunctionRole.Arn
       AutoPublishAlias: live
