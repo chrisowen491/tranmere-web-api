@@ -22,7 +22,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: origin-response
-              LambdaFunctionARN: !GetAtt EdgeFunction.VersionArn
+              LambdaFunctionARN: !Ref EdgeFunction
         DefaultRootObject: index.html
         Enabled: true
         Origins:
