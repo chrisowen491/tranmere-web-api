@@ -1,8 +1,14 @@
-exports.handler = (event, context, callback) => {
+const request = require('axios');
+const AWSXRay = require('aws-xray-sdk');
+
+exports.handler = async function (event, context) {
 
     //Get contents of response
-    const response = event.Records[0].cf.response;
-    const headers = response.headers;
+    var response = event.Records[0].cf.response;
+    var headers = response.headers;
+
+    var nav = await request.get('https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/6744cd2b68566b4ac15c443033ab1423/homenav.txt')
+    response.body = response.body.replace(/NAV_BAR_PLACEHOLDER/g, nav.data);
 
     //Set new headers
     headers['strict-transport-security'] = [{key: 'Strict-Transport-Security', value: 'max-age= 63072000; includeSubdomains; preload'}];
@@ -13,5 +19,5 @@ exports.handler = (event, context, callback) => {
     headers['referrer-policy'] = [{key: 'Referrer-Policy', value: 'same-origin'}];
 
     //Return modified response
-    callback(null, response);
+    return response;
 };
