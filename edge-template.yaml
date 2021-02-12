@@ -26,7 +26,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: origin-response
-              LambdaFunctionARN: !Ref EdgeFunction
+              LambdaFunctionARN: !Ref VersionedEdgeLambda
         DefaultRootObject: index.html
         Enabled: true
         Origins:
@@ -34,6 +34,11 @@ Resources:
             Id: AmplifyMaster
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
+
+  VersionedEdgeLambda:
+    Type: 'AWS::Lambda::Version'
+    Properties:
+      FunctionName: !Ref EdgeFunction
 
   EdgeFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
