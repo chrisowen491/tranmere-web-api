@@ -18,9 +18,12 @@ exports.handler = async function (event, context) {
         });
     });
 
-    if(response.body)
-        response.body = response.body.replace(/NAV_BAR_PLACEHOLDER/g, nav_bar);
-
+    console.log(response);
+    console.log(response.body);
+    if(response.body) {
+        var output = response.body.replace(/NAV_BAR_PLACEHOLDER/g, nav_bar);
+        response.body = output;
+    }
     //Set new headers
     headers['strict-transport-security'] = [{key: 'Strict-Transport-Security', value: 'max-age= 63072000; includeSubdomains; preload'}];
     //headers['content-security-policy'] = [{key: 'Content-Security-Policy', value: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'"}];
