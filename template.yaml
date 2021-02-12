@@ -8,9 +8,6 @@ Parameters:
   Email:
     Type: String
     Description: The email address to send contact to
-  APIKEY:
-    Type: String
-    Description: The api key
   CFSPACE:
     Type: String
     Description: The contentful space

@@ -20,7 +20,7 @@ Resources:
         DefaultCacheBehavior:
           Compress: true
           ForwardedValues:
-            QueryString: 'false'
+            QueryString: 'true'
             Cookies:
               Forward: none
           TargetOriginId: AmplifyMaster
