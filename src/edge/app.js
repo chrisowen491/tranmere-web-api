@@ -18,7 +18,8 @@ exports.handler = async function (event, context) {
         });
     });
 
-    response.body = response.body.replace(/NAV_BAR_PLACEHOLDER/g, nav_bar);
+    if(response.body)
+        response.body = response.body.replace(/NAV_BAR_PLACEHOLDER/g, nav_bar);
 
     //Set new headers
     headers['strict-transport-security'] = [{key: 'Strict-Transport-Security', value: 'max-age= 63072000; includeSubdomains; preload'}];
