@@ -12,14 +12,6 @@ Globals:
 
 Resources:
 
-  TranmereWebCommonLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      Description: 'Common code used by lambdas'
-      ContentUri: src/common-layer/
-      CompatibleRuntimes:
-        - nodejs12.x
-
   cdn:
     Type: AWS::CloudFront::Distribution
     DependsOn: EdgeFunction
@@ -52,8 +44,6 @@ Resources:
       Runtime: nodejs12.x
       Role: !GetAtt LambdaEdgeFunctionRole.Arn
       AutoPublishAlias: live
-      Layers:
-        - !Ref TranmereWebCommonLayer
 
   LambdaEdgeFunctionRole:
     Type: AWS::IAM::Role
