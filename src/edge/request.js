@@ -12,7 +12,9 @@ exports.handler = (event, context, callback) => {
                  sslProtocols: ['TLSv1', 'TLSv1.1'],
                  readTimeout: 5,
                  keepaliveTimeout: 5,
-                 customHeaders: {}
+                 customHeaders: {
+                    "x-api-key", "Ubz2w38CTS18anpiEApqf1pBWayHRcmLz5fKyyW4"
+                 }
              }
          };
          request.headers['host'] = [{ key: 'host', value: 'api.tranmere-web.com'}];
