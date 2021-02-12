@@ -11,8 +11,8 @@ exports.handler = (event, context, callback) => {
                      protocol: 'https',
                      path: '',
                      sslProtocols: ['TLSv1', 'TLSv1.1'],
-                     readTimeout: 5,
-                     keepaliveTimeout: 5,
+                     readTimeout: 20,
+                     keepaliveTimeout: 20,
                      customHeaders: {
                      }
                  }
