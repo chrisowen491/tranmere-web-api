@@ -8,7 +8,7 @@ exports.handler = async function (event, context) {
 
     let dataString = '';
     const nav_bar = await new Promise((resolve, reject) => {
-        const req = https.get("'https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/6744cd2b68566b4ac15c443033ab1423/homenav.txt", function(res) {
+        const req = https.get("https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/6744cd2b68566b4ac15c443033ab1423/homenav.txt", function(res) {
           res.on('data', chunk => {
             dataString += chunk;
           });
