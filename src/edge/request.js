@@ -13,7 +13,7 @@ exports.handler = (event, context, callback) => {
                  readTimeout: 5,
                  keepaliveTimeout: 5,
                  customHeaders: {
-                    "x-api-key", "Ubz2w38CTS18anpiEApqf1pBWayHRcmLz5fKyyW4"
+                    "x-api-key": "Ubz2w38CTS18anpiEApqf1pBWayHRcmLz5fKyyW4"
                  }
              }
          };
