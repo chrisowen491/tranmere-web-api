@@ -18,6 +18,10 @@ Resources:
       DistributionConfig:
         DefaultCacheBehavior:
           Compress: true
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: none
           TargetOriginId: AmplifyMaster
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
