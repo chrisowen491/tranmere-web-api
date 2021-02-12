@@ -32,11 +32,17 @@ Resources:
               LambdaFunctionARN: !Ref EdgeRequestFunction.Version
         DefaultRootObject: index.html
         Enabled: true
+        Aliases:
+          - master.tranmere-web.com
         Origins:
           - DomainName: master.dj8vrlzimytqk.amplifyapp.com
             Id: AmplifyMaster
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/113546fb-bd96-438c-9cba-98a208268206
+          MinimumProtocolVersion: TLSv1.1_2016
+          SslSupportMethod: sni-only
 
   EdgeFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
