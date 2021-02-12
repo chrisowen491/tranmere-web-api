@@ -19,7 +19,7 @@ Resources:
       ContentUri: src/common-layer/
       CompatibleRuntimes:
         - nodejs12.x
-        -
+
   cdn:
     Type: AWS::CloudFront::Distribution
     DependsOn: EdgeFunction
