@@ -512,29 +512,29 @@ Resources:
       Layers:
         - !Ref TranmereWebCommonLayer
 
-  KinesisConsumer:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/consumer/
-      Handler: app.handler
-      Runtime: nodejs12.x
-      Timeout: 10
-      Tracing: Active
-      Events:
-        Stream:
-          Type: Kinesis
-          Properties:
-            Stream: !GetAtt stream.Arn
-            BatchSize: 100
-            StartingPosition: LATEST
-      Layers:
-        - !Ref TranmereWebCommonLayer
+  #KinesisConsumer:
+  #  Type: AWS::Serverless::Function
+  #  Properties:
+  #    CodeUri: src/consumer/
+  #    Handler: app.handler
+  #    Runtime: nodejs12.x
+  #    Timeout: 10
+  #    Tracing: Active
+  #    Events:
+  #      Stream:
+  #        Type: Kinesis
+  #        Properties:
+  #          Stream: !GetAtt stream.Arn
+  #          BatchSize: 100
+  #          StartingPosition: LATEST
+  #    Layers:
+  #      - !Ref TranmereWebCommonLayer
 
-  stream:
-    Type: AWS::Kinesis::Stream
-    Properties:
-      Name : TranmereWebGamesStream
-      ShardCount: 1
+  #stream:
+  #  Type: AWS::Kinesis::Stream
+  #  Properties:
+  #    Name : TranmereWebGamesStream
+  #    ShardCount: 1
 
 
   PlayerBuilderFunction:
