@@ -5,12 +5,6 @@ Description: >
 
   Sam scripts for tranmere-web
 Parameters:
-  CFSPACE:
-    Type: String
-    Description: The contentful space
-  CFKEY:
-    Type: String
-    Description: The contentful key
   SCRAPESEASON:
     Type: String
     Description: The scrape season
@@ -26,148 +20,6 @@ Globals:
     Timeout: 600
 
 Resources:
-  TranmereWebApiGateway:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: TranmereWebApi Gateway
-      StageName: Prod
-      Auth:
-        ApiKeyRequired: true
-      Domain:
-        DomainName: api.tranmere-web.com
-        CertificateArn: arn:aws:acm:us-east-1:559251280975:certificate/f3059bff-501c-4efc-83ea-21d9bc0f2500
-        EndpointConfiguration: EDGE
-      Cors:
-        AllowMethods: "'POST, GET'"
-        AllowHeaders: "'Content-Type, x-api-key'"
-        AllowOrigin: "'https://portal.tranmere-web.com'"
-        MaxAge: "'600'"
-      GatewayResponses:
-        UNAUTHORIZED:
-          StatusCode: 401
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        ACCESS_DENIED:
-          StatusCode: 403
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        INVALID_API_KEY:
-          StatusCode: 200
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-              Access-Control-Allow-Headers: "'x-api-key,content-type'"
-        MISSING_AUTHENTICATION_TOKEN:
-          StatusCode: 403
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        DEFAULT_5XX:
-          StatusCode: 500
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        RESOURCE_NOT_FOUND:
-          StatusCode: 404
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-      DefinitionBody:
-        swagger: "2.0"
-        info:
-          description: "This api used to get access to the raw data that powers the site."
-          version: "1.0"
-          title:
-            Ref: AWS::StackName
-        securityDefinitions:
-          APIKeyHeader:
-            type: "apiKey"
-            name: "x-api-Key"
-            in: "header"
-
-        tags:
-          - name: "utility"
-            description: "Utility APIs generally not useful to external users"
-        paths:
-
-          "/media-content-sync/{type}":
-            post:
-              tags:
-                - "utility"
-              summary: "Content update hook"
-              description: "Publish content to the website"
-              operationId: "contentUpdate"
-              consumes:
-                - "application/json"
-              produces:
-                - "application/json"
-              parameters:
-                - name: "body"
-                  in: "body"
-                  description: "The request body"
-                  required: true
-                  schema:
-                    type: object
-                - name: "type"
-                  in: "path"
-                  description: "The type of object to sync"
-                  required: true
-                  type: "string"
-              responses:
-                "200":
-                  description: "Success"
-                  schema:
-                    type: object
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MediaContentSyncFunction.Arn}/invocations
-
-          "/entities/{entity}/{category}/{attribute}":
-            get:
-              tags:
-                - "utility"
-              summary: "Simple utility API to return entities from the database"
-              description: "Simple utility API to return entities from the database"
-              operationId: "entitySearch"
-              security:
-                - APIKeyHeader: []
-              produces:
-                - "application/json"
-              parameters:
-                - name: "entity"
-                  in: "path"
-                  description: "The name of the entity to search"
-                  required: true
-                  type: "string"
-                  enum:
-                    - "player"
-                - name: "category"
-                  in: "path"
-                  description: "The name of the attribute to filter on"
-                  required: true
-                  type: "string"
-                - name: "attribute"
-                  in: "path"
-                  description: "The attribute value to filter"
-                  required: true
-                  type: "string"
-                - name: "index"
-                  in: "query"
-                  description: "An index to change the default sort "
-                  required: false
-                  type: "string"
-              responses:
-                "200":
-                  description: "Success"
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EntityFunction.Arn}/invocations
 
   TranmereWebCommonLayer:
     Type: AWS::Serverless::LayerVersion
@@ -188,13 +40,6 @@ Resources:
           SCRAPE_ID: !Ref 'SCRAPEID'
           SCRAPE_SEASON: !Ref 'SCRAPESEASON'
           SCRAPE_URL: !Ref 'SCRAPEURL'
-      Events:
-        PageRequest:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /scraper/{season}/{id}
-            RestApiId: !Ref TranmereWebApiGateway
-            Method: get
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebGames
@@ -224,72 +69,6 @@ Resources:
             TableName: !Ref TranmereWebGoals
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
-      Layers:
-        - !Ref TranmereWebCommonLayer
-
-  EntityFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/entities/
-      Handler: app.entityHandler
-      Runtime: nodejs12.x
-      Tracing: Active
-      Events:
-        GetEntitiesByCategoryAPI:
-          Type: Api
-          Properties:
-            Path: /entities/{entity}/{category}/{attribute}
-            Method: GET
-            RestApiId: !Ref TranmereWebApiGateway
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebMediaTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebManagers
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebStars
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebClubs
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGames
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGoals
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebApps
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebCompetitions
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerSeasonSummary
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
-      Layers:
-        - !Ref TranmereWebCommonLayer
-
-  MediaContentSyncFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/media-content-sync/
-      Handler: app.handler
-      Runtime: nodejs12.x
-      Tracing: Active
-      Environment:
-        Variables:
-          CF_SPACE: !Ref 'CFSPACE'
-          CF_KEY: !Ref 'CFKEY'
-      Events:
-        PublishContent:
-          Type: Api
-          Properties:
-            Path: /media-content-sync/{type}
-            Method: POST
-            RestApiId: !Ref TranmereWebApiGateway
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebMediaTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebStars
       Layers:
         - !Ref TranmereWebCommonLayer
 

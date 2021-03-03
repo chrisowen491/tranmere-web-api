@@ -19,7 +19,7 @@ async function handleRequest(event) {
         }
       }
 
-      if(url.pathname.startsWith("/player-search")|| url.pathname.startsWith("/result-search")) {
+      if(url.pathname.startsWith("/player-search") || url.pathname.startsWith("/result-search") || url.pathname.startsWith("/builder")) {
         url.host = "api.ci1.tranmere-web.com"
       }
 

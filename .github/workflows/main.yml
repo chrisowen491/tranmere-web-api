@@ -25,23 +25,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
-          PARAMETER_OVERRIDES: CFSPACE=${{ secrets.CF_SPACE }} CFKEY=${{ secrets.CF_KEY }} SCRAPESEASON=${{ secrets.SCRAPE_SEASON }} SCRAPEID=${{ secrets.SCRAPE_ID }} SCRAPEURL=${{ secrets.SCRAPE_URL }}
-
-  deploy-cdn:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: src/common-layer/nodejs
-      - uses: falnyr/aws-sam-deploy-action@v1.0.0
-        env:
-          TEMPLATE: 'edge-template.yaml'
-          AWS_STACK_NAME: Tranmere-Web-CDN
-          AWS_REGION: 'us-east-1'
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEPLOY_BUCKET: tranmere-web-cdn
+          PARAMETER_OVERRIDES: SCRAPESEASON=${{ secrets.SCRAPE_SEASON }} SCRAPEID=${{ secrets.SCRAPE_ID }} SCRAPEURL=${{ secrets.SCRAPE_URL }}
 
   deploy-cloudflare:
     # The type of runner that the job will run on
