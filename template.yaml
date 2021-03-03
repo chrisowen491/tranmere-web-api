@@ -565,11 +565,3 @@ Resources:
         - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
-
-Outputs:
-  ContactUsFunction:
-    Description: "Contact Us Lambda Function ARN"
-    Value: !GetAtt ContactUsFunction.Arn
-  ContactUsFunctionIamRole:
-    Description: "Implicit IAM Role created for Contact Us function"
-    Value: !GetAtt ContactUsFunctionRole.Arn
