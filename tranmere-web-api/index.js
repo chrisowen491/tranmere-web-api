@@ -12,32 +12,36 @@ async function handleRequest(event) {
 
       let url = new URL(event.request.url)
 
-      if(url.pathname === "/" || url.pathname.startsWith("/page") || url.pathname.startsWith("/player-search")|| url.pathname.startsWith("/result-search")) {
-        url.host = "api.tranmere-web.com"
+      if(url.pathname === "/" || url.pathname.startsWith("/page")) {
+        url.host = "api.ci1.tranmere-web.com"
         if(url.pathname === "/") {
             url.pathname = "/page/home/home"
         }
       }
 
+      if(url.pathname.startsWith("/player-search")|| url.pathname.startsWith("/result-search")) {
+        url.host = "api.ci1.tranmere-web.com"
+      }
+
       if(url.pathname === "/media.html") {
         url.pathname = "/page/blog/7wtrOLaYqaK7Dhvodz1Gv0";
-        url.host = "api.tranmere-web.com";
+        url.host = "api.ci1.tranmere-web.com";
       }
 
       if(url.pathname === "/about.html") {
         url.pathname = "/page/blog/2oXtDQNbfluRQk5jWbyCu7";
-        url.host = "api.tranmere-web.com";
+        url.host = "api.ci1.tranmere-web.com";
       }
 
 
       if(url.pathname === "/super-stars.html") {
         url.pathname = "/page/blog/4EZzxJSam4dohEgD1sOmki";
-        url.host = "api.tranmere-web.com";
+        url.host = "api.ci1.tranmere-web.com";
       }
 
       if(url.pathname === "/stats.html") {
         url.pathname = "/page/blog/2VrsLTKALyi2vgAQMLDoIT";
-        url.host = "api.tranmere-web.com";
+        url.host = "api.ci1.tranmere-web.com";
       }
 
     let request = new Request(url, event.request)
@@ -54,13 +58,15 @@ async function handleRequest(event) {
     // Must use Response constructor to inherit all of response's fields
     response = new Response(amendedBody, response)
 
-    // Cache API respects Cache-Control headers. Setting max-age to 10
-    // will limit the response to be in cache for 10 seconds max
-    response.headers.append("Cache-Control", "max-age=86400")
+    if(response.status != 500) {
+        // Cache API respects Cache-Control headers. Setting max-age to 10
+        // will limit the response to be in cache for 10 seconds max
+        response.headers.append("Cache-Control", "max-age=86400")
 
-    // Store the fetched response as cacheKey
-    // Use waitUntil so computational expensive tasks don"t delay the response
-    event.waitUntil(cache.put(cacheKey, response.clone()))
+        // Store the fetched response as cacheKey
+        // Use waitUntil so computational expensive tasks don"t delay the response
+        event.waitUntil(cache.put(cacheKey, response.clone()))
+    }
   }
   return response
 }

@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 AWSXRay.captureAWSClient(dynamo.service);
 const request = require('axios');
-XLSX = require('xlsx');
 const {extractSquadFromHTML} = require('./helpers');
 const {extractMatchesFromHTML} = require('./helpers');
 const {extractExtraFromHTML} = require('./helpers');

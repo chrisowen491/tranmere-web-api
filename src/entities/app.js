@@ -39,7 +39,6 @@ function getEntitiesByCategoryFromDb(category, attribute, entity, index) {
             TableName : entity
         };
 
-
         return dynamo
             .scan(params)
             .promise()

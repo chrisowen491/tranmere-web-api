@@ -47,9 +47,9 @@ function extractSquadFromHTML (html, date, competition, season) {
             Competition:  competition,
             Season: season,
             Scorer: translatePlayerName(text.match(minRegex)[0]),
-            Assist: null,
-            GoalType: null,
-            AssistType: null,
+            //Assist: null,
+            GoalType: '',
+            //AssistType: null,
             Minute: minute[i],
         }
 
@@ -656,7 +656,8 @@ function translatePlayerName(input) {
         "J Spearing": "Jay Spearing",
         "L Feeney": "Liam Feeney",
         "A Crawford": "Ali Crawford",
-        "C Jolley": "Charlie Jolley"
+        "C Jolley": "Charlie Jolley",
+        "D Nugent": "David Nugent"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
