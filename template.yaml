@@ -45,6 +45,7 @@ Resources:
       CodeUri: src/
       Handler: scraper.handler
       Runtime: nodejs14.x
+      MemorySize: 256
       Environment:
         Variables:
           SCRAPE_ID: !Ref 'SCRAPEID'
