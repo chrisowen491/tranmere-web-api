@@ -21,6 +21,17 @@ Parameters:
   SCRAPEURL:
     Type: String
     Description: The scrape URL
+  EnvName:
+    Type: String
+    Default: sit1
+    Description: The name of the environment to deploy to
+    AllowedValues:
+      - local
+      - ci1
+      - sit1
+      - pre1
+      - prod1
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
