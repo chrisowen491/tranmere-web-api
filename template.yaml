@@ -31,8 +31,8 @@ Resources:
   ScraperFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: src/scraper/
-      Handler: app.handler
+      CodeUri: src/
+      Handler: scraper.handler
       Runtime: nodejs14.x
       Environment:
         Variables:
@@ -50,8 +50,8 @@ Resources:
   UpdateSummariesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/updateJob/
-      Handler: app.handler
+      CodeUri: src/
+      Handler: updateJob.handler
       Runtime: nodejs14.x
       Tracing: Active
       Events:
@@ -75,8 +75,8 @@ Resources:
   UploadFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/upload/
-      Handler: app.mediaHandler
+      CodeUri: src/
+      Handler: upload.mediaHandler
       Runtime: nodejs14.x
       Events:
         UploadMediaEvent:

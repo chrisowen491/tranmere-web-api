@@ -1,7 +1,5 @@
-const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-AWSXRay.captureAWSClient(dynamo.service);
 const request = require('axios');
 const {extractSquadFromHTML} = require('./helpers');
 const {extractMatchesFromHTML} = require('./helpers');

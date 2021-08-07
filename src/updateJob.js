@@ -1,7 +1,5 @@
-const AWSXRay = require('aws-xray-sdk');
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
-AWSXRay.captureAWSClient(dynamo.service);
 const TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 
 exports.handler = async function (event, context) {
