@@ -660,7 +660,18 @@ function translatePlayerName(input) {
         "L Feeney": "Liam Feeney",
         "A Crawford": "Ali Crawford",
         "C Jolley": "Charlie Jolley",
-        "D Nugent": "David Nugent"
+        "D Nugent": "David Nugent",
+        "C Merrie": "Chris Merrie",
+        "R Watson": "Ryan Watson",
+        "C McManaman": "Callum McManaman",
+        "P Glatzel": "Paul Glatzel",
+        "T Davies": "Tom Davies",
+        "E Dieseruvwe": "Emmanuel Dieseruvwe",
+        "J Maguire": "Joe Maguire",
+        "S Foley": "Sam Foley",
+        "J Dacres-Cogley": "Josh Dacres-Cogley",
+        "E Nevitt": "Elliott Nevitt",
+        "R Doohan": "Ross Doohan"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
