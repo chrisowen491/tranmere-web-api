@@ -11,7 +11,7 @@ function extractExtraFromHTML (html, date, competition, season, match) {
   const awayScore = $('span.teamB em').text().trim().replace(/\s\d+/, '');
 
   match.home = homeTeam == "Tranmere" ? "Tranmere Rovers" : homeTeam;
-  match.visitor = awayTeam == "Tranmere" ? "Tranmere Rovers" : homeTeam;
+  match.visitor = awayTeam == "Tranmere" ? "Tranmere Rovers" : awayTeam;
   match.opposition = awayTeam == "Tranmere" ? homeTeam : awayTeam;
   match.venue = homeTeam == "Tranmere" ? "Prenton Park" : "Unknown";
   match.static = "static";
@@ -163,7 +163,7 @@ function extractMatchesFromHTML (html) {
     } else if(comp.indexOf('League Two') > 0) {
         comp = "League"
     } else if(comp.indexOf('Football League Trophy') > 0) {
-        comp = "EFL Trophy"
+        comp = "FL Trophy"
     } else if(comp.indexOf('National League') > 0) {
         comp = "Conference"
     } else if(comp.indexOf('Play') > 0) {
@@ -179,7 +179,9 @@ function extractMatchesFromHTML (html) {
     } else if(comp.indexOf('Carling Cup') > 0) {
         comp = "League Cup"
     } else if(comp.indexOf('JP Trophy') > 0) {
-        comp = "EFL Trophy"
+        comp = "FL Trophy"
+    } else if(comp.indexOf('EFL Trophy') > 0) {
+        comp = "FL Trophy"
     }
 
     var match = {
@@ -187,7 +189,8 @@ function extractMatchesFromHTML (html) {
         id: uuidv4(),
         date: dateMatch[0],
         competition: comp,
-        programme: "#N/A"
+        programme: "#N/A",
+        pens: null
     };
     games.push(match);
   });

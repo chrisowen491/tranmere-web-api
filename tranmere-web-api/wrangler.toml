@@ -9,7 +9,8 @@ routes = [
             "www.tranmere-web.com/page/*",
             "www.tranmere-web.com/player-search*",
             "www.tranmere-web.com/result-search*",
-            "www.tranmere-web.com/builder*"
+            "www.tranmere-web.com/builder*",
+            "www.tranmere-web.com/match*"
 
         ]
 zone_id = "8bd91b6141740b009cb5df367013f744"

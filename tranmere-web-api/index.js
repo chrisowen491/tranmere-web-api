@@ -19,7 +19,7 @@ async function handleRequest(event) {
         }
       }
 
-      if(url.pathname.startsWith("/player-search") || url.pathname.startsWith("/result-search") || url.pathname.startsWith("/builder")) {
+      if(url.pathname.startsWith("/player-search") || url.pathname.startsWith("/result-search") || url.pathname.startsWith("/builder")|| url.pathname.startsWith("/match") || url.pathname.startsWith("/contact-us")) {
         url.host = "api.ci1.tranmere-web.com"
       }
 
@@ -44,13 +44,22 @@ async function handleRequest(event) {
         url.host = "api.ci1.tranmere-web.com";
       }
 
-    let request = new Request(url, event.request)
-    request.headers.set("x-api-key", APIKEY)
+      if(url.pathname.startsWith("/graphql")) {
+        url.host = "tgzafameebdujmbaw4tdkuaiku.appsync-api.eu-west-1.amazonaws.com";
+      }
+
+      let request = new Request(url, event.request)
+
+      if(url.pathname.startsWith("/graphql")) {
+        request.headers.set("x-api-key", "da2-uaiu6wz4gjeetknxcdq5bf7bo4")
+      } else {
+        request.headers.set("x-api-key", APIKEY)
+      }
 
     // If not in cache, get it from origin
     response = await fetch(request)
 
-    nav_response = await fetch(new Request('https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/6744cd2b68566b4ac15c443033ab1423/homenav.txt'))
+    nav_response = await fetch(new Request('https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/594b7a14e4725933dbe773ede46d9b76/homenav.txt'))
     let nav_text = await nav_response.text();
     var amendedBody = await response.text()
     amendedBody = amendedBody.replace(/NAV_BAR_PLACEHOLDER/g, nav_text);
