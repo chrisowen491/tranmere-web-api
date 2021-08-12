@@ -190,7 +190,7 @@ function extractMatchesFromHTML (html) {
         date: dateMatch[0],
         competition: comp,
         programme: "#N/A",
-        pens: null
+        pens: ""
     };
     games.push(match);
   });
