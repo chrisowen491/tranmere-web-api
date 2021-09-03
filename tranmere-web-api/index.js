@@ -59,7 +59,7 @@ async function handleRequest(event) {
     // If not in cache, get it from origin
     response = await fetch(request)
 
-    nav_response = await fetch(new Request('https://assets.ctfassets.net/pz711f8blqyy/547b8bDM4xu8mCXujlZJpm/594b7a14e4725933dbe773ede46d9b76/homenav.txt'))
+    nav_response = await fetch(new Request('https://raw.githubusercontent.com/chrisowen491/tranmere-web/master/tranmere-web/templates/partials/homenav.partial.mustache'))
     let nav_text = await nav_response.text();
     var amendedBody = await response.text()
     amendedBody = amendedBody.replace(/NAV_BAR_PLACEHOLDER/g, nav_text);

@@ -79,6 +79,25 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebApps
 
+  UpdateHatTrickFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: hatTrickJob.handler
+      Runtime: nodejs14.x
+      Tracing: Active
+      Events:
+        Daily:
+          Type: Schedule
+          Properties:
+            Schedule: cron(40 21 * * ? *)
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebGoals
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TranmereWebHatTricks
+
+
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -349,3 +368,35 @@ Resources:
         - AttributeName: id
           KeyType: "RANGE"
       BillingMode: PAY_PER_REQUEST
+
+  TranmereWebHatTricks:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: TranmereWebHatTricks
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: Season
+          AttributeType: S
+        - AttributeName: Player
+          AttributeType: S     
+        - AttributeName: Date
+          AttributeType: S                    
+      KeySchema:
+        - AttributeName: Season
+          KeyType: HASH
+        - AttributeName: id
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST      
+      GlobalSecondaryIndexes:
+        - IndexName: ByNameIndex
+          KeySchema:
+            - AttributeName: Player
+              KeyType: HASH
+            - AttributeName: Date
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: TimeToLive
+        Enabled: true            
