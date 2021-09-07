@@ -78,10 +78,7 @@ function extractSquadFromHTML (html, date, competition, season) {
         const regex = /\s+\(\d+\)/g;
         const minRegex = /\d+/g
         var text = $($(el).find("td")[playerIndex]).text()
-        const sub = text.match(minRegex);
-        var subMin;
-        if(sub)
-            subMin = sub[0];
+
 
         text = text.replace(regex, '')
 
@@ -95,6 +92,11 @@ function extractSquadFromHTML (html, date, competition, season) {
         if(yellowCard && yellowCard.indexOf('Red') > -1) {
             red = 'TRUE'
         }
+
+        const sub = text.match(minRegex);
+        var subMin;
+        if(sub && ! red)
+            subMin = sub[0];
 
         var app = {
             id: uuidv4(),
@@ -672,7 +674,10 @@ function translatePlayerName(input) {
         "J Dacres-Cogley": "Josh Dacres-Cogley",
         "E Nevitt": "Elliott Nevitt",
         "R Doohan": "Ross Doohan",
-        "N Knight-Percival": "Nat Knight-Percival"
+        "N Knight-Percival": "Nat Knight-Percival",
+        "M Duffy": "Mark Duffy",
+        "N Maynard": "Nicky Maynard",
+        "J Hawkes": "Josh Hawkes"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
