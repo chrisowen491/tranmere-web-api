@@ -77,8 +77,8 @@ function extractSquadFromHTML (html, date, competition, season) {
 
         const regex = /\s+\(\d+\)/g;
         const minRegex = /\d+/g
-        var text = $($(el).find("td")[playerIndex]).text()
-        text = text.replace(regex, '')
+        var originalText = $($(el).find("td")[playerIndex]).text()
+        var text = originalText.replace(regex, '')
 
         var yellowCard = $($(el).find("td")[cardIndex]).children().first() ? $($(el).find("td")[cardIndex]).children().first().attr('title') : null;
         var yellow = null;
@@ -90,8 +90,8 @@ function extractSquadFromHTML (html, date, competition, season) {
         if(yellowCard && yellowCard.indexOf('Red') > -1) {
             red = 'TRUE'
         }
-        console.log(`Text is ${text}`)
-        const sub = text.match(minRegex);
+        console.log(`Text is ${originalText}`)
+        const sub = originalText.match(minRegex);
         var subMin;
         if(sub && !red) {
             console.log(`Sub Min is ${subMin}`);
