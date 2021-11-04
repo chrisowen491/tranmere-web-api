@@ -78,8 +78,6 @@ function extractSquadFromHTML (html, date, competition, season) {
         const regex = /\s+\(\d+\)/g;
         const minRegex = /\d+/g
         var text = $($(el).find("td")[playerIndex]).text()
-
-
         text = text.replace(regex, '')
 
         var yellowCard = $($(el).find("td")[cardIndex]).children().first() ? $($(el).find("td")[cardIndex]).children().first().attr('title') : null;
@@ -93,9 +91,10 @@ function extractSquadFromHTML (html, date, competition, season) {
             red = 'TRUE'
         }
 
+        console.log(`Sub Min is ${subMin}`);
         const sub = text.match(minRegex);
         var subMin;
-        if(sub && ! red)
+        if(sub && !red)
             subMin = sub[0];
 
         var app = {
@@ -129,7 +128,6 @@ function extractSquadFromHTML (html, date, competition, season) {
                    break;
                 }
             }
-
         }
     }
   });
@@ -677,7 +675,8 @@ function translatePlayerName(input) {
         "N Knight-Percival": "Nat Knight-Percival",
         "M Duffy": "Mark Duffy",
         "N Maynard": "Nicky Maynard",
-        "J Hawkes": "Josh Hawkes"
+        "J Hawkes": "Josh Hawkes",
+        "S Walker": "Stephen Walker"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
