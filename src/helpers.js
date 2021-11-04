@@ -90,13 +90,14 @@ function extractSquadFromHTML (html, date, competition, season) {
         if(yellowCard && yellowCard.indexOf('Red') > -1) {
             red = 'TRUE'
         }
-
-        console.log(`Sub Min is ${subMin}`);
+        console.log(`Text is ${text}`)
         const sub = text.match(minRegex);
         var subMin;
-        if(sub && !red)
+        if(sub && !red) {
+            console.log(`Sub Min is ${subMin}`);
+            
             subMin = sub[0];
-
+        }
         var app = {
             id: uuidv4(),
             Date: date,
