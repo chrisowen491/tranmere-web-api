@@ -90,12 +90,10 @@ function extractSquadFromHTML (html, date, competition, season) {
         if(yellowCard && yellowCard.indexOf('Red') > -1) {
             red = 'TRUE'
         }
-        console.log(`Text is ${originalText}`)
+
         const sub = originalText.match(minRegex);
         var subMin;
-        if(sub && !red) {
-            console.log(`Sub Min is ${subMin}`);
-            
+        if(sub && !red) {            
             subMin = sub[0];
         }
         var app = {
@@ -677,7 +675,10 @@ function translatePlayerName(input) {
         "M Duffy": "Mark Duffy",
         "N Maynard": "Nicky Maynard",
         "J Hawkes": "Josh Hawkes",
-        "S Walker": "Stephen Walker"
+        "S Walker": "Stephen Walker",
+        "K Hemmings": "Kane Hemmings",
+        "J McPake": "Josh McPake",
+        "L Warrington": "Lewis Warrington"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
