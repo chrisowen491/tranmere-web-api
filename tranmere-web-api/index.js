@@ -44,6 +44,16 @@ async function handleRequest(event) {
         url.host = "api.ci1.tranmere-web.com";
       }
 
+      if(url.pathname === "/page/gallery/Book") {
+        url.pathname = "/page/blog/7GNQCz3dEPOCvuyfcHTWvA";
+        url.host = "api.ci1.tranmere-web.com";
+      }
+
+      if(url.pathname === "/page/gallery/Card") {
+        url.pathname = "/page/blog/7gk4gmq9N6ibfree9KOl1j";
+        url.host = "api.ci1.tranmere-web.com";
+      }
+
       if(url.pathname.startsWith("/graphql")) {
         url.host = "tgzafameebdujmbaw4tdkuaiku.appsync-api.eu-west-1.amazonaws.com";
       }

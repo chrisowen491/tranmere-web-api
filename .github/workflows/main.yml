@@ -37,7 +37,7 @@ jobs:
             packaged-template.yaml
       - name: Bump version and push tag
         id: tag_repo
-        uses: anothrNick/github-tag-action@1.26.0
+        uses: anothrNick/github-tag-action@1.39.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
@@ -62,23 +62,4 @@ jobs:
           name: sam-template
       - name: SAM Deploy
         run:
-          sam deploy --template packaged-template.yaml --tags env=$ENV_NAME service=${{ github.repository }} version=${{needs.build_test_and_package.outputs.tag}} --no-fail-on-empty-changeset --stack-name Tranmere-Web-Api --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 SCRAPESEASON=${{ secrets.SCRAPE_SEASON }} SCRAPEID=${{ secrets.SCRAPE_ID }} SCRAPEURL=${{ secrets.SCRAPE_URL }} --capabilities CAPABILITY_IAM
-
-  deploy-cloudflare:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      - uses: actions/checkout@v2
-      - uses: cloudflare/wrangler-action@1.2.0
-        with:
-          apiKey: ${{ secrets.CLOUDFLARE_AUTH_KEY }}
-          workingDirectory: 'tranmere-web-api'
-          email: ${{ secrets.CLOUDFLARE_AUTH_EMAIL }}
-          secrets: |
-            APIKEY
-            APIKEY2
-        env:
-          APIKEY: ${{ secrets.API_KEY }}
-          APIKEY2: ${{ secrets.API_KEY }}
+          sam deploy --template packaged-template.yaml --no-fail-on-empty-changeset --tags env=${{ENV_NAME}} service=${{ github.repository }} version=${{needs.build_test_and_package.outputs.tag}} --no-fail-on-empty-changeset --stack-name Tranmere-Web-Api --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 SCRAPESEASON=${{ secrets.SCRAPE_SEASON }} SCRAPEID=${{ secrets.SCRAPE_ID }} SCRAPEURL=${{ secrets.SCRAPE_URL }} --capabilities CAPABILITY_IAM

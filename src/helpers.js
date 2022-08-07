@@ -678,7 +678,17 @@ function translatePlayerName(input) {
         "S Walker": "Stephen Walker",
         "K Hemmings": "Kane Hemmings",
         "J McPake": "Josh McPake",
-        "L Warrington": "Lewis Warrington"
+        "L Warrington": "Lewis Warrington",
+        "J Nolan": "Jon Nolan",
+        "E Bristow": "Ethan Bristow",
+        "K Jameson": "Kyle Jameson",
+        "L Robinson": "Luke Robinson",
+        "N Byrne": "Neill Byrne",
+        "R McAlear": "Reece McAlear",
+        "R Hughes": "Rhys Hughes",
+        "J Turnbull": "Jordan Turnbull",
+        "B Hockenhull": "Ben Hockenhull",
+        "J Mumbongo": "Joel Mumbongo"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
