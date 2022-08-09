@@ -688,7 +688,8 @@ function translatePlayerName(input) {
         "R Hughes": "Rhys Hughes",
         "J Turnbull": "Jordan Turnbull",
         "B Hockenhull": "Ben Hockenhull",
-        "J Mumbongo": "Joel Mumbongo"
+        "J Mumbongo": "Joel Mumbongo",
+        "M Hewelt": "Mateusz Hewelt"
     }
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();

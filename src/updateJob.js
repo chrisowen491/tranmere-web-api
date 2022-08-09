@@ -7,7 +7,7 @@ exports.handler = async function (event, context) {
 
     var playerTotalsHash = {};
 
-    for(var i = 1977; i <2022; i++) {
+    for(var i = 1977; i <2023; i++) {
         var playerHash = {};
         var appsQuery = {
             TableName:"TranmereWebAppsTable",
