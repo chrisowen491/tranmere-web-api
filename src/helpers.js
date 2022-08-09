@@ -26,7 +26,7 @@ function extractExtraFromHTML (html, date, competition, season, match) {
 
 function getYear() {
     var theDate = new Date();
-    if(theDate.getUTCMonth > 6) {
+    if(theDate.getUTCMonth() > 6) {
         return theDate.getFullYear();
     } else {
         return theDate.getFullYear() -1;
