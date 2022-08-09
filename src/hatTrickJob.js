@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
+const {getYear} = require('./helpers');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = "TranmereWebHatTricks";
 
@@ -8,7 +9,7 @@ exports.handler = async function (event, context) {
 
     var playerTotalsHash = {};
 
-    for(var i = 1977; i <2023; i++) {
+    for(var i = 1977; i <= getYear(); i++) {
         var dateMap = {};
         
         // Get All Goals

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
+const {getYear} = require('./helpers');
 const TABLE_NAME = "TranmereWebPlayerSeasonSummaryTable";
 
 exports.handler = async function (event, context) {
@@ -7,7 +8,7 @@ exports.handler = async function (event, context) {
 
     var playerTotalsHash = {};
 
-    for(var i = 1977; i <2023; i++) {
+    for(var i = 1977; i <= getYear(); i++) {
         var playerHash = {};
         var appsQuery = {
             TableName:"TranmereWebAppsTable",

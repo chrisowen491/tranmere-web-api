@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const { val } = require('cheerio/lib/api/attributes');
 const moment = require('moment');
 const { v4: uuidv4 } = require('uuid');
 
@@ -21,6 +22,15 @@ function extractExtraFromHTML (html, date, competition, season, match) {
   match.ft = homeScore + '-' +awayScore
 
   return match;
+}
+
+function getYear() {
+    var theDate = new Date();
+    if(theDate.getUTCMonth > 6) {
+        return theDate.getFullYear();
+    } else {
+        return theDate.getFullYear() -1;
+    }
 }
 
 function extractSquadFromHTML (html, date, competition, season) {
