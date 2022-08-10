@@ -1,6 +1,4 @@
 const cheerio = require('cheerio');
-const { val } = require('cheerio/lib/api/attributes');
-const moment = require('moment');
 const { v4: uuidv4 } = require('uuid');
 
 function extractExtraFromHTML (html, date, competition, season, match) {
