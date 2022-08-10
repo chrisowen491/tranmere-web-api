@@ -75,7 +75,7 @@ Resources:
         Daily:
           Type: Schedule
           Properties:
-            Schedule: cron(40 21 * * ? *)
+            Schedule: cron(45 23 * * ? *)
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebPlayerSeasonSummary
@@ -95,7 +95,7 @@ Resources:
         Daily:
           Type: Schedule
           Properties:
-            Schedule: cron(40 21 * * ? *)
+            Schedule: cron(45 23 * * ? *)
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref TranmereWebGoals

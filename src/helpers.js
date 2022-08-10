@@ -704,5 +704,5 @@ function translatePlayerName(input) {
 }
 
 module.exports = {
-  extractSquadFromHTML, extractMatchesFromHTML, extractExtraFromHTML
+  extractSquadFromHTML, extractMatchesFromHTML, extractExtraFromHTML, getYear
 };
