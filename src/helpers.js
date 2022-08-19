@@ -12,6 +12,11 @@ function extractExtraFromHTML (html, date, competition, season, match) {
   match.home = homeTeam == "Tranmere" ? "Tranmere Rovers" : homeTeam;
   match.visitor = awayTeam == "Tranmere" ? "Tranmere Rovers" : awayTeam;
   match.opposition = awayTeam == "Tranmere" ? homeTeam : awayTeam;
+
+  match.home = translateTeamName(match.home);
+  match.visitor = translateTeamName(match.visitor);
+  match.opposition = translateTeamName(match.opposition);
+
   match.venue = homeTeam == "Tranmere" ? "Prenton Park" : "Unknown";
   match.static = "static";
   match.season = season;
@@ -60,6 +65,8 @@ function extractSquadFromHTML (html, date, competition, season) {
             //AssistType: null,
             Minute: minute[i],
         }
+
+        goal.opposition = translateTeamName(goal.opposition);
 
         if(text.indexOf('(pen') > 0)
             goal.GoalType = "Penalty"
@@ -119,6 +126,8 @@ function extractSquadFromHTML (html, date, competition, season) {
             SubYellow: null,
             SubRed: null
         }
+
+        app.opposition = translateTeamName(app.opposition);
 
         if(app.Number == "N/A")
             app.Number = null;
@@ -699,6 +708,20 @@ function translatePlayerName(input) {
         "J Mumbongo": "Joel Mumbongo",
         "M Hewelt": "Mateusz Hewelt"
     }
+
+    return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
+}
+
+function translateTeamName(input) {
+
+    var mapping = {
+        'Salford': 'Salford City',
+        'Newport Co': 'Newport County',
+        'Hartlepool': 'Hartlepool United',
+        'Accrington': 'Accrington Stanley',
+        'Scunthorpe': 'Scunthorpe United'
+    }
+
 
     return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
 }
