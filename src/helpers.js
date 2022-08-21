@@ -65,8 +65,8 @@ function extractSquadFromHTML (html, date, competition, season) {
             //AssistType: null,
             Minute: minute[i],
         }
-
-        goal.opposition = translateTeamName(goal.opposition);
+        console.log("Opp:" + goal.Opposition);
+        goal.Opposition = translateTeamName(goal.Opposition);
 
         if(text.indexOf('(pen') > 0)
             goal.GoalType = "Penalty"
@@ -714,6 +714,8 @@ function translatePlayerName(input) {
 
 function translateTeamName(input) {
 
+    var lookup = input ? input.trim() : "";
+    
     var mapping = {
         'Salford': 'Salford City',
         'Newport Co': 'Newport County',
@@ -721,9 +723,7 @@ function translateTeamName(input) {
         'Accrington': 'Accrington Stanley',
         'Scunthorpe': 'Scunthorpe United'
     }
-
-
-    return mapping[input.trim()] ? mapping[input.trim()] : input.trim();
+    return mapping[lookup] ? mapping[lookup] : lookup;
 }
 
 module.exports = {
