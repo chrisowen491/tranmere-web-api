@@ -723,7 +723,23 @@ function translateTeamName(input) {
         'Newport Co': 'Newport County',
         'Hartlepool': 'Hartlepool United',
         'Accrington': 'Accrington Stanley',
-        'Scunthorpe': 'Scunthorpe United'
+        'Scunthorpe': 'Scunthorpe United',
+        'Bolton': 'Bolton Wanderers',
+        'Mansfield': 'Mansfield Town',
+        'Oldham': 'Oldham Athletic',
+        'Swindon': 'Swindon Town',
+        'Carlisle': 'Carlisle United',
+        'Exeter': 'Exeter City',
+        'Bristol R': 'Bristol Rovers',
+        'Harrogate': 'Harrogate Town',
+        'Crewe': 'Crewe Alexandra',
+        'Stockport': 'Stockport County',
+        'Grimsby': 'Grimsby Town',
+        'Northampton': 'Northampton Town',
+        'Crawley': 'Crawley Town',
+        'Colchester': 'Colchester United',
+        'Bradford': 'Bradford City',
+        'Doncaster': 'Doncaster Rovers'
     }
     return mapping[lookup] ? mapping[lookup] : lookup;
 }
