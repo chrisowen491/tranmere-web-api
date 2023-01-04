@@ -62,4 +62,4 @@ jobs:
           name: sam-template
       - name: SAM Deploy
         run:
-          sam deploy --template packaged-template.yaml --no-fail-on-empty-changeset --tags env=ci1 service=${{ github.repository }} version=${{needs.build_test_and_package.outputs.tag}} --no-fail-on-empty-changeset --stack-name Tranmere-Web-Api --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 SCRAPESEASON=${{ secrets.SCRAPE_SEASON }} SCRAPEID=${{ secrets.SCRAPE_ID }} SCRAPEURL=${{ secrets.SCRAPE_URL }} --capabilities CAPABILITY_IAM
+          sam deploy --template packaged-template.yaml --no-fail-on-empty-changeset --tags env=ci1 service=${{ github.repository }} version=${{needs.build_test_and_package.outputs.tag}} --no-fail-on-empty-changeset --stack-name Tranmere-Web-Api --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 --capabilities CAPABILITY_IAM

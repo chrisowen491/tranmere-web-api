@@ -12,15 +12,6 @@ Description: >
 
   Sam scripts for tranmere-web
 Parameters:
-  SCRAPESEASON:
-    Type: String
-    Description: The scrape season
-  SCRAPEID:
-    Type: String
-    Description: The scrape season id
-  SCRAPEURL:
-    Type: String
-    Description: The scrape URL
   EnvName:
     Type: String
     Default: sit1
@@ -38,70 +29,6 @@ Globals:
     Timeout: 600
 
 Resources:
-
-  ScraperFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: src/
-      Handler: scraper.handler
-      Runtime: nodejs14.x
-      MemorySize: 256
-      Events:
-        Daily:
-          Type: Schedule
-          Properties:
-            Schedule: cron(00 23 * * ? *)
-      Environment:
-        Variables:
-          SCRAPE_ID: !Ref 'SCRAPEID'
-          SCRAPE_SEASON: !Ref 'SCRAPESEASON'
-          SCRAPE_URL: !Ref 'SCRAPEURL'
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGames
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGoals
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebApps
-
-  UpdateSummariesFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/
-      Handler: updateJob.handler
-      Runtime: nodejs14.x
-      Tracing: Active
-      Events:
-        Daily:
-          Type: Schedule
-          Properties:
-            Schedule: cron(45 23 * * ? *)
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebPlayerSeasonSummary
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGoals
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebApps
-
-  UpdateHatTrickFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/
-      Handler: hatTrickJob.handler
-      Runtime: nodejs14.x
-      Tracing: Active
-      Events:
-        Daily:
-          Type: Schedule
-          Properties:
-            Schedule: cron(45 23 * * ? *)
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebGoals
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TranmereWebHatTricks
-
 
   TranmereWebCSVUploadBucket:
     Type: AWS::S3::Bucket
